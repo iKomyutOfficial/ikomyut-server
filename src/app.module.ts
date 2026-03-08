@@ -4,6 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { DriversModule } from './driver/driver.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { AppService } from './app.service';
       }),
     }),
     UsersModule,
+    DriversModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
