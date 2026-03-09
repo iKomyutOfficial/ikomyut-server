@@ -4,6 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { DriversModule } from './driver/driver.module';
+import { AdminModule } from './admin/admin.module';
 import { PeakHourModule } from './peak-hour/peak-hour.module';
 
 @Module({
@@ -20,6 +22,8 @@ import { PeakHourModule } from './peak-hour/peak-hour.module';
       }),
     }),
     UsersModule,
+    DriversModule,
+    AdminModule,
     PeakHourModule,
   ],
   controllers: [AppController],

@@ -96,12 +96,12 @@ export class Drivers {
   transportRequirements?: TransportRequirements;
 }
 
-export const UsersSchema = SchemaFactory.createForClass(Drivers);
+export const DriversSchema = SchemaFactory.createForClass(Drivers);
 
 /**
  * Hash password before save
  */
-UsersSchema.pre('save', async function (next) {
+DriversSchema.pre('save', async function (next) {
   const user = this as DriversDocument;
 
   if (!user.isModified('password')) return next();
