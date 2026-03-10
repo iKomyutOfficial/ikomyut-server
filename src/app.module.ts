@@ -6,7 +6,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DriversModule } from './driver/driver.module';
 import { AdminModule } from './admin/admin.module';
-import { PaymentTypeModule } from './payment-type/payment-type.module';
 
 @Module({
   imports: [
@@ -24,7 +23,6 @@ import { PaymentTypeModule } from './payment-type/payment-type.module';
     UsersModule,
     DriversModule,
     AdminModule,
-    PaymentTypeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
