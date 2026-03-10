@@ -32,8 +32,8 @@ export class RainyDaySurcharge {
   @Prop()
   modifiedBy!: string;
 
-  @Prop()
-  surchargeRate!: number | null;
+  @Prop({ type: Number })
+  surchargeRate!: number;
 }
 
 export const RainyDaySurchargeSchema =

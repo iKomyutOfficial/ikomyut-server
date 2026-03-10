@@ -7,6 +7,13 @@ import { AppService } from './app.service';
 import { DriversModule } from './driver/driver.module';
 import { AdminModule } from './admin/admin.module';
 import { TimeMatrixModule } from './time-matrix/time-matrix.module';
+import { RainyDaySurcharge } from './schemas/rainy-day-surcharge.schema';
+import { PaymentTypeModule } from './payment-type/payment-type.module';
+import { TnvsConfiguration } from './schemas/tnvs-configuration.schema';
+import { TrafficIntensity } from './schemas/traffic-intensity.schema';
+import { RainyDaySurchargeModule } from './rainy-day-surcharge/rainy-day-surcharge.module';
+import { TrafficIntensityModule } from './traffic-intensity/traffic-intensity.module';
+import { TnvsConfigurationModule } from './tnvs-configuration/tnvs-configuration.module';
 
 @Module({
   imports: [
@@ -25,6 +32,10 @@ import { TimeMatrixModule } from './time-matrix/time-matrix.module';
     DriversModule,
     AdminModule,
     TimeMatrixModule,
+    RainyDaySurchargeModule,
+    PaymentTypeModule,
+    TnvsConfigurationModule,
+    TrafficIntensityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

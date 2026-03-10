@@ -15,6 +15,5 @@ import {
   ],
   controllers: [RainyDaySurchargeController],
   providers: [RainyDaySurchargeService],
-  exports: [RainyDaySurchargeService],
 })
 export class RainyDaySurchargeModule {}
