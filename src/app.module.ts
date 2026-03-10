@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DriversModule } from './driver/driver.module';
 import { AdminModule } from './admin/admin.module';
+import { TimeMatrixModule } from './time-matrix/time-matrix.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AdminModule } from './admin/admin.module';
     UsersModule,
     DriversModule,
     AdminModule,
+    TimeMatrixModule,
   ],
   controllers: [AppController],
   providers: [AppService],
