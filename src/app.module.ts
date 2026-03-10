@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DriversModule } from './driver/driver.module';
 import { AdminModule } from './admin/admin.module';
+import { TnvsConfigurationModule } from './tnvs-configuration/tnvs-configuration.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AdminModule } from './admin/admin.module';
     UsersModule,
     DriversModule,
     AdminModule,
+    TnvsConfigurationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
