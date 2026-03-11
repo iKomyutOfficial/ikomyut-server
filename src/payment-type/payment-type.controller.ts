@@ -4,7 +4,7 @@ import {
   Post,
   Body,
   Param,
-  Put,
+  Patch,
   Delete,
 } from '@nestjs/common';
 import { PaymentTypeService } from './payment-type.service';
@@ -56,7 +56,7 @@ export class PaymentTypeController {
     return this.paymentTypeService.findOne(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Update Payment Type' })
   @ApiParam({ name: 'id', type: String, description: 'Payment Type ID' })
   @ApiBody({ type: UpdatePaymentTypeDto })
