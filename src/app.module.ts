@@ -4,8 +4,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DriversModule } from './driver/driver.module';
+import { PeakHourModule } from './peak-hour/peak-hour.module';
 import { AdminModule } from './admin/admin.module';
+import { DriversModule } from './driver/driver.module';
+import { PaymentTypeModule } from './payment-type/payment-type.module';
+import { RainyDaySurchargeModule } from './rainy-day-surcharge/rainy-day-surcharge.module';
+import { TimeMatrixModule } from './time-matrix/time-matrix.module';
+import { TnvsConfigurationModule } from './tnvs-configuration/tnvs-configuration.module';
+import { TrafficIntensityModule } from './traffic-intensity/traffic-intensity.module';
 import { PeakHourModule } from './peak-hour/peak-hour.module';
 
 @Module({
@@ -24,6 +30,12 @@ import { PeakHourModule } from './peak-hour/peak-hour.module';
     UsersModule,
     DriversModule,
     AdminModule,
+    TimeMatrixModule,
+    RainyDaySurchargeModule,
+    PaymentTypeModule,
+    TnvsConfigurationModule,
+    TrafficIntensityModule,
+    PeakHourModule
     PeakHourModule,
   ],
   controllers: [AppController],

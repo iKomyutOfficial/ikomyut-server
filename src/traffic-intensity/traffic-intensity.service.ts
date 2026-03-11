@@ -1,0 +1,62 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
+import {
+  TrafficIntensity,
+  TrafficIntensityDocument,
+} from '../schemas/traffic-intensity.schema';
+
+import { CreateTrafficIntensityDto } from './dto/create-traffic-intensity.dto';
+import { UpdateTrafficIntensityDto } from './dto/update-traffic-intensity.dto';
+
+@Injectable()
+export class TrafficIntensityService {
+  constructor(
+    @InjectModel(TrafficIntensity.name)
+    private trafficModel: Model<TrafficIntensityDocument>,
+  ) {}
+
+  async create(dto: CreateTrafficIntensityDto) {
+    const data = new this.trafficModel(dto);
+    return data.save();
+  }
+
+  async findAll() {
+    return this.trafficModel.find();
+  }
+
+  async findOne(id: string) {
+    const data = await this.trafficModel.findOne({ id });
+
+    if (!data) {
+      throw new NotFoundException('Traffic intensity not found');
+    }
+
+    return data;
+  }
+
+  async update(id: string, dto: UpdateTrafficIntensityDto) {
+    const data = await this.trafficModel.findOneAndUpdate(
+      { id },
+      dto,
+      { new: true },
+    );
+
+    if (!data) {
+      throw new NotFoundException('Traffic intensity not found');
+    }
+
+    return data;
+  }
+
+  async remove(id: string) {
+    const data = await this.trafficModel.findOneAndDelete({ id });
+
+    if (!data) {
+      throw new NotFoundException('Traffic intensity not found');
+    }
+
+    return { message: 'Deleted successfully' };
+  }
+}
