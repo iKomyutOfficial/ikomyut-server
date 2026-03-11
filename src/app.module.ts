@@ -12,7 +12,7 @@ import { RainyDaySurchargeModule } from './rainy-day-surcharge/rainy-day-surchar
 import { TimeMatrixModule } from './time-matrix/time-matrix.module';
 import { TnvsConfigurationModule } from './tnvs-configuration/tnvs-configuration.module';
 import { TrafficIntensityModule } from './traffic-intensity/traffic-intensity.module';
-import { PeakHourModule } from './peak-hour/peak-hour.module';
+
 
 @Module({
   imports: [
@@ -35,7 +35,6 @@ import { PeakHourModule } from './peak-hour/peak-hour.module';
     PaymentTypeModule,
     TnvsConfigurationModule,
     TrafficIntensityModule,
-    PeakHourModule
     PeakHourModule,
   ],
   controllers: [AppController],
