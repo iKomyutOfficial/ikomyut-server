@@ -8,7 +8,6 @@ import {
   Post,
 } from '@nestjs/common';
 import {
-  ApiBody,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -17,8 +16,6 @@ import {
 import { TnvsConfigurationService } from './tnvs-configuration.service';
 import { CreateTnvsConfigurationDto } from './dto/create-tnvs-configuration.dto';
 import { UpdateTnvsConfigurationDto } from './dto/update-tnvs-configuration.dto';
-import { TnvsConfigurationResponseDto } from './dto/tnvs-configuration-response.dto';
-import { DeleteResponseDto } from './dto/delete-response.dto';
 
 @ApiTags('Tnvs Configuration')
 @Controller('tnvs-configuration')
@@ -29,11 +26,9 @@ export class TnvsConfigurationController {
 
   @Post()
   @ApiOperation({ summary: 'Create a TNVS configuration record' })
-  @ApiBody({ type: CreateTnvsConfigurationDto })
   @ApiResponse({
     status: 201,
     description: 'TNVS configuration record created successfully',
-    type: TnvsConfigurationResponseDto,
   })
   @ApiResponse({
     status: 400,
@@ -48,74 +43,71 @@ export class TnvsConfigurationController {
   @ApiResponse({
     status: 200,
     description: 'TNVS configuration records retrieved successfully',
-    type: TnvsConfigurationResponseDto,
-    isArray: true,
   })
   findAll() {
     return this.tnvsConfigurationService.findAll();
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get one TNVS configuration record by custom id' })
+  @Get(':objectId')
+  @ApiOperation({ summary: 'Get one TNVS configuration record by ObjectId' })
   @ApiParam({
-    name: 'id',
-    description: 'Custom id field from the TnvsConfiguration schema',
-    example: 'TC001',
+    name: 'objectId',
+    description: 'MongoDB ObjectId of the TnvsConfiguration document',
+    example: '65f2b1c9e4b0f1a2d3c4e5f6',
   })
   @ApiResponse({
     status: 200,
     description: 'TNVS configuration record retrieved successfully',
-    type: TnvsConfigurationResponseDto,
   })
   @ApiResponse({
     status: 404,
     description: 'TNVS configuration record not found',
   })
-  findOne(@Param('id') id: string) {
-    return this.tnvsConfigurationService.findOne(id);
+  findOne(@Param('objectId') objectId: string) {
+    return this.tnvsConfigurationService.findOne(objectId);
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update one TNVS configuration record by custom id' })
+  @Patch(':objectId')
+  @ApiOperation({ summary: 'Update one TNVS configuration record by ObjectId' })
   @ApiParam({
-    name: 'id',
-    description: 'Custom id field from the TnvsConfiguration schema',
-    example: 'TC001',
+    name: 'objectId',
+    description: 'MongoDB ObjectId of the TnvsConfiguration document',
+    example: '65f2b1c9e4b0f1a2d3c4e5f6',
   })
-  @ApiBody({ type: UpdateTnvsConfigurationDto })
   @ApiResponse({
     status: 200,
     description: 'TNVS configuration record updated successfully',
-    type: TnvsConfigurationResponseDto,
   })
   @ApiResponse({
     status: 404,
     description: 'TNVS configuration record not found',
   })
   update(
-    @Param('id') id: string,
+    @Param('objectId') objectId: string,
     @Body() updateTnvsConfigurationDto: UpdateTnvsConfigurationDto,
   ) {
-    return this.tnvsConfigurationService.update(id, updateTnvsConfigurationDto);
+    return this.tnvsConfigurationService.update(
+      objectId,
+      updateTnvsConfigurationDto,
+    );
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete one TNVS configuration record by custom id' })
+  @Delete(':objectId')
+  @ApiOperation({ summary: 'Delete one TNVS configuration record by ObjectId' })
   @ApiParam({
-    name: 'id',
-    description: 'Custom id field from the TnvsConfiguration schema',
-    example: 'TC001',
+    name: 'objectId',
+    description: 'MongoDB ObjectId of the TnvsConfiguration document',
+    example: '65f2b1c9e4b0f1a2d3c4e5f6',
   })
   @ApiResponse({
     status: 200,
     description: 'TNVS configuration record deleted successfully',
-    type: DeleteResponseDto,
   })
   @ApiResponse({
     status: 404,
     description: 'TNVS configuration record not found',
   })
-  remove(@Param('id') id: string) {
-    return this.tnvsConfigurationService.remove(id);
+  remove(@Param('objectId') objectId: string) {
+    return this.tnvsConfigurationService.remove(objectId);
   }
 }
