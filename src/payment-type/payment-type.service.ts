@@ -9,14 +9,14 @@ import { UpdatePaymentTypeDto } from './dto/update-payment-type.dto';
 @Injectable()
 export class PaymentTypeService {
   constructor(
-    @InjectModel(PaymentType.name) private paymentTypeModel: Model<PaymentTypeDocument>,
+    @InjectModel(PaymentType.name)
+    private paymentTypeModel: Model<PaymentTypeDocument>,
   ) {}
 
-  // Helper to sanitize Mongo document
   private sanitize(doc: any) {
     if (!doc) return null;
-    const { _id, __v, ...rest } = doc;
-    return { id: _id, ...rest };
+    const { __v, ...rest } = doc;
+    return rest;
   }
 
   async create(createDto: CreatePaymentTypeDto) {
@@ -27,7 +27,7 @@ export class PaymentTypeService {
 
   async findAll() {
     const data = await this.paymentTypeModel.find().lean();
-    return data.map(d => this.sanitize(d));
+    return data.map((d) => this.sanitize(d));
   }
 
   async findOne(id: string) {
