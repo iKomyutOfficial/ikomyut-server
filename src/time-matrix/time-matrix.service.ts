@@ -9,7 +9,7 @@ import { UpdateTimeMatrixDto } from './dto/update-time-matrix.dto';
 export class TimeMatrixService {
   constructor(
     @InjectModel(TimeMatrix.name) private timeMatrixModel: Model<TimeMatrixDocument>,
-  ) {}
+  ) { }
 
   async create(dto: CreateTimeMatrixDto): Promise<TimeMatrix> {
     const now = new Date().toISOString();

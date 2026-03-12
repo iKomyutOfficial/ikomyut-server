@@ -8,7 +8,7 @@ import { TimeMatrix } from '../schemas/time-matrix.schema';
 @ApiTags('Time Matrix')
 @Controller('time-matrix')
 export class TimeMatrixController {
-  constructor(private readonly timeMatrixService: TimeMatrixService) {}
+  constructor(private readonly timeMatrixService: TimeMatrixService) { }
 
   @Post()
   @ApiOperation({ summary: 'Create entry' })
