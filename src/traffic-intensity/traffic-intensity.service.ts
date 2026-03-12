@@ -27,7 +27,7 @@ export class TrafficIntensityService {
   }
 
   async findOne(id: string) {
-    const data = await this.trafficModel.findOne({ id });
+    const data = await this.trafficModel.findById(id);
 
     if (!data) {
       throw new NotFoundException('Traffic intensity not found');
@@ -37,8 +37,8 @@ export class TrafficIntensityService {
   }
 
   async update(id: string, dto: UpdateTrafficIntensityDto) {
-    const data = await this.trafficModel.findOneAndUpdate(
-      { id },
+    const data = await this.trafficModel.findByIdAndUpdate(
+      id,
       dto,
       { new: true },
     );
@@ -51,7 +51,7 @@ export class TrafficIntensityService {
   }
 
   async remove(id: string) {
-    const data = await this.trafficModel.findOneAndDelete({ id });
+    const data = await this.trafficModel.findByIdAndDelete(id);
 
     if (!data) {
       throw new NotFoundException('Traffic intensity not found');

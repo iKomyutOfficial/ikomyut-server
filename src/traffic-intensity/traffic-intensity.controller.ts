@@ -26,18 +26,18 @@ export class TrafficIntensityController {
     return this.service.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
-  }
+  @Get(':objectId')
+findOne(@Param('objectId') objectId: string) {
+  return this.service.findOne(objectId);
+}
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateTrafficIntensityDto) {
-    return this.service.update(id, dto);
-  }
+@Patch(':objectId')
+update(@Param('objectId') objectId: string, @Body() dto: UpdateTrafficIntensityDto) {
+  return this.service.update(objectId, dto);
+}
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.service.remove(id);
-  }
+@Delete(':objectId')
+remove(@Param('objectId') objectId: string) {
+  return this.service.remove(objectId);
+}
 }
