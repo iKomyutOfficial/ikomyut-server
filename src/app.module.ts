@@ -14,7 +14,6 @@ import { TnvsConfigurationModule } from './tnvs-configuration/tnvs-configuration
 import { TrafficIntensityModule } from './traffic-intensity/traffic-intensity.module';
 import { FilesModule } from './files/files.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
