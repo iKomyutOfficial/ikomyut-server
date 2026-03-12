@@ -12,6 +12,7 @@ import { RainyDaySurchargeModule } from './rainy-day-surcharge/rainy-day-surchar
 import { TimeMatrixModule } from './time-matrix/time-matrix.module';
 import { TnvsConfigurationModule } from './tnvs-configuration/tnvs-configuration.module';
 import { TrafficIntensityModule } from './traffic-intensity/traffic-intensity.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TrafficIntensityModule } from './traffic-intensity/traffic-intensity.mo
         uri: configService.get<string>('MONGODB_URI'),
       }),
     }),
+    FilesModule,
     UsersModule,
     DriversModule,
     AdminModule,
