@@ -13,10 +13,6 @@ import { TimeMatrixModule } from './time-matrix/time-matrix.module';
 import { TnvsConfigurationModule } from './tnvs-configuration/tnvs-configuration.module';
 import { TrafficIntensityModule } from './traffic-intensity/traffic-intensity.module';
 import { FilesModule } from './files/files.module';
-<<<<<<< HEAD
-
-=======
->>>>>>> 022d1887fc30706c422f2f5d913336b98efc4745
 
 @Module({
   imports: [
