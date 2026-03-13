@@ -44,38 +44,38 @@ export class PaymentTypeController {
     return this.paymentTypeService.findAll();
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get Payment Type by ID' })
-  @ApiParam({ name: 'id', type: String, description: 'Payment Type ID' })
+  @Get(':_id')
+  @ApiOperation({ summary: 'Get Payment Type by ObjectId' })
+  @ApiParam({ name: '_id', type: String, description: 'Payment Type ObjectId' })
   @ApiResponse({
     status: 200,
     description: 'Payment type retrieved successfully',
   })
   @ApiResponse({ status: 404, description: 'Payment type not found' })
-  findOne(@Param('id') id: string) {
-    return this.paymentTypeService.findOne(id);
+  findOne(@Param('_id') _id: string) {
+    return this.paymentTypeService.findOne(_id);
   }
 
-  @Patch(':id')
+  @Patch(':_id')
   @ApiOperation({ summary: 'Update Payment Type' })
-  @ApiParam({ name: 'id', type: String, description: 'Payment Type ID' })
+  @ApiParam({ name: '_id', type: String, description: 'Payment Type ObjectId' })
   @ApiBody({ type: UpdatePaymentTypeDto })
   @ApiResponse({
     status: 200,
     description: 'Payment type updated successfully',
   })
-  update(@Param('id') id: string, @Body() updateDto: UpdatePaymentTypeDto) {
-    return this.paymentTypeService.update(id, updateDto);
+  update(@Param('_id') _id: string, @Body() updateDto: UpdatePaymentTypeDto) {
+    return this.paymentTypeService.update(_id, updateDto);
   }
 
-  @Delete(':id')
+  @Delete(':_id')
   @ApiOperation({ summary: 'Delete Payment Type' })
-  @ApiParam({ name: 'id', type: String, description: 'Payment Type ID' })
+  @ApiParam({ name: '_id', type: String, description: 'Payment Type ObjectId' })
   @ApiResponse({
     status: 200,
     description: 'Payment type deleted successfully',
   })
-  remove(@Param('id') id: string) {
-    return this.paymentTypeService.remove(id);
+  remove(@Param('_id') _id: string) {
+    return this.paymentTypeService.remove(_id);
   }
 }
