@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import {
   TnvsConfiguration,
   TnvsConfigurationDocument,
@@ -28,17 +28,7 @@ export class TnvsConfigurationService {
     return this.tnvsConfigurationModel.find().exec();
   }
 
-  private validateObjectId(objectId: string) {
-    if (!Types.ObjectId.isValid(objectId)) {
-      throw new BadRequestException(
-        `Invalid ObjectId format: "${objectId}"`,
-      );
-    }
-  }
-
   async findOne(objectId: string): Promise<TnvsConfiguration> {
-    this.validateObjectId(objectId);
-
     const tnvsConfiguration = await this.tnvsConfigurationModel
       .findById(objectId)
       .exec();
@@ -56,8 +46,6 @@ export class TnvsConfigurationService {
     objectId: string,
     updateTnvsConfigurationDto: UpdateTnvsConfigurationDto,
   ): Promise<TnvsConfiguration> {
-    this.validateObjectId(objectId);
-
     const updatedTnvsConfiguration = await this.tnvsConfigurationModel
       .findByIdAndUpdate(objectId, updateTnvsConfigurationDto, {
         new: true,
@@ -75,8 +63,6 @@ export class TnvsConfigurationService {
   }
 
   async remove(objectId: string): Promise<{ message: string }> {
-    this.validateObjectId(objectId);
-
     const deletedTnvsConfiguration = await this.tnvsConfigurationModel
       .findByIdAndDelete(objectId)
       .exec();
