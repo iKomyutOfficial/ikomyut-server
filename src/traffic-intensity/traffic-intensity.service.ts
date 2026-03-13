@@ -14,7 +14,7 @@ import { UpdateTrafficIntensityDto } from './dto/update-traffic-intensity.dto';
 export class TrafficIntensityService {
   constructor(
     @InjectModel(TrafficIntensity.name)
-    private trafficModel: Model<TrafficIntensityDocument>,
+    private readonly trafficModel: Model<TrafficIntensityDocument>,
   ) {}
 
   async create(dto: CreateTrafficIntensityDto) {
@@ -23,11 +23,11 @@ export class TrafficIntensityService {
   }
 
   async findAll() {
-    return this.trafficModel.find();
+    return this.trafficModel.find().exec();
   }
 
-  async findOne(id: string) {
-    const data = await this.trafficModel.findById(id);
+  async findById(id: string) {
+    const data = await this.trafficModel.findById(id).exec();
 
     if (!data) {
       throw new NotFoundException('Traffic intensity not found');
@@ -37,11 +37,12 @@ export class TrafficIntensityService {
   }
 
   async update(id: string, dto: UpdateTrafficIntensityDto) {
-    const data = await this.trafficModel.findByIdAndUpdate(
-      id,
-      dto,
-      { new: true },
-    );
+    const data = await this.trafficModel
+      .findByIdAndUpdate(id, dto, {
+        new: true,
+        runValidators: true,
+      })
+      .exec();
 
     if (!data) {
       throw new NotFoundException('Traffic intensity not found');
@@ -51,7 +52,7 @@ export class TrafficIntensityService {
   }
 
   async remove(id: string) {
-    const data = await this.trafficModel.findByIdAndDelete(id);
+    const data = await this.trafficModel.findByIdAndDelete(id).exec();
 
     if (!data) {
       throw new NotFoundException('Traffic intensity not found');

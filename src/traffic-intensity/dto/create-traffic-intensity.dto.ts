@@ -1,45 +1,81 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional, IsNumber } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateTrafficIntensityDto {
-  @ApiProperty()
+  @ApiPropertyOptional({
+    example: 'TI001',
+    description: 'Custom identifier for traffic intensity record',
+  })
+  @IsOptional()
   @IsString()
-  id!: string;
+  id?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    example: 0,
+    description: 'Version field',
+  })
   @IsOptional()
   @IsNumber()
-  _v!: number;
+  _v?: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'High',
+    description: 'Traffic intensity level',
+  })
   @IsString()
   intensityLevel!: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Yes',
+    description: 'Indicates if this intensity is during peak hour',
+  })
   @IsString()
   isPeakHour!: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: '1.25',
+    description: 'Surcharge rate applied for this intensity',
+  })
   @IsString()
   surchargeRate!: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    example: 'Active',
+    description: 'Status of the record',
+  })
+  @IsOptional()
   @IsString()
-  status!: string;
+  status?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    example: '2026-03-13T08:30:00Z',
+    description: 'Timestamp value',
+  })
+  @IsOptional()
   @IsString()
-  timestamp!: string;
+  timestamp?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    example: 'admin',
+    description: 'User who created the record',
+  })
+  @IsOptional()
   @IsString()
-  createdBy!: string;
+  createdBy?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    example: '2026-03-13T09:00:00Z',
+    description: 'Last update timestamp',
+  })
+  @IsOptional()
   @IsString()
-  updatedAt!: string;
+  updatedAt?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    example: 'manager',
+    description: 'User who last modified the record',
+  })
+  @IsOptional()
   @IsString()
-  modifiedBy!: string;
+  modifiedBy?: string;
 }
