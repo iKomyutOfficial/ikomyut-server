@@ -18,12 +18,10 @@ export class RainyDaySurchargeService {
   constructor(
     @InjectModel(RainyDaySurcharge.name)
     private rainyDaySurchargeModel: Model<RainyDaySurchargeDocument>,
-  ) {}
+  ) { }
 
   async create(createDto: CreateRainyDaySurchargeDto): Promise<RainyDaySurcharge> {
-    const existing = await this.rainyDaySurchargeModel.findOne({
-      id: createDto.id,
-    });
+    const existing = await this.rainyDaySurchargeModel.findById(createDto.id);
 
     if (existing) {
       throw new ConflictException('Surcharge record with this ID already exists');
@@ -49,8 +47,8 @@ export class RainyDaySurchargeService {
     };
   }
 
-  async findOne(id: string): Promise<RainyDaySurcharge> {
-    const record = await this.rainyDaySurchargeModel.findOne({ id });
+  async findById(id: string): Promise<RainyDaySurcharge> {
+    const record = await this.rainyDaySurchargeModel.findById(id);
 
     if (!record) {
       throw new NotFoundException('Rainy day surcharge not found');
@@ -60,8 +58,8 @@ export class RainyDaySurchargeService {
   }
 
   async update(id: string, updateDto: UpdateRainyDaySurchargeDto) {
-    const record = await this.rainyDaySurchargeModel.findOneAndUpdate(
-      { id },
+    const record = await this.rainyDaySurchargeModel.findByIdAndUpdate(
+      id,
       updateDto,
       { new: true },
     );
@@ -74,7 +72,7 @@ export class RainyDaySurchargeService {
   }
 
   async remove(id: string) {
-    const record = await this.rainyDaySurchargeModel.findOneAndDelete({ id });
+    const record = await this.rainyDaySurchargeModel.findByIdAndDelete(id);
 
     if (!record) {
       throw new NotFoundException('Rainy day surcharge not found');
