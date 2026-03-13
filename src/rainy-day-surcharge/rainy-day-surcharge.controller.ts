@@ -33,24 +33,24 @@ export class RainyDaySurchargeController {
     return this.service.findAll(Number(page), Number(limit));
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get a rainy day surcharge by id' })
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+  @Get(':objectId')
+  @ApiOperation({ summary: 'Get a rainy day surcharge by objectId' })
+  findOne(@Param('objectId') objectId: string) {
+    return this.service.findOne(objectId);
   }
 
-  @Patch(':id')
+  @Patch(':objectId')
   @ApiOperation({ summary: 'Update rainy day surcharge' })
   update(
-    @Param('id') id: string,
+    @Param('objectId') objectId: string,
     @Body() updateDto: UpdateRainyDaySurchargeDto,
   ) {
-    return this.service.update(id, updateDto);
+    return this.service.update(objectId, updateDto);
   }
 
-  @Delete(':id')
+  @Delete(':objectId')
   @ApiOperation({ summary: 'Delete a rainy day surcharge' })
-  remove(@Param('id') id: string) {
-    return this.service.remove(id);
+  remove(@Param('objectId') objectId: string) {
+    return this.service.remove(objectId);
   }
 }

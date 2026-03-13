@@ -49,8 +49,8 @@ export class RainyDaySurchargeService {
     };
   }
 
-  async findOne(id: string): Promise<RainyDaySurcharge> {
-    const record = await this.rainyDaySurchargeModel.findOne({ id });
+  async findOne(objectId: string): Promise<RainyDaySurcharge> {
+    const record = await this.rainyDaySurchargeModel.findById(objectId);
 
     if (!record) {
       throw new NotFoundException('Rainy day surcharge not found');
@@ -59,9 +59,9 @@ export class RainyDaySurchargeService {
     return record;
   }
 
-  async update(id: string, updateDto: UpdateRainyDaySurchargeDto) {
-    const record = await this.rainyDaySurchargeModel.findOneAndUpdate(
-      { id },
+  async update(objectId: string, updateDto: UpdateRainyDaySurchargeDto) {
+    const record = await this.rainyDaySurchargeModel.findByIdAndUpdate(
+      objectId,
       updateDto,
       { new: true },
     );
@@ -73,8 +73,8 @@ export class RainyDaySurchargeService {
     return record;
   }
 
-  async remove(id: string) {
-    const record = await this.rainyDaySurchargeModel.findOneAndDelete({ id });
+  async remove(objectId: string) {
+    const record = await this.rainyDaySurchargeModel.findByIdAndDelete(objectId);
 
     if (!record) {
       throw new NotFoundException('Rainy day surcharge not found');
