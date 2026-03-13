@@ -35,8 +35,8 @@ export class RainyDaySurchargeController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a rainy day surcharge by id' })
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+  findById(@Param('id') id: string) {
+    return this.service.findById(id);
   }
 
   @Patch(':id')
