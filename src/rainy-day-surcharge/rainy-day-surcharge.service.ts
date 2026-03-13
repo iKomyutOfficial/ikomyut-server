@@ -18,12 +18,10 @@ export class RainyDaySurchargeService {
   constructor(
     @InjectModel(RainyDaySurcharge.name)
     private rainyDaySurchargeModel: Model<RainyDaySurchargeDocument>,
-  ) {}
+  ) { }
 
   async create(createDto: CreateRainyDaySurchargeDto): Promise<RainyDaySurcharge> {
-    const existing = await this.rainyDaySurchargeModel.findOne({
-      id: createDto.id,
-    });
+    const existing = await this.rainyDaySurchargeModel.findById(createDto.id);
 
     if (existing) {
       throw new ConflictException('Surcharge record with this ID already exists');
