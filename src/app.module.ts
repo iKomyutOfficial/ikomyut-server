@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+
 import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -13,6 +16,8 @@ import { TimeMatrixModule } from './time-matrix/time-matrix.module';
 import { TnvsConfigurationModule } from './tnvs-configuration/tnvs-configuration.module';
 import { TrafficIntensityModule } from './traffic-intensity/traffic-intensity.module';
 import { FilesModule } from './files/files.module';
+import { AuthModule } from './auth/auth.module';
+import { VersionsModule } from './versions/versions.module';
 
 @Module({
   imports: [
@@ -20,6 +25,16 @@ import { FilesModule } from './files/files.module';
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
     }),
+
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 20,
+        },
+      ],
+    }),
+
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -27,6 +42,7 @@ import { FilesModule } from './files/files.module';
         uri: configService.get<string>('MONGODB_URI'),
       }),
     }),
+    AuthModule,
     FilesModule,
     UsersModule,
     DriversModule,
@@ -37,8 +53,16 @@ import { FilesModule } from './files/files.module';
     TnvsConfigurationModule,
     TrafficIntensityModule,
     PeakHourModule,
+    VersionsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
