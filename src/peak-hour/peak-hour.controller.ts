@@ -46,12 +46,12 @@ export class PeakHourController {
     return this.peakHourService.findAll();
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get one peak hour record by custom id' })
+  @Get(':objectId')
+  @ApiOperation({ summary: 'Get one peak hour record by ObjectId' })
   @ApiParam({
-    name: 'id',
-    description: 'Custom id field from the PeakHour schema',
-    example: 'PH001',
+    name: 'objectId',
+    description: 'MongoDB ObjectId of the PeakHour document',
+    example: '67cfb3a8c9e123456789abcd',
   })
   @ApiResponse({
     status: 200,
@@ -61,16 +61,16 @@ export class PeakHourController {
     status: 404,
     description: 'Peak hour record not found',
   })
-  findOne(@Param('id') id: string) {
-    return this.peakHourService.findOne(id);
+  findOne(@Param('objectId') objectId: string) {
+    return this.peakHourService.findOne(objectId);
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update one peak hour record by custom id' })
+  @Patch(':objectId')
+  @ApiOperation({ summary: 'Update one peak hour record by ObjectId' })
   @ApiParam({
-    name: 'id',
-    description: 'Custom id field from the PeakHour schema',
-    example: 'PH001',
+    name: 'objectId',
+    description: 'MongoDB ObjectId of the PeakHour document',
+    example: '67cfb3a8c9e123456789abcd',
   })
   @ApiResponse({
     status: 200,
@@ -81,18 +81,18 @@ export class PeakHourController {
     description: 'Peak hour record not found',
   })
   update(
-    @Param('id') id: string,
+    @Param('objectId') objectId: string,
     @Body() updatePeakHourDto: UpdatePeakHourDto,
   ) {
-    return this.peakHourService.update(id, updatePeakHourDto);
+    return this.peakHourService.update(objectId, updatePeakHourDto);
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete one peak hour record by custom id' })
+  @Delete(':objectId')
+  @ApiOperation({ summary: 'Delete one peak hour record by ObjectId' })
   @ApiParam({
-    name: 'id',
-    description: 'Custom id field from the PeakHour schema',
-    example: 'PH001',
+    name: 'objectId',
+    description: 'MongoDB ObjectId of the PeakHour document',
+    example: '67cfb3a8c9e123456789abcd',
   })
   @ApiResponse({
     status: 200,
@@ -102,7 +102,7 @@ export class PeakHourController {
     status: 404,
     description: 'Peak hour record not found',
   })
-  remove(@Param('id') id: string) {
-    return this.peakHourService.remove(id);
+  remove(@Param('objectId') objectId: string) {
+    return this.peakHourService.remove(objectId);
   }
 }

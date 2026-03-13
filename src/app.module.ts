@@ -36,7 +36,7 @@ import { FilesModule } from './files/files.module';
     PaymentTypeModule,
     TnvsConfigurationModule,
     TrafficIntensityModule,
-    PeakHourModule
+    PeakHourModule,
   ],
   controllers: [AppController],
   providers: [AppService],
