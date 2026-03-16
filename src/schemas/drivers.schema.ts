@@ -3,8 +3,14 @@ import { Document } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Location } from '../types/location';
 import { RideHistory } from '../types/ride-history';
-import { PersonalRequirementsSchema, PersonalRequirements } from './drivers-personal-req.schema';
-import { TransportRequirementsSchema, TransportRequirements } from './drivers-transport-req.schema';
+import {
+  PersonalRequirementsSchema,
+  PersonalRequirements,
+} from './drivers-personal-req.schema';
+import {
+  TransportRequirementsSchema,
+  TransportRequirements,
+} from './drivers-transport-req.schema';
 
 export type DriversDocument = Drivers & Document;
 
@@ -94,6 +100,15 @@ export class Drivers {
 
   @Prop({ type: TransportRequirementsSchema, default: {} })
   transportRequirements?: TransportRequirements;
+
+  @Prop()
+  otp?: string;
+
+  @Prop()
+  otpExpiry?: Date;
+
+  @Prop({ default: false })
+  isVerified?: boolean;
 }
 
 export const DriversSchema = SchemaFactory.createForClass(Drivers);

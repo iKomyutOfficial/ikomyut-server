@@ -88,6 +88,12 @@ export class Users {
 
   @Prop()
   otp?: string;
+
+  @Prop()
+  otpExpiry?: Date;
+
+  @Prop({ default: false })
+  isVerified?: boolean;
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);
