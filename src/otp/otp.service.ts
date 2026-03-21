@@ -63,7 +63,7 @@ export class OtpService {
 
     const msg = `Your 6-digit code is ${otpCode}. Don't share this code with anyone.`;
 
-    const isProd = this.configService.get('NODE_ENV') === 'productions';
+    const isProd = this.configService.get('NODE_ENV') === 'production';
     if (isProd) {
       try {
         const res = await axios.post(

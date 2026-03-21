@@ -7,7 +7,7 @@ import {
   Param,
   Patch,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
 import { Drivers } from '../schemas/drivers.schema';
 import { DriversService } from '../driver/driver.service';
@@ -17,9 +17,13 @@ import { RegisterAdminDto } from './dto/create-admin.dto';
 import { LoginAdminDto } from './dto/login-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { UpdateDriverStatusDto } from './dto/update-driver.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../auth/roles.guard';
 
 @ApiTags('Admin')
 @Controller('admin')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@ApiBearerAuth('access-token')
 export class AdminController {
   constructor(
     private readonly adminService: AdminService,
@@ -27,8 +31,7 @@ export class AdminController {
     private readonly driversService: DriversService,
   ) {}
 
-  // @UseGuards(ApiKeyGuard)
-  @Post('register')
+  @Post('new-admin')
   register(@Body() dto: RegisterAdminDto) {
     return this.adminService.register(dto);
   }
@@ -44,7 +47,6 @@ export class AdminController {
     return result;
   }
 
-  // @UseGuards(ApiKeyGuard)
   @Patch(':id/edit-information')
   async updateAdmin(
     @Param('id') id: string,
@@ -53,7 +55,6 @@ export class AdminController {
     return this.adminService.updateAdmin(id, updateAdminDto);
   }
 
-  // @UseGuards(ApiKeyGuard)
   @Patch(':id/change-password')
   async changePassword(
     @Param('id') id: string,
@@ -71,7 +72,6 @@ export class AdminController {
     return this.adminService.updateDriverStatus(id, statusDto);
   }
 
-  // @UseGuards(ApiKeyGuard)
   @Post('new-driver')
   @ApiOperation({ summary: 'Create a new driver by admin' })
   @ApiBody({ type: CreateDriverDto })

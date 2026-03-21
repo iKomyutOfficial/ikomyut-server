@@ -239,28 +239,6 @@ export class AdminService {
     return updatedDriver;
   }
 
-  // Fetch Driver History
-  // async getDriverHistory(driverId: string): Promise<{
-  //   history: Bookings[];
-  //   messages: Messages[];
-  // }> {
-  //   const [history, messages] = await Promise.all([
-  //     this.bookingsModel.find({ driverId }).exec(),
-  //     this.msgModel.find({ driverId }).exec(),
-  //   ]);
-
-  //   if (!history?.length && !messages?.length) {
-  //     throw new NotFoundException(
-  //       `No history or messages found for Driver with ID ${driverId}.`,
-  //     );
-  //   }
-
-  //   return {
-  //     history,
-  //     messages,
-  //   };
-  // }
-
   // Fetch all Riders
   async getAllRiders(): Promise<Users[]> {
     return this.userModel.find().exec();
@@ -274,13 +252,4 @@ export class AdminService {
     }
     return user;
   }
-
-  // Fetch Rider History
-  // async getRiderHistory(riderId: string): Promise<Bookings> {
-  //   const rider = await this.bookingsModel.findById(riderId).exec();
-  //   if (!rider) {
-  //     throw new NotFoundException(`Driver with ID ${riderId} not found`);
-  //   }
-  //   return rider;
-  // }
 }

@@ -1,19 +1,20 @@
 import { Controller, Get, Logger, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from './auth/decorators/roles.decorator';
 import { RolesGuard } from './auth/roles.guard';
 
 @Controller()
-@UseGuards(AuthGuard('jwt'), RolesGuard) // JWT + Roles guard applied globally to this controller
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@ApiBearerAuth('access-token')
 export class AppController {
   private readonly logger = new Logger(AppController.name);
 
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  @Roles('admin') // Only admins can access
+  @Roles('admin')
   @ApiOperation({ summary: 'Check service health status' })
   @ApiResponse({
     status: 200,

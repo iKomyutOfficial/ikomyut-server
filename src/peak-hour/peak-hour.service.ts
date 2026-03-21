@@ -21,12 +21,12 @@ export class PeakHourService {
     return this.peakHourModel.find().exec();
   }
 
-  async findOne(objectId: string): Promise<PeakHour> {
-    const peakHour = await this.peakHourModel.findById(objectId).exec();
+  async findOne(id: string): Promise<PeakHour> {
+    const peakHour = await this.peakHourModel.findById(id).exec();
 
     if (!peakHour) {
       throw new NotFoundException(
-        `PeakHour with ObjectId "${objectId}" not found`,
+        `PeakHour with id "${id}" not found`,
       );
     }
 
@@ -34,11 +34,11 @@ export class PeakHourService {
   }
 
   async update(
-    objectId: string,
+    id: string,
     updatePeakHourDto: UpdatePeakHourDto,
   ): Promise<PeakHour> {
     const updatedPeakHour = await this.peakHourModel
-      .findByIdAndUpdate(objectId, updatePeakHourDto, {
+      .findByIdAndUpdate(id, updatePeakHourDto, {
         new: true,
         runValidators: true,
       })
@@ -46,21 +46,21 @@ export class PeakHourService {
 
     if (!updatedPeakHour) {
       throw new NotFoundException(
-        `PeakHour with ObjectId "${objectId}" not found`,
+        `PeakHour with id "${id}" not found`,
       );
     }
 
     return updatedPeakHour;
   }
 
-  async remove(objectId: string): Promise<{ message: string }> {
+  async remove(id: string): Promise<{ message: string }> {
     const deletedPeakHour = await this.peakHourModel
-      .findByIdAndDelete(objectId)
+      .findByIdAndDelete(id)
       .exec();
 
     if (!deletedPeakHour) {
       throw new NotFoundException(
-        `PeakHour with ObjectId "${objectId}" not found`,
+        `PeakHour with id "${id}" not found`,
       );
     }
 

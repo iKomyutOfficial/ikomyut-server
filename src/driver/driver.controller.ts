@@ -18,6 +18,7 @@ import {
   ApiParam,
   ApiBody,
   ApiQuery,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { CreateDriverDto } from './dto/create-driver.dto';
 import { UpdateDriverDto } from './dto/update-driver.dto';
@@ -32,6 +33,7 @@ import { TransportRequirementsDto } from './dto/transport-requirements.dto';
 
 @ApiTags('Drivers')
 @Controller('drivers')
+@ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class DriversController {
   private readonly logger = new Logger(DriversController.name);

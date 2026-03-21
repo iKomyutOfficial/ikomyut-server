@@ -17,6 +17,7 @@ async function bootstrap() {
         'http://localhost:2099',
         'http://localhost:3000',
         'http://localhost:8080',
+        'https://ipick-server-app-873909369714.asia-southeast1.run.app'
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
@@ -48,7 +49,7 @@ async function bootstrap() {
         scheme: 'bearer',
         bearerFormat: 'JWT',
       },
-      'access-token', // Custom name for Swagger to reference
+      'access-token',
     )
     .build();
 
