@@ -17,8 +17,12 @@ export class OtpController {
 
   constructor(private otpService: OtpService) {}
 
-  @Post('requestOtp/:mobnum')
-  async reqOTP(
+  /**
+   * Request OTP for a mobile number.
+   * Works for both new users and existing users.
+   */
+  @Post('request/:mobnum')
+  async requestOtp(
     @Param('mobnum') mobnumRaw: string,
   ): Promise<{ success: boolean; message: string }> {
     const mobnum = mobnumRaw.slice(-10);
@@ -27,7 +31,7 @@ export class OtpController {
     );
 
     try {
-      await this.otpService.sendOtpForSignup(mobnum);
+      await this.otpService.sendOtp(mobnum); // Unified OTP send method
       this.logger.log(`OTP sent successfully to: ${mobnum}`);
       return { success: true, message: 'OTP sent successfully' };
     } catch (error: any) {
@@ -42,59 +46,22 @@ export class OtpController {
     }
   }
 
-  @Post('requestOtpReset/:mobnum')
-  async reqOTPReset(
-    @Param('mobnum') mobnumRaw: string,
-  ): Promise<{ success: boolean; message: string }> {
-    const mobnum = mobnumRaw.slice(-10);
-    this.logger.log(
-      `Request OTP Reset called for mobile number ending with: ${mobnum}`,
-    );
-
-    try {
-      await this.otpService.sendOtpForReset(mobnum);
-      this.logger.log(`OTP Reset sent successfully to: ${mobnum}`);
-      return { success: true, message: 'OTP sent successfully' };
-    } catch (error: any) {
-      this.logger.error(
-        `Failed to send OTP Reset to ${mobnum}: ${error.message}`,
-        error.stack,
-      );
-      throw new HttpException(
-        error.message || 'Failed to send OTP',
-        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  // @Post('requestOtpResetAdmin/:mobnum')
-  // async reqOTPResetAdmin(
-  //   @Param('mobnum') mobnumRaw: string,
-  // ): Promise<{ success: boolean; message: string }> {
-  //   const mobnum = mobnumRaw.slice(-10);
-
-  //   try {
-  //     await this.otpService.sendOtpForResetAdmin(mobnum);
-  //     return { success: true, message: 'OTP sent successfully' };
-  //   } catch (error: any) {
-  //     throw new HttpException(
-  //       error.message || 'Failed to send OTP',
-  //       error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-  //     );
-  //   }
-  // }
-
+  /**
+   * Validate OTP and determine if the user is new or existing.
+   */
   @Post('validate/:mobnum/:code')
   async validateOtp(
     @Param('mobnum') mobnumRaw: string,
     @Param('code') code: string,
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ success: boolean; message: string; isNewUser?: boolean }> {
     const mobnum = mobnumRaw.slice(-10);
     this.logger.log(`Validate OTP called for mobile: ${mobnum}, code: ${code}`);
 
     try {
-      await this.otpService.validateOtp(mobnum, code);
-      this.logger.log(`OTP verified successfully for mobile: ${mobnum}`);
+      const isNewUser = await this.otpService.validateOtp(mobnum, code);
+      this.logger.log(
+        `OTP verified successfully for mobile: ${mobnum}. New user: ${isNewUser}`,
+      );
       return { success: true, message: 'OTP verified successfully' };
     } catch (error: any) {
       this.logger.error(

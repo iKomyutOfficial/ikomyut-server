@@ -6,10 +6,10 @@ import { Drivers, DriversSchema } from '../schemas/drivers.schema';
 import { Otp, OtpSchema } from '../schemas/otp.schema';
 import { Users, UsersSchema } from '../schemas/users.schema';
 import { UsersService } from '../users/users.service';
+import { DriversService } from '../driver/driver.service';
 
 @Module({
   imports: [
-    // AdminModule,
     MongooseModule.forFeature([
       { name: Users.name, schema: UsersSchema },
       { name: Drivers.name, schema: DriversSchema },
@@ -17,7 +17,7 @@ import { UsersService } from '../users/users.service';
     ]),
   ],
   controllers: [OtpController],
-  providers: [OtpService, UsersService],
-  exports: [OtpService],
+  providers: [OtpService, UsersService, DriversService],
+  exports: [OtpService], // export so other modules can inject it
 })
 export class OtpModule {}

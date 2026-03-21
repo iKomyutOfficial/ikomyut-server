@@ -6,26 +6,26 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { subHours } from 'date-fns';
-// import { AdminService } from 'src/admin/admin.service';
 import { Otp } from '../schemas/otp.schema';
-import { UsersService } from '../users/users.service';
-import { DriversService } from '../driver/driver.service';
+import { Drivers } from '../schemas/drivers.schema';
+import { Users } from '../schemas/users.schema';
 
 @Injectable()
 export class OtpService {
   constructor(
-    @InjectModel(Otp.name) private otpModel: Model<Otp>,
     private configService: ConfigService,
-    private usersService: UsersService,
-    private driverService: DriversService,
-    // private adminService: AdminService,
+    @InjectModel(Otp.name) private otpModel: Model<Otp>,
+    @InjectModel(Drivers.name) private driverModel: Model<Drivers>,
+    @InjectModel(Users.name) private userModel: Model<Users>,
   ) {}
 
-  async generateAndStoreOtp(mobnum: string): Promise<string> {
+  /**
+   * Generate OTP, store it, and send SMS.
+   */
+  async sendOtp(mobnum: string): Promise<void> {
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
     const now = new Date();
 
-    // Check if OTP record exists
     let otpRecord = await this.otpModel.findOne({ mobnum }).exec();
     const dayAgo = subHours(now, 24).getTime();
 
@@ -63,9 +63,7 @@ export class OtpService {
 
     const msg = `Your 6-digit code is ${otpCode}. Don't share this code with anyone.`;
 
-    // --- Environment-aware SMS sending ---
-    const isProd = this.configService.get('NODE_ENV') === 'production';
-
+    const isProd = this.configService.get('NODE_ENV') === 'productions';
     if (isProd) {
       try {
         const res = await axios.post(
@@ -80,7 +78,6 @@ export class OtpService {
           { headers: { 'Content-Type': 'application/json' } },
         );
 
-        // Only throw error if status !== "ok"
         if (res.data?.status !== 'ok') {
           throw new Error(JSON.stringify(res.data));
         }
@@ -89,9 +86,7 @@ export class OtpService {
       } catch (err: any) {
         console.error('SMS send error:', err.response?.data || err.message);
         throw new HttpException(
-          `Failed to send OTP SMS: ${
-            err.response?.data?.message || err.message
-          }`,
+          `Failed to send OTP SMS: ${err.response?.data?.message || err.message}`,
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
@@ -101,69 +96,15 @@ export class OtpService {
 
     otpRecord.messages.push({ msg, sent: now });
     await otpRecord.save();
-
-    return otpCode;
   }
 
-  async sendOtpForSignup(mobnum: string): Promise<void> {
-    const [foundUser] = await Promise.all([
-      // this.usersService.findUser({ mobnum }),
-      this.driverService.findByMobnum(mobnum),
-    ]);
-
-    if (foundUser) {
-      throw new HttpException(
-        `Mobile number ${mobnum} is already registered.`,
-        HttpStatus.PRECONDITION_FAILED,
-      );
-    }
-
-    const otpCode = await this.generateAndStoreOtp(mobnum);
-    console.log(`OTP sent to ${mobnum}: ${otpCode}`);
-  }
-
-  async sendOtpForReset(mobnum: string): Promise<void> {
-    // Must exist
-    const [foundUser] = await Promise.all([
-      // this.usersService.findUser({ mobnum }),
-      this.driverService.findByMobnum(mobnum),
-    ]);
-
-    if (!foundUser) {
-      throw new HttpException(
-        `Mobile number ${mobnum} is not registered.`,
-        HttpStatus.PRECONDITION_FAILED,
-      );
-    }
-
-    // Generate and send OTP
-    const otpCode = await this.generateAndStoreOtp(mobnum);
-    console.log(`OTP sent to ${mobnum}: ${otpCode}`);
-  }
-
-  // async sendOtpForResetAdmin(mobnum: string): Promise<void> {
-  //   const foundAdmin = await this.adminService.findAdminByMobnum(mobnum);
-
-  //   if (!foundAdmin) {
-  //     throw new HttpException(
-  //       `Admin mobile number ${mobnum} is not registered.`,
-  //       HttpStatus.PRECONDITION_FAILED,
-  //     );
-  //   }
-
-  //   // Optional: block disabled admins
-  //   if (foundAdmin.disabled) {
-  //     throw new HttpException(
-  //       'Admin account is disabled',
-  //       HttpStatus.FORBIDDEN,
-  //     );
-  //   }
-
-  //   const otpCode = await this.generateAndStoreOtp(mobnum);
-  //   console.log(`OTP sent to admin ${mobnum}: ${otpCode}`);
-  // }
-
-  async validateOtp(mobnum: string, code: string): Promise<void> {
+  /**
+   * Validate OTP and return whether user is new or existing.
+   */
+  async validateOtp(
+    mobnum: string,
+    code: string,
+  ): Promise<{ isNewUser: boolean }> {
     const otpRecord = await this.otpModel.findOne({ mobnum }).exec();
 
     if (!otpRecord) {
@@ -173,37 +114,42 @@ export class OtpService {
       );
     }
 
-    // Check expiration (5 minutes)
+    // Expiration check (5 minutes)
     const now = new Date();
     const expiryTime = new Date(otpRecord.createdAt);
     expiryTime.setMinutes(expiryTime.getMinutes() + 5);
 
     if (now > expiryTime) {
-      // Optional: delete expired OTP
       await this.otpModel.deleteOne({ _id: otpRecord._id });
       throw new HttpException('OTP has expired', HttpStatus.BAD_REQUEST);
     }
 
-    // Track failed attempts
+    // Failed attempts
     otpRecord.failedAttempts = otpRecord.failedAttempts ?? 0;
     const MAX_ATTEMPTS = 5;
 
     if (otpRecord.failedAttempts >= MAX_ATTEMPTS) {
       await this.otpModel.deleteOne({ _id: otpRecord._id });
       throw new HttpException(
-        `Maximum OTP attempts exceeded. Please request a new OTP.`,
+        'Maximum OTP attempts exceeded. Please request a new OTP.',
         HttpStatus.TOO_MANY_REQUESTS,
       );
     }
 
-    // Validate code
     if (otpRecord.code !== code) {
       otpRecord.failedAttempts += 1;
       await otpRecord.save();
       throw new HttpException('Invalid OTP!', HttpStatus.BAD_REQUEST);
     }
 
-    // OTP is valid → delete record
     await this.otpModel.deleteOne({ _id: otpRecord._id });
+    const [driver, user] = await Promise.all([
+      this.driverModel.findOne({ mobnum }).exec(),
+      this.userModel.findOne({ mobnum }).exec(),
+    ]);
+
+    const existingUser = driver || user;
+
+    return { isNewUser: !existingUser };
   }
 }

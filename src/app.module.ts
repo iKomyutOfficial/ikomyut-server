@@ -18,6 +18,7 @@ import { TrafficIntensityModule } from './traffic-intensity/traffic-intensity.mo
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import { VersionsModule } from './versions/versions.module';
+import { OtpModule } from './otp/otp.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { VersionsModule } from './versions/versions.module';
     TrafficIntensityModule,
     PeakHourModule,
     VersionsModule,
+    OtpModule,
   ],
   controllers: [AppController],
   providers: [

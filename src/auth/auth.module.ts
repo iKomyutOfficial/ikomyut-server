@@ -7,19 +7,37 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Drivers, DriversSchema } from '../schemas/drivers.schema';
 import { Users, UsersSchema } from '../schemas/users.schema';
 import { Admins, AdminsSchema } from '../schemas/admin.schema';
+import { OtpModule } from '../otp/otp.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule,
+
     MongooseModule.forFeature([
       { name: Admins.name, schema: AdminsSchema },
       { name: Drivers.name, schema: DriversSchema },
       { name: Users.name, schema: UsersSchema },
     ]),
 
-    JwtModule.register({
-      secret: 'SECRET_KEY',
-      signOptions: { expiresIn: '30d' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const secret = configService.get<string>('JWT_SECRET');
+
+        if (!secret) {
+          throw new Error('JWT_SECRET is not defined!');
+        }
+
+        return {
+          secret,
+          signOptions: { expiresIn: '30d' },
+        };
+      },
+      inject: [ConfigService],
     }),
+
+    OtpModule,
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

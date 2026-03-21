@@ -62,9 +62,6 @@ export class Users {
   })
   places!: Location[];
 
-  @Prop({ required: true, select: false })
-  password!: string;
-
   @Prop({ unique: true, sparse: true })
   email?: string;
 
@@ -85,29 +82,6 @@ export class Users {
 
   @Prop()
   authToken?: string;
-
-  @Prop()
-  otp?: string;
-
-  @Prop()
-  otpExpiry?: Date;
-
-  @Prop({ default: false })
-  isVerified?: boolean;
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);
-
-/**
- * Hash password before save
- */
-UsersSchema.pre('save', async function (next) {
-  const user = this as UsersDocument;
-
-  if (!user.isModified('password')) return next();
-
-  const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(user.password, salt);
-
-  next();
-});

@@ -1,12 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { randomInt } from 'crypto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Drivers } from '../schemas/drivers.schema';
 import { Users } from '../schemas/users.schema';
-import * as bcrypt from 'bcrypt';
 import { Admins } from '../schemas/admin.schema';
+import * as bcrypt from 'bcrypt';
+import { OtpService } from '../otp/otp.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -15,78 +15,48 @@ export class AuthService {
     @InjectModel(Users.name) private userModel: Model<Users>,
     @InjectModel(Admins.name) private adminModel: Model<Admins>,
     private jwtService: JwtService,
+    private otpService: OtpService,
   ) {}
 
   // DRIVER / USER OTP
   async requestOtp(mobnum: string) {
-    const otp = randomInt(100000, 999999).toString();
-    const otpExpiry = new Date();
-    otpExpiry.setMinutes(otpExpiry.getMinutes() + 5);
-
-    const driver = await this.driverModel.findOne({ mobnum });
-    const user = await this.userModel.findOne({ mobnum });
-
-    let type: 'driver' | 'user' | 'new' = 'new';
-
-    if (driver) {
-      driver.otp = otp;
-      driver.otpExpiry = otpExpiry;
-      await driver.save();
-      type = 'driver';
-    }
-
-    if (user) {
-      user.otp = otp;
-      user.otpExpiry = otpExpiry;
-      await user.save();
-      type = 'user';
-    }
-
-    console.log('OTP:', otp);
-
-    return {
-      message: 'OTP sent successfully',
-      isRegistered: !!driver || !!user,
-      type,
-    };
+    await this.otpService.sendOtp(mobnum);
+    return { message: 'OTP sent successfully' };
   }
 
   async verifyOtp(mobnum: string, otp: string) {
-    const driver = await this.driverModel.findOne({ mobnum });
-    const user = await this.userModel.findOne({ mobnum });
+    const { isNewUser } = await this.otpService.validateOtp(mobnum, otp);
 
-    const account = driver || user;
-
-    if (!account) {
-      return {
-        requiresRegistration: true,
-        mobnum,
-      };
+    if (isNewUser) {
+      return { requiresRegistration: true, mobnum };
     }
 
-    if (account.otp !== otp) throw new UnauthorizedException('Invalid OTP');
-    if (!account.otpExpiry || account.otpExpiry < new Date())
-      throw new UnauthorizedException('OTP expired');
+    const driver = await this.driverModel.findOne({ mobnum });
+    const user = await this.userModel.findOne({ mobnum });
+    const account: any = driver || user;
 
-    account.isVerified = true;
-    account.otp = undefined;
-    await account.save();
+    if (!account) throw new UnauthorizedException('Account not found');
 
     const payload = {
       sub: account._id,
       mobnum: account.mobnum,
+      email: account.email || null,
       type: driver ? 'driver' : 'user',
     };
 
+    const token = this.jwtService.sign(payload);
+    account.authToken = token;
+    await account.save();
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: token,
       user: account,
     };
   }
 
   // ADMIN LOGIN
   async loginAdmin(username: string, password: string) {
-    const admin = await this.adminModel.findOne({ username });
+    const admin: any = await this.adminModel.findOne({ username });
     if (!admin) throw new UnauthorizedException('Admin not found');
 
     const isMatch = await bcrypt.compare(password, admin.password);
@@ -98,32 +68,13 @@ export class AuthService {
       type: 'admin',
     };
 
-    return {
-      access_token: this.jwtService.sign(payload),
-      admin,
-    };
-  }
+    const token = this.jwtService.sign(payload);
 
-  // REGISTER ADMIN
-  async registerAdmin(data: any) {
-    const existing = await this.adminModel.findOne({ username: data.username });
-    if (existing) throw new UnauthorizedException('Username already exists');
-
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-
-    const admin = await this.adminModel.create({
-      ...data,
-      password: hashedPassword,
-    });
-
-    const payload = {
-      sub: admin._id,
-      username: admin.username,
-      type: 'admin',
-    };
+    admin.authToken = token;
+    await admin.save();
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: token,
       admin,
     };
   }

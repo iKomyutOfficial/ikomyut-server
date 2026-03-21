@@ -6,6 +6,10 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Query,
+  Logger,
+  Req,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -13,15 +17,25 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { CreateDriverDto } from './dto/create-driver.dto';
 import { UpdateDriverDto } from './dto/update-driver.dto';
 import { Drivers } from '../schemas/drivers.schema';
 import { DriversService } from './driver.service';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { PersonalRequirementsDto } from './dto/personal-requirements.dto';
+import { TransportRequirementsDto } from './dto/transport-requirements.dto';
 
-@ApiTags('Drivers') // Groups all endpoints under "Drivers" in Swagger UI
+@ApiTags('Drivers')
 @Controller('drivers')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class DriversController {
+  private readonly logger = new Logger(DriversController.name);
+
   constructor(private readonly driversService: DriversService) {}
 
   @Post()
@@ -33,14 +47,26 @@ export class DriversController {
     type: Drivers,
   })
   create(@Body() createDriverDto: CreateDriverDto): Promise<Drivers> {
+    this.logger.log(`Creating driver`, JSON.stringify(createDriverDto));
     return this.driversService.create(createDriverDto);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all drivers' })
-  @ApiResponse({ status: 200, description: 'List of drivers', type: [Drivers] })
-  findAll(): Promise<Drivers[]> {
-    return this.driversService.findAll();
+  @Roles('admin') // only drivers can access
+  @ApiOperation({ summary: 'Get all users with pagination' })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  findAll(
+    @CurrentUser() user: any,
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+  ) {
+    const mobile = user?.mobnum || 'unknown';
+    const userType = user?.role || 'unknown';
+    this.logger.log(
+      `Mobile ${mobile} w/ type ${userType} fetching drivers, page=${page}, limit=${limit}`,
+    );
+    return this.driversService.findAll(Number(page), Number(limit));
   }
 
   @Get(':id')
@@ -49,6 +75,7 @@ export class DriversController {
   @ApiResponse({ status: 200, description: 'Driver found', type: Drivers })
   @ApiResponse({ status: 404, description: 'Driver not found' })
   findOne(@Param('id') id: string): Promise<Drivers> {
+    this.logger.log(`Fetching driver by ID`, id);
     return this.driversService.findOne(id);
   }
 
@@ -66,6 +93,11 @@ export class DriversController {
     @Param('id') id: string,
     @Body() updateDriverDto: UpdateDriverDto,
   ): Promise<Drivers> {
+    this.logger.log(
+      `Updating driver`,
+      `id=${id}`,
+      JSON.stringify(updateDriverDto),
+    );
     return this.driversService.update(id, updateDriverDto);
   }
 
@@ -75,26 +107,30 @@ export class DriversController {
   @ApiResponse({ status: 200, description: 'Driver deleted successfully' })
   @ApiResponse({ status: 404, description: 'Driver not found' })
   remove(@Param('id') id: string): Promise<void> {
+    this.logger.warn(`Deleting driver`, id);
     return this.driversService.remove(id);
   }
 
-  @Get('mobile/:mobnum')
-  @ApiOperation({ summary: 'Find driver by mobile number' })
-  @ApiParam({
-    name: 'mobnum',
-    description: 'Driver mobile number',
-    example: '09123456789',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Driver found',
-    type: Drivers,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Driver not found',
-  })
-  findByMobnum(@Param('mobnum') mobnum: string) {
-    return this.driversService.findByMobnum(mobnum);
+  @Patch(':id/personal-requirements')
+  @ApiOperation({ summary: 'Update personal requirements' })
+  @ApiBody({ type: PersonalRequirementsDto })
+  updatePersonal(
+    @Param('id') id: string,
+    @Body() body: Partial<PersonalRequirementsDto>, // allow partial updates
+  ) {
+    this.logger.log(
+      `PATCH personal requirements for driver ${id}: ${JSON.stringify(body)}`,
+    );
+    return this.driversService.updatePersonalRequirements(id, body);
+  }
+
+  @Patch(':id/transport-requirements')
+  @ApiOperation({ summary: 'Update transport requirements' })
+  @ApiBody({ type: TransportRequirementsDto })
+  updateTransport(@Param('id') id: string, @Body() body: any) {
+    this.logger.log(
+      `PATCH transport requirements for driver ${id}: ${JSON.stringify(body)}`,
+    );
+    return this.driversService.updateTransportRequirements(id, body);
   }
 }
