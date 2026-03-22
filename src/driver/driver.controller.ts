@@ -30,6 +30,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { PersonalRequirementsDto } from './dto/personal-requirements.dto';
 import { TransportRequirementsDto } from './dto/transport-requirements.dto';
+import { UpdateDriverStatusDto } from '../admin/dto/update-driver.dto';
 
 @ApiTags('Drivers')
 @Controller('drivers')
@@ -54,8 +55,8 @@ export class DriversController {
   }
 
   @Get()
-  @Roles('admin') // only drivers can access
-  @ApiOperation({ summary: 'Get all users with pagination' })
+  @Roles('admin', 'driver')
+  @ApiOperation({ summary: 'Get all drivers with pagination' })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   findAll(
@@ -72,6 +73,7 @@ export class DriversController {
   }
 
   @Get(':id')
+  @Roles('admin', 'driver')
   @ApiOperation({ summary: 'Get a driver by ID' })
   @ApiParam({ name: 'id', description: 'Driver unique ID' })
   @ApiResponse({ status: 200, description: 'Driver found', type: Drivers })
@@ -82,6 +84,7 @@ export class DriversController {
   }
 
   @Patch(':id')
+  @Roles('admin', 'driver')
   @ApiOperation({ summary: 'Update a driver by ID' })
   @ApiParam({ name: 'id', description: 'Driver unique ID' })
   @ApiBody({ type: UpdateDriverDto })
@@ -104,6 +107,7 @@ export class DriversController {
   }
 
   @Delete(':id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Delete a driver by ID' })
   @ApiParam({ name: 'id', description: 'Driver unique ID' })
   @ApiResponse({ status: 200, description: 'Driver deleted successfully' })
@@ -114,6 +118,7 @@ export class DriversController {
   }
 
   @Patch(':id/personal-requirements')
+  @Roles('admin', 'driver')
   @ApiOperation({ summary: 'Update personal requirements' })
   @ApiBody({ type: PersonalRequirementsDto })
   updatePersonal(
@@ -127,6 +132,7 @@ export class DriversController {
   }
 
   @Patch(':id/transport-requirements')
+  @Roles('admin', 'driver')
   @ApiOperation({ summary: 'Update transport requirements' })
   @ApiBody({ type: TransportRequirementsDto })
   updateTransport(@Param('id') id: string, @Body() body: any) {
@@ -134,5 +140,16 @@ export class DriversController {
       `PATCH transport requirements for driver ${id}: ${JSON.stringify(body)}`,
     );
     return this.driversService.updateTransportRequirements(id, body);
+  }
+
+  @Patch(':id/status')
+  async updateStatus(
+    @Param('id') id: string,
+    @Body() statusDto: UpdateDriverStatusDto,
+    @Req() req,
+  ): Promise<Drivers> {
+    const userId = req.user.username;
+    this.logger.warn(`Updating status id=${id} -> ${statusDto.status}`);
+    return this.driversService.updateStatus(id, statusDto.status, userId);
   }
 }

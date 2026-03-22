@@ -19,6 +19,7 @@ import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import { VersionsModule } from './versions/versions.module';
 import { OtpModule } from './otp/otp.module';
+import { BookingsModule } from './bookings/bookings.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { OtpModule } from './otp/otp.module';
     PeakHourModule,
     VersionsModule,
     OtpModule,
+    BookingsModule,
   ],
   controllers: [AppController],
   providers: [

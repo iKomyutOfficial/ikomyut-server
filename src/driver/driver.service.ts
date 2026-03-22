@@ -101,4 +101,22 @@ export class DriversService {
       { new: true },
     );
   }
+
+  async updateStatus(
+    id: string,
+    status: string,
+    updatedBy: string,
+  ): Promise<Drivers> {
+    const driver = await this.driverModel.findByIdAndUpdate(
+      id,
+      { status, updatedBy },
+      { new: true },
+    );
+
+    if (!driver) {
+      throw new NotFoundException(`Driver with ID ${id} not found`);
+    }
+
+    return driver;
+  }
 }

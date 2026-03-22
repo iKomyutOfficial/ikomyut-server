@@ -212,37 +212,6 @@ export class AdminService {
     }
     return driver;
   }
-  // Update Driver Status
-  async updateDriverStatus(
-    id: string,
-    statusDto: UpdateDriverStatusDto,
-  ): Promise<Drivers> {
-    const updateData: Partial<Drivers> = {
-      status: statusDto.status,
-      isLogged: false,
-      fcmToken: '',
-    };
-
-    // Include updatedBy if provided
-    if (statusDto.updatedBy) {
-      updateData.updatedBy = statusDto.updatedBy;
-    }
-
-    const updatedDriver = await this.driverModel
-      .findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
-      .exec();
-
-    if (!updatedDriver) {
-      throw new NotFoundException(`Driver with ID ${id} not found`);
-    }
-
-    return updatedDriver;
-  }
-
-  // Fetch all Riders
-  async getAllRiders(): Promise<Users[]> {
-    return this.userModel.find().exec();
-  }
 
   // Fetch Rider by ID
   async getRiderById(id: string): Promise<Users> {

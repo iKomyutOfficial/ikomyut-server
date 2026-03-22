@@ -3,42 +3,26 @@ import { Document } from 'mongoose';
 
 export type BookingsDocument = Bookings & Document;
 
-@Schema({
-  collection: 'Bookings',
-  timestamps: true,
-  toJSON: {
-    transform: (_, ret: any) => {
-      delete ret.__v;
-      return ret;
-    },
-  },
-})
+// Helper function to generate random 10 uppercase letters
+function generateReferenceNumber(): string {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 0; i < 10; i++) {
+    result += letters.charAt(Math.floor(Math.random() * letters.length));
+  }
+  return result;
+}
+
+@Schema({ timestamps: true, collection: 'Bookings' })
 export class Bookings {
-  @Prop({
-    type: String,
-    required: true,
-    index: true,
-  })
+  @Prop({ required: true })
   riderId!: string;
 
-  @Prop({
-    type: String,
-    index: true,
-  })
+  @Prop()
   driverId?: string;
 
-  @Prop({
-    type: {
-      baseFare: Number,
-      serviceFee: Number,
-      fareDistanceInKM: Number,
-      fareDurationInMins: Number,
-      costPerKM: Number,
-      costPerMin: Number,
-    },
-    default: {},
-  })
-  computations?: {
+  @Prop({ type: Object })
+  computations!: {
     baseFare: number;
     serviceFee: number;
     fareDistanceInKM: number;
@@ -47,78 +31,68 @@ export class Bookings {
     costPerMin: number;
   };
 
-  @Prop({
-    type: {
-      name: String,
-      type: { type: String, default: 'Point' },
-      coordinates: [Number],
-    },
-    required: true,
-  })
+  @Prop({ required: true, default: 'active' })
+  status!: string;
+
+  @Prop({ required: true, default: () => new Date().toDateString() })
+  timestamp!: string;
+
+  @Prop({ required: true })
+  travelFare!: number;
+
+  @Prop({ default: 0 })
+  tripStatus!: number;
+
+  @Prop()
+  cancelledBy?: string;
+
+  @Prop({ type: Object })
   origin!: {
     name: string;
     type: string;
-    coordinates: number[];
+    coordinates: [number, number];
   };
 
-  @Prop({
-    type: {
-      name: String,
-      type: { type: String, default: 'Point' },
-      coordinates: [Number],
-    },
-    required: true,
-  })
+  @Prop({ type: Object })
   destination!: {
     name: string;
     type: string;
-    coordinates: number[];
+    coordinates: [number, number];
   };
 
-  @Prop({ type: Number })
+  @Prop({ type: Object })
+  driverLoc!: {
+    name: string;
+    type: string;
+    coordinates: [number, number];
+  };
+
+  @Prop({ type: [Number], default: [] })
+  driverRating!: number[];
+
+  @Prop()
+  discount?: number;
+
+  @Prop()
+  systemShare?: number;
+
+  @Prop()
   pickupFare?: number;
 
-  @Prop({ type: Number })
-  travelFare?: number;
+  @Prop()
+  incentives?: number;
 
-  @Prop({ default: '' })
+  @Prop({ default: () => generateReferenceNumber(), unique: true })
+  referenceNumber!: string;
+
+  @Prop()
+  seatType?: string;
+
+  @Prop()
+  paymentMethod?: string;
+
+  @Prop()
   notes?: string;
-
-  @Prop({
-    type: [Number],
-    default: [],
-  })
-  driverRating?: number[];
-
-  @Prop({
-    type: String,
-    enum: ['inactive', 'active', 'cancelled', 'booked', 'finished'],
-    default: 'active',
-  })
-  status!: string;
-
-  @Prop({ type: String })
-  timestamp?: string;
-
-  @Prop({ default: 0 })
-  tripStatus?: number;
-
-  @Prop({
-    type: String,
-    enum: ['driver', 'rider'],
-  })
-  cancelledBy?: string;
-
-  @Prop({
-    type: {
-      lat: Number,
-      lng: Number,
-    },
-  })
-  driverLoc?: {
-    lat: number;
-    lng: number;
-  };
 }
 
 export const BookingsSchema = SchemaFactory.createForClass(Bookings);

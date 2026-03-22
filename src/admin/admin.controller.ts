@@ -6,8 +6,17 @@ import {
   UseGuards,
   Param,
   Patch,
+  Delete,
+  Logger,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AdminService } from './admin.service';
 import { Drivers } from '../schemas/drivers.schema';
 import { DriversService } from '../driver/driver.service';
@@ -19,26 +28,24 @@ import { UpdateAdminDto } from './dto/update-admin.dto';
 import { UpdateDriverStatusDto } from './dto/update-driver.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UpdateDriverDto } from '../driver/dto/update-driver.dto';
 
 @ApiTags('Admin')
 @Controller('admin')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiBearerAuth('access-token')
 export class AdminController {
+  private readonly logger = new Logger(AdminController.name);
+
   constructor(
     private readonly adminService: AdminService,
-    // private readonly mobileService: MobileService,
     private readonly driversService: DriversService,
   ) {}
 
   @Post('new-admin')
   register(@Body() dto: RegisterAdminDto) {
     return this.adminService.register(dto);
-  }
-
-  @Post('login')
-  login(@Body() dto: LoginAdminDto) {
-    return this.adminService.login(dto);
   }
 
   @Get('employees')
@@ -61,22 +68,5 @@ export class AdminController {
     @Body() changePasswordDto: ChangePasswordDto,
   ) {
     return this.adminService.changePassword(id, changePasswordDto);
-  }
-
-  // @UseGuards(ApiKeyGuard)
-  @Patch(':id/status')
-  async updateStatus(
-    @Param('id') id: string,
-    @Body() statusDto: UpdateDriverStatusDto,
-  ): Promise<Drivers> {
-    return this.adminService.updateDriverStatus(id, statusDto);
-  }
-
-  @Post('new-driver')
-  @ApiOperation({ summary: 'Create a new driver by admin' })
-  @ApiBody({ type: CreateDriverDto })
-  @ApiResponse({ status: 201, description: 'Driver successfully created' })
-  create(@Body() dto: CreateDriverDto) {
-    return this.driversService.create(dto);
   }
 }
