@@ -152,4 +152,48 @@ export class OtpService {
 
     return { isNewUser: !existingUser };
   }
+
+  /**
+   * Send custom SMS message
+   */
+  async sendCustomSms(mobnum: string, text: string): Promise<void> {
+    if (!text || text.trim().length === 0) {
+      throw new HttpException(
+        'Message cannot be empty',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    
+    const isProd = this.configService.get('NODE_ENV') === 'production';
+
+    if (isProd) {
+      try {
+        const res = await axios.post(
+          'https://api.promotexter.com/sms/send',
+          {
+            apiKey: this.configService.get('SMS_API_KEY'),
+            apiSecret: this.configService.get('SMS_API_SECRET'),
+            from: this.configService.get('SMS_SENDER_MASK'),
+            to: `0${mobnum.slice(-10)}`,
+            text,
+          },
+          { headers: { 'Content-Type': 'application/json' } },
+        );
+
+        if (res.data?.status !== 'ok') {
+          throw new Error(JSON.stringify(res.data));
+        }
+
+        console.log('Custom SMS sent:', res.data);
+      } catch (err: any) {
+        console.error('Custom SMS error:', err.response?.data || err.message);
+        throw new HttpException(
+          `Failed to send SMS: ${err.response?.data?.message || err.message}`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    } else {
+      console.log(`[DEV MODE] SMS to ${mobnum}: ${text}`);
+    }
+  }
 }

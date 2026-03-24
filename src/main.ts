@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import basicAuth from 'express-basic-auth';
+const basicAuth = require('express-basic-auth');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,7 +17,7 @@ async function bootstrap() {
         'http://localhost:2099',
         'http://localhost:3000',
         'http://localhost:8080',
-        'https://ipick-server-app-873909369714.asia-southeast1.run.app'
+        'https://ipick-server-app-873909369714.asia-southeast1.run.app',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
@@ -80,6 +80,7 @@ async function bootstrap() {
   // app.setGlobalPrefix('v1');
 
   const port = process.env.PORT || 8080;
+  await app.listen(port, '0.0.0.0');
   await app.listen(port);
   console.log(`Server is running on http://localhost:${port}`);
   console.log(`Swagger UI is available at http://localhost:${port}/api`);
