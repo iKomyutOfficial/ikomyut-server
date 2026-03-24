@@ -1,0 +1,40 @@
+{
+  "insertId": "69c23d6f000cf474377041ef",
+  "httpRequest": {
+    "requestMethod": "POST",
+    "requestUrl": "https://ipick-server-app-667662506856.asia-southeast1.run.app/auth/request-otp",
+    "requestSize": "967",
+    "status": 500,
+    "responseSize": "250",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+    "remoteIp": "112.200.166.8",
+    "referer": "https://ipick-server-app-667662506856.asia-southeast1.run.app/api",
+    "serverIp": "34.143.74.2",
+    "latency": "0.012860712s",
+    "protocol": "HTTP/1.1"
+  },
+  "resource": {
+    "type": "cloud_run_revision",
+    "labels": 
+      "configuration_name": "ipick-server-app",
+      "location": "asia-southeast1",
+      "project_id": "ipick-server",
+      "revision_name": "ipick-server-app-00005-r42",
+      "service_name": "ipick-server-app"
+    }
+  },
+  "timestamp": "2026-03-24T07:29:51.834412Z",
+  "severity": "ERROR",
+  "labels": {
+    "gcb-trigger-region": "global",
+    "gcb-trigger-id": "fdfa8fd5-67c0-4f4d-939c-13a3d0800f38",
+    "gcb-build-id": "49953e47-b148-45dc-91a3-4f8077ed26ba",
+    "instanceId": "008c15ff08a747d13931ecafb497dc1fa222e813067877e27775085567d8f58fdcd081d87d13746b66c1e43503127373e6cf07901e860f1bd560d7ce377c444358c2f1c28b32912b652551826d4da878",
+    "commit-sha": "f1d387924707d4110d8aa89897eedd169e7f406c",
+    "managed-by": "gcp-cloud-build-deploy-cloud-run"
+  },
+  "logName": "projects/ipick-server/logs/run.googleapis.com%2Frequests",
+  "trace": "projects/ipick-server/traces/ef94b8859513621c68f6e667583d82bf",
+  "receiveTimestamp": "2026-03-24T07:29:52.068103526Z",
+  "spanId": "f18cf4c8faef9a08"
+}
