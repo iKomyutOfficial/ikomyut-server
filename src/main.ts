@@ -1,11 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import basicAuth from 'express-basic-auth';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Enable route-level versioning
+  app.enableVersioning({
+    type: VersioningType.URI, // versions in URL, e.g., /v1/... or /v2/...
+    defaultVersion: '1', // default version if not specified
+  });
 
   // Enable CORS
   app.enableCors({
@@ -17,7 +23,7 @@ async function bootstrap() {
         'http://localhost:2099',
         'http://localhost:3000',
         'http://localhost:8080',
-        'https://ipick-server-app-873909369714.asia-southeast1.run.app'
+        'https://ipick-server-app-873909369714.asia-southeast1.run.app',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
@@ -32,16 +38,16 @@ async function bootstrap() {
   // Global Validation Pipe
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Strip unknown properties
-      forbidNonWhitelisted: true, // Throw error if extra fields are sent
-      transform: true, // Auto-transform payloads to DTO instances
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
   // Swagger setup
   const swaggerConfig = new DocumentBuilder()
     .setTitle('iPick API')
-    .setDescription('API documentation')
+    .setDescription('IPICK API Documentation')
     .setVersion('1.0')
     .addBearerAuth(
       {
@@ -69,15 +75,9 @@ async function bootstrap() {
     );
   }
 
-  // Serve Swagger UI
   SwaggerModule.setup('api', app, swaggerDocument, {
-    swaggerOptions: {
-      tagsSorter: 'alpha',
-    },
+    swaggerOptions: { tagsSorter: 'alpha' },
   });
-
-  // Set a global API prefix if needed (e.g., 'v1')
-  // app.setGlobalPrefix('v1');
 
   const port = process.env.PORT || 8080;
   await app.listen(port);
