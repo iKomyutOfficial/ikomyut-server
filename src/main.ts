@@ -32,16 +32,16 @@ async function bootstrap() {
   // Global Validation Pipe
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Strip unknown properties
-      forbidNonWhitelisted: true, // Throw error if extra fields are sent
-      transform: true, // Auto-transform payloads to DTO instances
+      whitelist: true, 
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
   // Swagger setup
   const swaggerConfig = new DocumentBuilder()
     .setTitle('iPick API')
-    .setDescription('API documentation')
+    .setDescription('IPICK API Documentation')
     .setVersion('1.0')
     .addBearerAuth(
       {
