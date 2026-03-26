@@ -28,20 +28,8 @@ export class UsersService {
     return user.save();
   }
 
-  async findAll(page = 1, limit = 10) {
-    const skip = (page - 1) * limit;
-
-    const [data, total] = await Promise.all([
-      this.userModel.find().skip(skip).limit(limit).lean(),
-      this.userModel.countDocuments(),
-    ]);
-
-    return {
-      total,
-      page,
-      limit,
-      data,
-    };
+  async findAll(): Promise<Users[]> {
+    return this.userModel.find().exec();
   }
 
   async findOne(id: string): Promise<Users> {

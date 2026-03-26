@@ -6,7 +6,6 @@ export class CreateTnvsConfigurationDto {
     example: 'TC001',
     description: 'Custom identifier for the TNVS configuration record',
   })
-  @IsOptional()
   @IsString()
   id?: string;
 
@@ -59,6 +58,13 @@ export class CreateTnvsConfigurationDto {
   })
   @IsNumber()
   maxSurge!: number;
+
+  @ApiProperty({
+    example: 15,
+    description: 'Pickup Fare per Km',
+  })
+  @IsNumber()
+  pickupFee!: number;
 
   @ApiProperty({
     example: 1,

@@ -69,12 +69,12 @@ export class VersionsController {
     return this.versionsService.update(id, updateVersionDto);
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete a version by ID' })
-  @ApiParam({ name: 'id', description: 'Version ID' })
-  @ApiResponse({ status: 200, description: 'Version deleted.', type: Versions })
-  @ApiResponse({ status: 404, description: 'Version not found.' })
-  remove(@Param('id') id: string): Promise<Versions> {
-    return this.versionsService.remove(id);
-  }
+  // @Delete(':id')
+  // @ApiOperation({ summary: 'Delete a version by ID' })
+  // @ApiParam({ name: 'id', description: 'Version ID' })
+  // @ApiResponse({ status: 200, description: 'Version deleted.', type: Versions })
+  // @ApiResponse({ status: 404, description: 'Version not found.' })
+  // remove(@Param('id') id: string): Promise<Versions> {
+  //   return this.versionsService.remove(id);
+  // }
 }

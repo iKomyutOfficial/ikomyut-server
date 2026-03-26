@@ -1,10 +1,10 @@
 import {
-  BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import {
   TnvsConfiguration,
   TnvsConfigurationDocument,
@@ -16,81 +16,66 @@ import { UpdateTnvsConfigurationDto } from './dto/update-tnvs-configuration.dto'
 export class TnvsConfigurationService {
   constructor(
     @InjectModel(TnvsConfiguration.name)
-    private readonly tnvsConfigurationModel: Model<TnvsConfigurationDocument>,
+    private readonly tnvsModel: Model<TnvsConfigurationDocument>,
   ) {}
 
   async create(
-    createTnvsConfigurationDto: CreateTnvsConfigurationDto,
+    createDto: CreateTnvsConfigurationDto,
   ): Promise<TnvsConfiguration> {
-    const createdTnvsConfiguration = new this.tnvsConfigurationModel(
-      createTnvsConfigurationDto,
-    );
-    return createdTnvsConfiguration.save();
+    try {
+      return await this.tnvsModel.create(createDto);
+    } catch (error) {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as any).code === 11000
+      ) {
+        throw new ConflictException(
+          `Configuration with id ${createDto.id} already exists`,
+        );
+      }
+
+      throw error;
+    }
   }
 
   async findAll(): Promise<TnvsConfiguration[]> {
-    return this.tnvsConfigurationModel.find().exec();
+    return this.tnvsModel.find().exec();
   }
 
-  private validateObjectId(objectId: string) {
-    if (!Types.ObjectId.isValid(objectId)) {
-      throw new BadRequestException(
-        `Invalid ObjectId format: "${objectId}"`,
-      );
-    }
-  }
+  async findOne(id: string): Promise<TnvsConfiguration> {
+    const record = await this.tnvsModel.findById(id).exec();
 
-  async findOne(objectId: string): Promise<TnvsConfiguration> {
-    this.validateObjectId(objectId);
-
-    const tnvsConfiguration = await this.tnvsConfigurationModel
-      .findById(objectId)
-      .exec();
-
-    if (!tnvsConfiguration) {
-      throw new NotFoundException(
-        `TnvsConfiguration with objectId "${objectId}" not found`,
-      );
+    if (!record) {
+      throw new NotFoundException(`Configuration with id ${id} not found`);
     }
 
-    return tnvsConfiguration;
+    return record;
   }
 
   async update(
-    objectId: string,
-    updateTnvsConfigurationDto: UpdateTnvsConfigurationDto,
+    id: string,
+    updateDto: UpdateTnvsConfigurationDto,
   ): Promise<TnvsConfiguration> {
-    this.validateObjectId(objectId);
-
-    const updatedTnvsConfiguration = await this.tnvsConfigurationModel
-      .findByIdAndUpdate(objectId, updateTnvsConfigurationDto, {
-        new: true,
-        runValidators: true,
-      })
+    const updated = await this.tnvsModel
+      .findByIdAndUpdate(id, updateDto, { new: true })
       .exec();
 
-    if (!updatedTnvsConfiguration) {
-      throw new NotFoundException(
-        `TnvsConfiguration with objectId "${objectId}" not found`,
-      );
+    if (!updated) {
+      throw new NotFoundException(`Configuration with id ${id} not found`);
     }
 
-    return updatedTnvsConfiguration;
+    return updated;
   }
 
-  async remove(objectId: string): Promise<{ message: string }> {
-    this.validateObjectId(objectId);
+  async remove(id: string): Promise<{ message: string }> {
+    const deleted = await this.tnvsModel.findByIdAndDelete(id).exec();
 
-    const deletedTnvsConfiguration = await this.tnvsConfigurationModel
-      .findByIdAndDelete(objectId)
-      .exec();
-
-    if (!deletedTnvsConfiguration) {
-      throw new NotFoundException(
-        `TnvsConfiguration with objectId "${objectId}" not found`,
-      );
+    if (!deleted) {
+      throw new NotFoundException(`Configuration with id ${id} not found`);
     }
 
-    return { message: 'TnvsConfiguration deleted successfully' };
+    return { message: 'Deleted successfully' };
   }
 }

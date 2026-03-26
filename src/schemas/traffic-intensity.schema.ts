@@ -7,9 +7,6 @@ export class TrafficIntensity {
   id!: string;
 
   @Prop()
-  _v!: number;
-
-  @Prop()
   intensityLevel!: string;
 
   @Prop()
@@ -23,12 +20,6 @@ export class TrafficIntensity {
 
   @Prop()
   timestamp!: string;
-
-  @Prop()
-  createdBy!: string;
-
-  @Prop()
-  updatedAt!: string;
 
   @Prop()
   modifiedBy!: string;

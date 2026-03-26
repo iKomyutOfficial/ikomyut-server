@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
   Logger,
   Req,
 } from '@nestjs/common';
@@ -17,7 +16,6 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
-  ApiQuery,
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { CreateDriverDto } from './dto/create-driver.dto';
@@ -56,20 +54,14 @@ export class DriversController {
 
   @Get()
   @Roles('admin', 'driver')
-  @ApiOperation({ summary: 'Get all drivers with pagination' })
-  @ApiQuery({ name: 'page', required: false })
-  @ApiQuery({ name: 'limit', required: false })
-  findAll(
-    @CurrentUser() user: any,
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-  ) {
+  @ApiOperation({ summary: 'Get all drivers' })
+  findAll(@CurrentUser() user: any) {
     const mobile = user?.mobnum || 'unknown';
     const userType = user?.role || 'unknown';
     this.logger.log(
-      `Mobile ${mobile} w/ type ${userType} fetching drivers, page=${page}, limit=${limit}`,
+      `Mobile ${mobile} w/ type ${userType} fetching all drivers`,
     );
-    return this.driversService.findAll(Number(page), Number(limit));
+    return this.driversService.findAll(); 
   }
 
   @Get(':id')
@@ -106,16 +98,16 @@ export class DriversController {
     return this.driversService.update(id, updateDriverDto);
   }
 
-  @Delete(':id')
-  @Roles('admin')
-  @ApiOperation({ summary: 'Delete a driver by ID' })
-  @ApiParam({ name: 'id', description: 'Driver unique ID' })
-  @ApiResponse({ status: 200, description: 'Driver deleted successfully' })
-  @ApiResponse({ status: 404, description: 'Driver not found' })
-  remove(@Param('id') id: string): Promise<void> {
-    this.logger.warn(`Deleting driver`, id);
-    return this.driversService.remove(id);
-  }
+  // @Delete(':id')
+  // @Roles('admin')
+  // @ApiOperation({ summary: 'Delete a driver by ID' })
+  // @ApiParam({ name: 'id', description: 'Driver unique ID' })
+  // @ApiResponse({ status: 200, description: 'Driver deleted successfully' })
+  // @ApiResponse({ status: 404, description: 'Driver not found' })
+  // remove(@Param('id') id: string): Promise<void> {
+  //   this.logger.warn(`Deleting driver`, id);
+  //   return this.driversService.remove(id);
+  // }
 
   @Patch(':id/personal-requirements')
   @Roles('admin', 'driver')

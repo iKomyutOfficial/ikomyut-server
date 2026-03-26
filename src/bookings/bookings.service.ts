@@ -35,7 +35,7 @@ export class BookingsService {
     if (!booking) {
       throw new NotFoundException(`Booking with ID ${id} not found`);
     }
-    
+
     this.bookingsGateway.emitBookingUpdate(booking);
     if (status === 1) {
       this.bookingsGateway.emitBookingActive(booking);
@@ -45,23 +45,15 @@ export class BookingsService {
   }
 
   /** Find all bookings with pagination */
-  async findAll(
-    page = 1,
-    limit = 10,
-  ): Promise<{ total: number; page: number; limit: number; data: Bookings[] }> {
+  async findAll(page: number, limit: number): Promise<Bookings[]> {
     const skip = (page - 1) * limit;
 
-    const [data, total] = await Promise.all([
-      this.bookingModel.find().skip(skip).limit(limit).lean(),
-      this.bookingModel.countDocuments(),
-    ]);
-
-    return {
-      total,
-      page,
-      limit,
-      data,
-    };
+    return this.bookingModel
+      .find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec();
   }
 
   /** Find one booking by ID */

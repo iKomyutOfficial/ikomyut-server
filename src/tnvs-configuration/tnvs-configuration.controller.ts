@@ -1,113 +1,57 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
-  Param,
-  Patch,
   Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+  Patch,
 } from '@nestjs/common';
-import {
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
 import { TnvsConfigurationService } from './tnvs-configuration.service';
 import { CreateTnvsConfigurationDto } from './dto/create-tnvs-configuration.dto';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UpdateTnvsConfigurationDto } from './dto/update-tnvs-configuration.dto';
 
-@ApiTags('Tnvs Configuration')
+@ApiTags('tnvs-configuration')
 @Controller('tnvs-configuration')
 export class TnvsConfigurationController {
-  constructor(
-    private readonly tnvsConfigurationService: TnvsConfigurationService,
-  ) {}
+  constructor(private readonly tnvsService: TnvsConfigurationService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a TNVS configuration record' })
-  @ApiResponse({
-    status: 201,
-    description: 'TNVS configuration record created successfully',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid request payload',
-  })
-  create(@Body() createTnvsConfigurationDto: CreateTnvsConfigurationDto) {
-    return this.tnvsConfigurationService.create(createTnvsConfigurationDto);
+  @ApiOperation({ summary: 'Create TNVS configuration' })
+  @ApiResponse({ status: 201, description: 'Created successfully' })
+  create(@Body() createDto: CreateTnvsConfigurationDto) {
+    return this.tnvsService.create(createDto);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all TNVS configuration records' })
-  @ApiResponse({
-    status: 200,
-    description: 'TNVS configuration records retrieved successfully',
-  })
+  @ApiOperation({ summary: 'Get all configurations' })
   findAll() {
-    return this.tnvsConfigurationService.findAll();
+    return this.tnvsService.findAll();
   }
 
-  @Get(':objectId')
-  @ApiOperation({ summary: 'Get one TNVS configuration record by ObjectId' })
-  @ApiParam({
-    name: 'objectId',
-    description: 'MongoDB ObjectId of the TnvsConfiguration document',
-    example: '67d01f2a8c3b2e1a9f4d1234',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'TNVS configuration record retrieved successfully',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'TNVS configuration record not found',
-  })
-  findOne(@Param('objectId') objectId: string) {
-    return this.tnvsConfigurationService.findOne(objectId);
+  @Get(':id')
+  @ApiOperation({ summary: 'Get configuration by ID' })
+  @ApiParam({ name: 'id', type: String })
+  findOne(@Param('id') id: string) {
+    return this.tnvsService.findOne(id);
   }
 
-  @Patch(':objectId')
-  @ApiOperation({ summary: 'Update one TNVS configuration record by ObjectId' })
-  @ApiParam({
-    name: 'objectId',
-    description: 'MongoDB ObjectId of the TnvsConfiguration document',
-    example: '67d01f2a8c3b2e1a9f4d1234',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'TNVS configuration record updated successfully',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'TNVS configuration record not found',
-  })
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update configuration' })
+  @ApiParam({ name: 'id', type: String })
   update(
-    @Param('objectId') objectId: string,
-    @Body() updateTnvsConfigurationDto: UpdateTnvsConfigurationDto,
+    @Param('id') id: string,
+    @Body() updateDto: UpdateTnvsConfigurationDto,
   ) {
-    return this.tnvsConfigurationService.update(
-      objectId,
-      updateTnvsConfigurationDto,
-    );
+    return this.tnvsService.update(id, updateDto);
   }
 
-  @Delete(':objectId')
-  @ApiOperation({ summary: 'Delete one TNVS configuration record by ObjectId' })
-  @ApiParam({
-    name: 'objectId',
-    description: 'MongoDB ObjectId of the TnvsConfiguration document',
-    example: '67d01f2a8c3b2e1a9f4d1234',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'TNVS configuration record deleted successfully',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'TNVS configuration record not found',
-  })
-  remove(@Param('objectId') objectId: string) {
-    return this.tnvsConfigurationService.remove(objectId);
-  }
+  // @Delete(':id')
+  // @ApiOperation({ summary: 'Delete configuration' })
+  // @ApiParam({ name: 'id', type: String })
+  // remove(@Param('id') id: string) {
+  //   return this.tnvsService.remove(id);
+  // }
 }

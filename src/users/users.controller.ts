@@ -6,18 +6,24 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
   Logger,
+  UseGuards,
 } from '@nestjs/common';
 
-import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../auth/roles.guard';
 
 @ApiTags('Users')
 @Controller('users')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class UsersController {
   private readonly logger = new Logger(UsersController.name);
 
@@ -33,12 +39,15 @@ export class UsersController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all users with pagination' })
-  @ApiQuery({ name: 'page', required: false })
-  @ApiQuery({ name: 'limit', required: false })
-  findAll(@Query('page') page = 1, @Query('limit') limit = 10) {
-    this.logger.log(`Fetching users - page: ${page}, limit: ${limit}`);
-    return this.usersService.findAll(Number(page), Number(limit));
+  @Roles('admin', 'user')
+  @ApiOperation({ summary: 'Get all drivers' })
+  findAll(@CurrentUser() user: any) {
+    const mobile = user?.mobnum || 'unknown';
+    const userType = user?.role || 'unknown';
+    this.logger.log(
+      `Mobile ${mobile} w/ type ${userType} fetching all drivers`,
+    );
+    return this.usersService.findAll();
   }
 
   @Get(':id')
@@ -57,10 +66,10 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete user' })
-  remove(@Param('id') id: string) {
-    this.logger.warn(`Deleting user with id: ${id}`);
-    return this.usersService.remove(id);
-  }
+  // @Delete(':id')
+  // @ApiOperation({ summary: 'Delete user' })
+  // remove(@Param('id') id: string) {
+  //   this.logger.warn(`Deleting user with id: ${id}`);
+  //   return this.usersService.remove(id);
+  // }
 }

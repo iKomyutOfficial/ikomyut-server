@@ -36,9 +36,9 @@ export class TimeMatrixController {
     return this.timeMatrixService.update(id, updateDto);
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete entry' })
-  remove(@Param('id') id: string) {
-    return this.timeMatrixService.remove(id);
-  }
+  // @Delete(':id')
+  // @ApiOperation({ summary: 'Delete entry' })
+  // remove(@Param('id') id: string) {
+  //   return this.timeMatrixService.remove(id);
+  // }
 }

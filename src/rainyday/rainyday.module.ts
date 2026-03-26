@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RainyDaySurchargeController } from './rainy-day-surcharge.controller';
-import { RainyDaySurchargeService } from './rainy-day-surcharge.service';
+import { RainyDayService } from './rainyday.service';
+import { RainyDayController } from './rainyday.controller';
 import {
   RainyDaySurcharge,
   RainyDaySurchargeSchema,
@@ -13,7 +13,7 @@ import {
       { name: RainyDaySurcharge.name, schema: RainyDaySurchargeSchema },
     ]),
   ],
-  controllers: [RainyDaySurchargeController],
-  providers: [RainyDaySurchargeService],
+  controllers: [RainyDayController],
+  providers: [RainyDayService],
 })
-export class RainyDaySurchargeModule {}
+export class RainyDayModule {}

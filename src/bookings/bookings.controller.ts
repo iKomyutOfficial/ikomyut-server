@@ -10,7 +10,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiQuery,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
@@ -21,8 +26,8 @@ import { RolesGuard } from '../auth/roles.guard';
 
 @ApiTags('Bookings')
 @Controller('bookings')
-// @ApiBearerAuth('access-token')
-// @UseGuards(AuthGuard('jwt'), RolesGuard)
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class BookingsController {
   private readonly logger = new Logger(BookingsController.name);
 
@@ -36,20 +41,20 @@ export class BookingsController {
   }
 
   @Get()
-  @Roles('admin')
-  @ApiOperation({ summary: 'Get all bookings with pagination' })
-  @ApiQuery({ name: 'page', required: false })
-  @ApiQuery({ name: 'limit', required: false })
+  @Roles('admin', 'driver')
+  @ApiOperation({ summary: 'Get all drivers' })
   findAll(
     @CurrentUser() user: any,
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10000,
   ) {
     const mobile = user?.mobnum || 'unknown';
     const userType = user?.role || 'unknown';
+
     this.logger.log(
-      `Mobile ${mobile} w/ type ${userType} fetching drivers, page=${page}, limit=${limit}`,
+      `Mobile ${mobile} w/ type ${userType} fetching all drivers (page: ${page}, limit: ${limit})`,
     );
+
     return this.bookingsService.findAll(Number(page), Number(limit));
   }
 
@@ -65,9 +70,9 @@ export class BookingsController {
     return this.bookingsService.update(id, dto);
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete booking' })
-  remove(@Param('id') id: string) {
-    return this.bookingsService.remove(id);
-  }
+  // @Delete(':id')
+  // @ApiOperation({ summary: 'Delete booking' })
+  // remove(@Param('id') id: string) {
+  //   return this.bookingsService.remove(id);
+  // }
 }

@@ -1,58 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-} from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { S3 } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FilesService {
-  private s3: S3Client;
-
-  constructor(private readonly configService: ConfigService) {
-    this.s3 = new S3Client({
-      region: this.configService.get<string>('AWS_REGION'),
-      credentials: {
-        accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY_ID')!,
-        secretAccessKey: this.configService.get<string>(
-          'AWS_SECRET_ACCESS_KEY',
-        )!,
-      },
-    });
-  }
+  constructor(private readonly configService: ConfigService) {}
 
   /**
-   * Upload file to S3
+   * Used by the mobile application. Uploads a file to the associated amazon s3 bucket
    */
   async uploadFile(dataBuffer: Buffer, filename: string, mimetype?: string) {
-    const command = new PutObjectCommand({
-      Bucket: this.configService.get('AWS_PUBLIC_BUCKET_NAME'),
-      Key: filename,
-      Body: dataBuffer,
-      ContentType: mimetype,
-    });
+    const s3 = new S3();
 
-    await this.s3.send(command);
-
-    return {
-      key: filename,
-      bucket: this.configService.get('AWS_PUBLIC_BUCKET_NAME'),
-    };
+    return s3
+      .upload({
+        Bucket: this.configService.get('AWS_PUBLIC_BUCKET_NAME')!,
+        Body: dataBuffer,
+        Key: filename,
+        ContentType: mimetype,
+      })
+      .promise();
   }
 
   /**
-   * Generate pre-signed URL
+   * Generate a pre-signed URL for a file in S3
    */
   async getFileUrl(filename: string): Promise<string> {
-    const command = new GetObjectCommand({
-      Bucket: this.configService.get('AWS_PUBLIC_BUCKET_NAME'),
-      Key: filename,
-    });
+    const s3 = new S3();
+    const key = `${filename}`;
 
-    const url = await getSignedUrl(this.s3, command, {
-      expiresIn: 3600, // 1 hour
+    const url = s3.getSignedUrl('getObject', {
+      Bucket: this.configService.get('AWS_PUBLIC_BUCKET_NAME'),
+      Key: key,
+      Expires: 3600, // 1 hour
     });
 
     return url;

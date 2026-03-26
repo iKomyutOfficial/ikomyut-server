@@ -9,17 +9,18 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PeakHourModule } from './peak-hour/peak-hour.module';
 import { AdminModule } from './admin/admin.module';
-import { DriversModule } from './driver/driver.module';
 import { PaymentTypeModule } from './payment-type/payment-type.module';
-import { RainyDaySurchargeModule } from './rainy-day-surcharge/rainy-day-surcharge.module';
 import { TimeMatrixModule } from './time-matrix/time-matrix.module';
 import { TnvsConfigurationModule } from './tnvs-configuration/tnvs-configuration.module';
-import { TrafficIntensityModule } from './traffic-intensity/traffic-intensity.module';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import { VersionsModule } from './versions/versions.module';
 import { OtpModule } from './otp/otp.module';
 import { BookingsModule } from './bookings/bookings.module';
+import { DiscountsModule } from './discounts/discounts.module';
+import { RainyDayModule } from './rainyday/rainyday.module';
+import { DriversModule } from './driver/driver.module';
+import { TrafficModule } from './traffic-intensity/traffic-intensity.module';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { BookingsModule } from './bookings/bookings.module';
       throttlers: [
         {
           ttl: 60000,
-          limit: 20,
+          limit: 500,
         },
       ],
     }),
@@ -50,14 +51,15 @@ import { BookingsModule } from './bookings/bookings.module';
     DriversModule,
     AdminModule,
     TimeMatrixModule,
-    RainyDaySurchargeModule,
     PaymentTypeModule,
     TnvsConfigurationModule,
-    TrafficIntensityModule,
     PeakHourModule,
     VersionsModule,
     OtpModule,
     BookingsModule,
+    DiscountsModule,
+    RainyDayModule,
+    TrafficModule,
   ],
   controllers: [AppController],
   providers: [

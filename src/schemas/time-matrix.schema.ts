@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 @Schema({ collection: 'TimeMatrix', timestamps: false })
 export class TimeMatrix {
-  @Prop()
+  @Prop({ unique: true, index: 1 })
   id!: string;
 
   @Prop()

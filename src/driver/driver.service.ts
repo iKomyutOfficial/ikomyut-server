@@ -17,20 +17,8 @@ export class DriversService {
     return driver.save();
   }
 
-  async findAll(page = 1, limit = 10) {
-    const skip = (page - 1) * limit;
-
-    const [data, total] = await Promise.all([
-      this.driverModel.find().skip(skip).limit(limit).lean(),
-      this.driverModel.countDocuments(),
-    ]);
-
-    return {
-      total,
-      page,
-      limit,
-      data,
-    };
+  async findAll(): Promise<Drivers[]> {
+    return this.driverModel.find().exec();
   }
 
   async findOne(id: string): Promise<Drivers> {

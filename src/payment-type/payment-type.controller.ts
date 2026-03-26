@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { PaymentTypeService } from './payment-type.service';
 import { CreatePaymentTypeDto } from './dto/create-payment-type.dto';
@@ -16,10 +17,16 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('Payment Type')
 @Controller('payment-type')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class PaymentTypeController {
   constructor(private readonly paymentTypeService: PaymentTypeService) {}
 
@@ -35,6 +42,7 @@ export class PaymentTypeController {
   }
 
   @Get()
+  @Roles('admin', 'user')
   @ApiOperation({ summary: 'Get All Payment Types' })
   @ApiResponse({
     status: 200,
@@ -45,6 +53,7 @@ export class PaymentTypeController {
   }
 
   @Get(':_id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Get Payment Type by ObjectId' })
   @ApiParam({ name: '_id', type: String, description: 'Payment Type ObjectId' })
   @ApiResponse({
@@ -57,6 +66,7 @@ export class PaymentTypeController {
   }
 
   @Patch(':_id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Update Payment Type' })
   @ApiParam({ name: '_id', type: String, description: 'Payment Type ObjectId' })
   @ApiBody({ type: UpdatePaymentTypeDto })
@@ -68,14 +78,14 @@ export class PaymentTypeController {
     return this.paymentTypeService.update(_id, updateDto);
   }
 
-  @Delete(':_id')
-  @ApiOperation({ summary: 'Delete Payment Type' })
-  @ApiParam({ name: '_id', type: String, description: 'Payment Type ObjectId' })
-  @ApiResponse({
-    status: 200,
-    description: 'Payment type deleted successfully',
-  })
-  remove(@Param('_id') _id: string) {
-    return this.paymentTypeService.remove(_id);
-  }
+  // @Delete(':_id')
+  // @ApiOperation({ summary: 'Delete Payment Type' })
+  // @ApiParam({ name: '_id', type: String, description: 'Payment Type ObjectId' })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Payment type deleted successfully',
+  // })
+  // remove(@Param('_id') _id: string) {
+  //   return this.paymentTypeService.remove(_id);
+  // }
 }

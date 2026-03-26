@@ -1,13 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema({ collection: 'TnvsConfiguration', timestamps: false })
+@Schema({ collection: 'TnvsConfiguration', timestamps: true })
 export class TnvsConfiguration {
-  @Prop()
+  @Prop({ unique: true, required: true })
   id!: string;
-
-  @Prop()
-  _v!: number;
 
   @Prop()
   seaterCapacity!: number;
@@ -28,6 +25,9 @@ export class TnvsConfiguration {
   maxSurge!: number;
 
   @Prop()
+  pickupFee!: number;
+
+  @Prop()
   status!: number;
 
   @Prop()
@@ -35,9 +35,6 @@ export class TnvsConfiguration {
 
   @Prop()
   createdBy!: string;
-
-  @Prop()
-  updatedAt!: string;
 
   @Prop()
   modifiedBy!: string;

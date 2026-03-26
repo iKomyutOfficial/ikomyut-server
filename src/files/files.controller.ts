@@ -3,20 +3,23 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
+  Body,
   BadRequestException,
   Get,
   Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';
-import { Multer } from 'multer';
 
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   /**
-   * Upload file to S3
+   * Uploads a file to S3.
+   * The frontend should send FormData with:
+   * - file: the uploaded file
+   * - userId: the ID of the user
    */
   @Post('upload')
   @UseInterceptors(
@@ -40,34 +43,29 @@ export class FilesController {
       throw new BadRequestException('File is required');
     }
 
+    // Prevent filename collisions
     const safeFileName = `${Date.now()}-${file.originalname}`;
 
-    await this.filesService.uploadFile(
+    const uploadResult = await this.filesService.uploadFile(
       file.buffer,
       safeFileName,
       file.mimetype,
     );
 
-    const publicUrl = await this.filesService.getFileUrl(safeFileName);
-
     return {
       message: 'File uploaded successfully',
+      url: uploadResult.Location, // already correct from AWS
       key: safeFileName,
-      url: publicUrl,
     };
   }
 
-  /**
-   * Get signed URL for a file
-   */
   @Get('url')
   async getFileUrl(@Query('filename') filename: string) {
     if (!filename) {
-      throw new BadRequestException('filename is required');
+      throw new BadRequestException('userId and filename are required');
     }
 
     const url = await this.filesService.getFileUrl(filename);
-
     return { url };
   }
 }
