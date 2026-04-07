@@ -17,7 +17,8 @@ async function bootstrap() {
         'http://localhost:2099',
         'http://localhost:3000',
         'http://localhost:8080',
-        'https://ipick-server-app-667662506856.asia-southeast1.run.app'
+        'https://ipick-server-app-667662506856.asia-southeast1.run.app',
+        'https://ipick-server-gcp-667662506856.asia-southeast1.run.app',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
