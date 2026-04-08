@@ -7,6 +7,7 @@ import { Admins } from '../schemas/admin.schema';
 import * as bcrypt from 'bcrypt';
 import { OtpService } from '../otp/otp.service';
 import { JwtService } from '@nestjs/jwt';
+import { AuthGateway } from './auth.gateway';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,7 @@ export class AuthService {
     @InjectModel(Admins.name) private adminModel: Model<Admins>,
     private jwtService: JwtService,
     private otpService: OtpService,
+    private authGateway: AuthGateway,
   ) {}
 
   // DRIVER / USER OTP
@@ -72,6 +74,9 @@ export class AuthService {
 
     admin.authToken = token;
     await admin.save();
+
+    // 🔥 Emit via WebSocket
+    this.authGateway.emitNewLogins(admin);
 
     return {
       access_token: token,

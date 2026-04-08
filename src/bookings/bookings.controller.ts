@@ -34,6 +34,7 @@ export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
   @Post()
+  @Roles('rider', 'driver')
   @ApiOperation({ summary: 'Create booking' })
   create(@Body() dto: CreateBookingDto) {
     this.logger.log(`Creating booking`);
@@ -46,13 +47,13 @@ export class BookingsController {
   findAll(
     @CurrentUser() user: any,
     @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10000,
+    @Query('limit') limit: number = 5000,
   ) {
     const mobile = user?.mobnum || 'unknown';
     const userType = user?.role || 'unknown';
 
     this.logger.log(
-      `Mobile ${mobile} w/ type ${userType} fetching all drivers (page: ${page}, limit: ${limit})`,
+      `Mobile ${mobile} w/ type ${userType} fetching all bookings (page: ${page}, limit: ${limit})`,
     );
 
     return this.bookingsService.findAll(Number(page), Number(limit));

@@ -9,11 +9,11 @@ import { Users, UsersSchema } from '../schemas/users.schema';
 import { Admins, AdminsSchema } from '../schemas/admin.schema';
 import { OtpModule } from '../otp/otp.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthGateway } from './auth.gateway';
 
 @Module({
   imports: [
     ConfigModule,
-
     MongooseModule.forFeature([
       { name: Admins.name, schema: AdminsSchema },
       { name: Drivers.name, schema: DriversSchema },
@@ -39,7 +39,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
     OtpModule,
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, AuthGateway],
   controllers: [AuthController],
 })
 export class AuthModule {}
