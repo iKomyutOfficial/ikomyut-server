@@ -21,6 +21,7 @@ import { DiscountsModule } from './discounts/discounts.module';
 import { RainyDayModule } from './rainyday/rainyday.module';
 import { DriversModule } from './driver/driver.module';
 import { TrafficModule } from './traffic-intensity/traffic-intensity.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { TrafficModule } from './traffic-intensity/traffic-intensity.module';
     DiscountsModule,
     RainyDayModule,
     TrafficModule,
+    TransactionsModule,
   ],
   controllers: [AppController],
   providers: [
