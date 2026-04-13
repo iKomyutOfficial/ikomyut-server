@@ -23,8 +23,8 @@ import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('Discounts')
 @Controller('discounts')
-@ApiBearerAuth('access-token')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+// @ApiBearerAuth('access-token')
+// @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class DiscountsController {
   constructor(private readonly discountsService: DiscountsService) {}
 
@@ -43,8 +43,15 @@ export class DiscountsController {
     return this.discountsService.findAll();
   }
 
-  @Get(':id')
+  @Get('rider/:riderId')
   @Roles('admin', 'driver', 'rider')
+  @ApiOperation({ summary: 'Get discount by riderId' })
+  findByRiderId(@Param('riderId') riderId: string) {
+    return this.discountsService.findByRiderId(riderId);
+  }
+
+  @Get(':id')
+  // @Roles('admin', 'driver', 'rider')
   @ApiOperation({ summary: 'Get single discount' })
   findOne(@Param('id') id: string) {
     return this.discountsService.findOne(id);

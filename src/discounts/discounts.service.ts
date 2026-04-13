@@ -21,6 +21,10 @@ export class DiscountsService {
     return this.discountModel.find().exec();
   }
 
+  async findByRiderId(riderId: string): Promise<Discounts | null> {
+    return this.discountModel.findOne({ riderId }).exec();
+  }
+
   async findOne(id: string): Promise<Discounts> {
     const discount = await this.discountModel.findById(id).exec();
     if (!discount) throw new NotFoundException('Discount not found');
