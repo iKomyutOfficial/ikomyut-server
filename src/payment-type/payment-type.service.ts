@@ -2,7 +2,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { PaymentType, PaymentTypeDocument } from '../schemas/payment-type.schema';
+import { PaymentType, PaymentTypeDocument } from './schemas/payment-type.schema';
 import { CreatePaymentTypeDto } from './dto/create-payment-type.dto';
 import { UpdatePaymentTypeDto } from './dto/update-payment-type.dto';
 

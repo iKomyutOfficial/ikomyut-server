@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { RequestOtpDto } from './dto/request-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { LoginDto } from './dto/login.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -93,5 +94,22 @@ export class AuthController {
       );
       throw error;
     }
+  }
+
+  @Post('login')
+  @ApiOperation({ summary: 'Login (Admin or Driver)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Login successful (returns JWT)',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid credentials',
+  })
+  async login(@Body() body: LoginDto) {
+    this.logger.log(`Login attempt: ${body.username}`);
+    const result = await this.authService.login(body.username, body.password);
+    this.logger.log(`Login successful: ${body.username}`);
+    return result;
   }
 }

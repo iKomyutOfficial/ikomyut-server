@@ -15,7 +15,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { VersionsService } from './versions.service';
-import { Versions } from '../schemas/versions.schema';
+import { Versions } from './schemas/versions.schema';
 import { CreateVersionDto } from './dto/create-version.dto';
 import { UpdateVersionDto } from './dto/update-version.dto';
 

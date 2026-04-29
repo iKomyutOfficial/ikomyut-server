@@ -3,25 +3,20 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-
-import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PeakHourModule } from './peak-hour/peak-hour.module';
-import { AdminModule } from './admin/admin.module';
-import { PaymentTypeModule } from './payment-type/payment-type.module';
-import { TimeMatrixModule } from './time-matrix/time-matrix.module';
-import { TnvsConfigurationModule } from './tnvs-configuration/tnvs-configuration.module';
-import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
-import { VersionsModule } from './versions/versions.module';
+import { FilesModule } from './files/files.module';
 import { OtpModule } from './otp/otp.module';
-import { BookingsModule } from './bookings/bookings.module';
-import { DiscountsModule } from './discounts/discounts.module';
-import { RainyDayModule } from './rainyday/rainyday.module';
-import { DriversModule } from './driver/driver.module';
-import { TrafficModule } from './traffic-intensity/traffic-intensity.module';
-import { TransactionsModule } from './transactions/transactions.module';
+import { PaymentTypeModule } from './payment-type/payment-type.module';
+import { VersionsModule } from './versions/versions.module';
+import { DriversModule } from './drivers/drivers.module';
+import { AdminsModule } from './admins/admins.module';
+import { ConductorsModule } from './conductors/conductors.module';
+import { FleetsModule } from './fleets/fleets.module';
+import { TicketsModule } from './tickets/tickets.module';
+import { RouteModule } from './route/route.module';
+import { UnitModule } from './unit/unit.module';
 
 @Module({
   imports: [
@@ -48,20 +43,16 @@ import { TransactionsModule } from './transactions/transactions.module';
     }),
     AuthModule,
     FilesModule,
-    UsersModule,
-    DriversModule,
-    AdminModule,
-    TimeMatrixModule,
     PaymentTypeModule,
-    TnvsConfigurationModule,
-    PeakHourModule,
     VersionsModule,
     OtpModule,
-    BookingsModule,
-    DiscountsModule,
-    RainyDayModule,
-    TrafficModule,
-    TransactionsModule,
+    DriversModule,
+    AdminsModule,
+    ConductorsModule,
+    FleetsModule,
+    TicketsModule,
+    RouteModule,
+    UnitModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,20 +1,20 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Drivers } from '../schemas/drivers.schema';
-import { Users } from '../schemas/users.schema';
-import { Admins } from '../schemas/admin.schema';
+import { Drivers } from '../drivers/schemas/drivers.schema';
+import { Admins } from '../admins/schemas/admin.schema';
 import * as bcrypt from 'bcrypt';
 import { OtpService } from '../otp/otp.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGateway } from './auth.gateway';
+import { Conductor } from '../conductors/schemas/conductor.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(Drivers.name) private driverModel: Model<Drivers>,
-    @InjectModel(Users.name) private userModel: Model<Users>,
     @InjectModel(Admins.name) private adminModel: Model<Admins>,
+    @InjectModel(Conductor.name) private conductorModel: Model<Conductor>,
     private jwtService: JwtService,
     private otpService: OtpService,
     private authGateway: AuthGateway,
@@ -34,8 +34,7 @@ export class AuthService {
     }
 
     const driver = await this.driverModel.findOne({ mobnum });
-    const user = await this.userModel.findOne({ mobnum });
-    const account: any = driver || user;
+    const account: any = driver;
 
     if (!account) throw new UnauthorizedException('Account not found');
 
@@ -74,13 +73,51 @@ export class AuthService {
 
     admin.authToken = token;
     await admin.save();
-
-    // 🔥 Emit via WebSocket
     this.authGateway.emitNewLogins(admin);
 
     return {
       access_token: token,
       admin,
     };
+  }
+
+  async login(username: string, password: string) {
+    let account: any =
+      (await this.adminModel.findOne({ username })) ||
+      (await this.driverModel.findOne({ username })) ||
+      (await this.conductorModel.findOne({ username }));
+
+    const role =
+      account?.role ||
+      ((await this.adminModel.findOne({ username }))
+        ? 'admin'
+        : (await this.driverModel.findOne({ username }))
+          ? 'driver'
+          : account
+            ? 'conductor'
+            : null);
+
+    if (!account) throw new UnauthorizedException('Invalid credentials');
+
+    if (!(await bcrypt.compare(password, account.password))) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const token = this.jwtService.sign({
+      sub: account._id,
+      username,
+      role,
+    });
+
+    await this[`${role}Model`]?.findByIdAndUpdate(account._id, {
+      authToken: token,
+    });
+
+    if (role === 'admin') this.authGateway.emitNewLogins(account);
+
+    const user = account.toObject();
+    delete user.password;
+
+    return { access_token: token, user, role };
   }
 }

@@ -4,12 +4,12 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Drivers, DriversSchema } from '../schemas/drivers.schema';
-import { Users, UsersSchema } from '../schemas/users.schema';
-import { Admins, AdminsSchema } from '../schemas/admin.schema';
+import { Admins, AdminsSchema } from '../admins/schemas/admin.schema';
 import { OtpModule } from '../otp/otp.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthGateway } from './auth.gateway';
+import { Conductor, ConductorSchema } from '../conductors/schemas/conductor.schema';
+import { Drivers, DriversSchema } from '../drivers/schemas/drivers.schema';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { AuthGateway } from './auth.gateway';
     MongooseModule.forFeature([
       { name: Admins.name, schema: AdminsSchema },
       { name: Drivers.name, schema: DriversSchema },
-      { name: Users.name, schema: UsersSchema },
+      { name: Conductor.name, schema: ConductorSchema },
     ]),
 
     JwtModule.registerAsync({

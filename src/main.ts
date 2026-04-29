@@ -3,10 +3,11 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import basicAuth from 'express-basic-auth';
+import { AuditInterceptor } from './common/interceptors/audit.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.useGlobalInterceptors(new AuditInterceptor());
   // Enable CORS
   app.enableCors({
     origin: (origin, callback) => {
@@ -17,8 +18,6 @@ async function bootstrap() {
         'http://localhost:2099',
         'http://localhost:3000',
         'http://localhost:8080',
-        'https://ipick-server-app-667662506856.asia-southeast1.run.app',
-        'https://ipick-server-gcp-667662506856.asia-southeast1.run.app',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
@@ -33,7 +32,7 @@ async function bootstrap() {
   // Global Validation Pipe
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, 
+      whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
     }),

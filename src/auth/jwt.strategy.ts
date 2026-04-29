@@ -4,16 +4,16 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Admins } from '../schemas/admin.schema';
-import { Drivers } from '../schemas/drivers.schema';
-import { Users } from '../schemas/users.schema';
+import { Admins } from '../admins/schemas/admin.schema';
+import { Drivers } from '../drivers/schemas/drivers.schema';
+import { Conductor } from '../conductors/schemas/conductor.schema';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private configService: ConfigService,
+    @InjectModel(Conductor.name) private conductorModel: Model<Conductor>,
     @InjectModel(Drivers.name) private driverModel: Model<Drivers>,
-    @InjectModel(Users.name) private userModel: Model<Users>,
     @InjectModel(Admins.name) private adminModel: Model<Admins>,
   ) {
     const secret = configService.get<string>('JWT_SECRET');
@@ -36,10 +36,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
     const driver = await this.driverModel.findById(payload.sub);
-    const user = await this.userModel.findById(payload.sub);
+    const conductor = await this.conductorModel.findById(payload.sub);
     const admin = await this.adminModel.findById(payload.sub);
 
-    const account: any = driver || user || admin;
+    const account: any = conductor || driver || admin;
 
     if (!account || account.authToken !== token) {
       throw new UnauthorizedException('Token is no longer valid');
@@ -47,10 +47,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     return {
       id: account._id,
-      mobnum: account.mobnum || null,
+      mobnum: account.contactNumber || null,
       username: account.username || null,
       email: account.email || null,
-      role: payload.type,
+      companyId: account.companyId || null,
+      role: payload.role,
     };
   }
 }

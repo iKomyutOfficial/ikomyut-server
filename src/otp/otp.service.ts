@@ -6,9 +6,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { subHours } from 'date-fns';
-import { Otp } from '../schemas/otp.schema';
-import { Drivers } from '../schemas/drivers.schema';
-import { Users } from '../schemas/users.schema';
+import { Otp } from './schemas/otp.schema';
+import { Drivers } from '../drivers/schemas/drivers.schema';
 
 @Injectable()
 export class OtpService {
@@ -16,7 +15,6 @@ export class OtpService {
     private configService: ConfigService,
     @InjectModel(Otp.name) private otpModel: Model<Otp>,
     @InjectModel(Drivers.name) private driverModel: Model<Drivers>,
-    @InjectModel(Users.name) private userModel: Model<Users>,
   ) {}
 
   /**
@@ -143,12 +141,11 @@ export class OtpService {
     }
 
     await this.otpModel.deleteOne({ _id: otpRecord._id });
-    const [driver, user] = await Promise.all([
+    const driver = await Promise.all([
       this.driverModel.findOne({ mobnum }).exec(),
-      this.userModel.findOne({ mobnum }).exec(),
     ]);
 
-    const existingUser = driver || user;
+    const existingUser = driver;
 
     return { isNewUser: !existingUser };
   }
@@ -163,7 +160,7 @@ export class OtpService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    
+
     const isProd = this.configService.get('NODE_ENV') === 'production';
 
     if (isProd) {

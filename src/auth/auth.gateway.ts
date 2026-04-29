@@ -4,7 +4,7 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { Injectable, Logger } from '@nestjs/common';
-import { Admins } from '../schemas/admin.schema';
+import { Admins } from '../admins/schemas/admin.schema';
 
 @WebSocketGateway({
   cors: {
