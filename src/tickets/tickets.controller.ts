@@ -6,18 +6,30 @@ import {
   Param,
   Post,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { TicketService } from './tickets.service';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('Tickets')
 @Controller('tickets')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class TicketController {
   constructor(private readonly service: TicketService) {}
 
   @Post()
+  @Roles('admin')
   @ApiOperation({ summary: 'Create ticket' })
   @ApiResponse({ status: 201, description: 'Ticket created successfully' })
   create(@Body() dto: CreateTicketDto) {

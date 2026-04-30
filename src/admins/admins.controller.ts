@@ -33,24 +33,28 @@ export class AdminsController {
   }
 
   @Get()
+  @Roles('admin')
   @ApiOperation({ summary: 'Get all admins' })
   findAll() {
     return this.adminsService.findAll();
   }
 
   @Get(':id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Get admin by ID' })
   findOne(@Param('id') id: string) {
     return this.adminsService.findOne(id);
   }
 
   @Patch(':id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Update admin' })
   update(@Param('id') id: string, @Body() dto: UpdateAdminDto) {
     return this.adminsService.update(id, dto);
   }
 
   @Delete(':id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Delete admin' })
   remove(@Param('id') id: string) {
     return this.adminsService.remove(id);

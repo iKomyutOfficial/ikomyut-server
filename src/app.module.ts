@@ -17,6 +17,7 @@ import { FleetsModule } from './fleets/fleets.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { RouteModule } from './route/route.module';
 import { UnitModule } from './unit/unit.module';
+import { StopOverModule } from './stopover/stopover.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { UnitModule } from './unit/unit.module';
     TicketsModule,
     RouteModule,
     UnitModule,
+    StopOverModule,
   ],
   controllers: [AppController],
   providers: [

@@ -6,18 +6,30 @@ import {
   Param,
   Post,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { UnitService } from './unit.service';
 import { CreateUnitDto } from './dto/create-unit.dto';
 import { UpdateUnitDto } from './dto/update-unit.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('Units')
 @Controller('units')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class UnitController {
   constructor(private readonly service: UnitService) {}
 
   @Post()
+  @Roles('admin')
   @ApiOperation({ summary: 'Create unit' })
   @ApiResponse({ status: 201, description: 'Unit created successfully' })
   create(@Body() dto: CreateUnitDto) {

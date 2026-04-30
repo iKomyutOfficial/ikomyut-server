@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { StopOver } from './stopover.schema';
+import { StopOver } from '../../stopover/schemas/stopover.schema';
 
 @Schema({ timestamps: true })
 export class Route {
@@ -12,9 +12,6 @@ export class Route {
 
   @Prop({ required: true })
   terminalPointB!: string;
-
-  @Prop({ type: [StopOver], default: [] })
-  stopOver!: StopOver[];
 
   @Prop()
   companyName?: string;

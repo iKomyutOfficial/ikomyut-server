@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -13,18 +14,25 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { VersionsService } from './versions.service';
 import { Versions } from './schemas/versions.schema';
 import { CreateVersionDto } from './dto/create-version.dto';
 import { UpdateVersionDto } from './dto/update-version.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
-@ApiTags('Versions') // Group in Swagger UI
+@ApiTags('Versions')
 @Controller('versions')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class VersionsController {
   constructor(private readonly versionsService: VersionsService) {}
 
   @Post()
+  @Roles('admin')
   @ApiOperation({ summary: 'Create a new app version' })
   @ApiResponse({
     status: 201,
@@ -48,6 +56,7 @@ export class VersionsController {
   }
 
   @Get(':id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Get a version by ID' })
   @ApiParam({ name: 'id', description: 'Version ID' })
   @ApiResponse({ status: 200, description: 'Version found.', type: Versions })
@@ -57,6 +66,7 @@ export class VersionsController {
   }
 
   @Patch(':id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Update a version by ID' })
   @ApiParam({ name: 'id', description: 'Version ID' })
   @ApiBody({ type: UpdateVersionDto })
@@ -69,12 +79,13 @@ export class VersionsController {
     return this.versionsService.update(id, updateVersionDto);
   }
 
-  // @Delete(':id')
-  // @ApiOperation({ summary: 'Delete a version by ID' })
-  // @ApiParam({ name: 'id', description: 'Version ID' })
-  // @ApiResponse({ status: 200, description: 'Version deleted.', type: Versions })
-  // @ApiResponse({ status: 404, description: 'Version not found.' })
-  // remove(@Param('id') id: string): Promise<Versions> {
-  //   return this.versionsService.remove(id);
-  // }
+  @Delete(':id')
+  @Roles('admin')
+  @ApiOperation({ summary: 'Delete a version by ID' })
+  @ApiParam({ name: 'id', description: 'Version ID' })
+  @ApiResponse({ status: 200, description: 'Version deleted.', type: Versions })
+  @ApiResponse({ status: 404, description: 'Version not found.' })
+  remove(@Param('id') id: string): Promise<Versions> {
+    return this.versionsService.remove(id);
+  }
 }

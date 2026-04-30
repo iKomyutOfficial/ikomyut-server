@@ -7,6 +7,9 @@ export class StopOver {
   _id?: Types.ObjectId;
 
   @Prop({ required: true })
+  routeId!: string;
+
+  @Prop({ required: true })
   name!: string;
 
   @Prop({ required: true })
