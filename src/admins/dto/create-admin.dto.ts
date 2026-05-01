@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsEmail } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsString, IsOptional, IsEmail, ValidateNested } from 'class-validator';
+import { PhotoDto } from '../../common/dto/photo.dto';
 
 export class CreateAdminDto {
   @ApiProperty({ example: 'admin1' })
@@ -13,10 +15,6 @@ export class CreateAdminDto {
   @ApiProperty({ example: 'Metro Comet' })
   @IsString()
   companyName!: string;
-
-  @ApiProperty({ example: 'COMP-001' })
-  @IsString()
-  companyId!: string;
 
   @ApiProperty({ example: 'John' })
   @IsString()
@@ -40,8 +38,13 @@ export class CreateAdminDto {
   @IsString()
   mobileNumber!: string;
 
-  @ApiPropertyOptional({
-    example: 'https://cdn.example.com/profile.jpg',
+  @ApiProperty({
+    description: 'Photo information',
+    required: false,
+    type: PhotoDto,
   })
-  profileImage?: string;
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PhotoDto)
+  profilePic?: PhotoDto;
 }

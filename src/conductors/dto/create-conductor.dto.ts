@@ -4,8 +4,11 @@ import {
   IsBoolean,
   IsEnum,
   IsEmail,
+  ValidateNested,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { PhotoDto } from '../../common/dto/photo.dto';
 
 export class CreateConductorDto {
   @ApiProperty({ example: 'jdelacruz' })
@@ -82,10 +85,13 @@ export class CreateConductorDto {
   @IsOptional()
   location?: any;
 
-  @ApiPropertyOptional({
-    example: 'https://cdn.example.com/profile.jpg',
+  @ApiProperty({
+    description: 'Photo information',
+    required: false,
+    type: PhotoDto,
   })
   @IsOptional()
-  @IsString()
-  profileImage?: string;
+  @ValidateNested()
+  @Type(() => PhotoDto)
+  profilePic?: PhotoDto;
 }

@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsEnum, IsDateString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsString, IsOptional, IsEnum, IsDateString, ValidateNested } from 'class-validator';
+import { PhotoDto } from '../../common/dto/photo.dto';
 
 export class CreateDriverDto {
   @ApiProperty({ example: 'driver_john' })
@@ -65,4 +67,14 @@ export class CreateDriverDto {
   @IsOptional()
   @IsString()
   assignedBus?: string;
+
+  @ApiProperty({
+    description: 'Photo information',
+    required: false,
+    type: PhotoDto,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PhotoDto)
+  profilePic?: PhotoDto;
 }

@@ -4,14 +4,14 @@ import * as bcrypt from 'bcrypt';
 import { Photo } from '../../common/schemas/photo.schema';
 
 @Schema({ timestamps: true })
-export class Admins {
+export class Employee {
   @Prop({ required: true, unique: true })
   username!: string;
 
   @Prop()
   password?: string;
 
-  @Prop({ default: 'admin' })
+  @Prop({ default: 'employee' })
   role!: string;
 
   @Prop({ unique: true, sparse: true })
@@ -19,6 +19,9 @@ export class Admins {
 
   @Prop({ unique: true, sparse: true })
   mobileNumber!: string;
+
+  @Prop()
+  position!: string;
 
   @Prop()
   firstName!: string;
@@ -57,11 +60,11 @@ export class Admins {
   };
 }
 
-export type AdminsDocument = HydratedDocument<Admins>;
-export const AdminsSchema = SchemaFactory.createForClass(Admins);
+export type EmployeeDocument = HydratedDocument<Employee>;
+export const EmployeeSchema = SchemaFactory.createForClass(Employee);
 
 // Hash password only if it's provided and modified
-AdminsSchema.pre<AdminsDocument>('save', async function (next) {
+EmployeeSchema.pre<EmployeeDocument>('save', async function (next) {
   if (!this.password || !this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();

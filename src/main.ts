@@ -40,8 +40,8 @@ async function bootstrap() {
 
   // Swagger setup
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('iPick API')
-    .setDescription('IPICK API Documentation')
+    .setTitle('iKomyut API')
+    .setDescription('iKomyut API Documentation')
     .setVersion('1.0')
     .addBearerAuth(
       {

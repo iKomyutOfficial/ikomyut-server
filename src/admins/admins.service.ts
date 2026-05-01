@@ -12,8 +12,14 @@ export class AdminsService {
     private adminModel: Model<AdminsDocument>,
   ) {}
 
-  async create(dto: CreateAdminDto): Promise<Admins> {
-    const admin = new this.adminModel(dto);
+  async create(dto: CreateAdminDto, user: any): Promise<Admins> {
+    const admin = new this.adminModel({
+      ...dto,
+      companyId: user.companyId,
+      role: 'admin',
+      isRegistered: true,
+    });
+
     return admin.save();
   }
 

@@ -6,12 +6,19 @@ import {
   BadRequestException,
   Get,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';
 import { Multer } from 'multer';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('files')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
@@ -19,6 +26,7 @@ export class FilesController {
    * Upload file to S3
    */
   @Post('upload')
+  @Roles('admin')
   @UseInterceptors(
     FileInterceptor('file', {
       limits: {
@@ -61,6 +69,7 @@ export class FilesController {
    * Get signed URL for a file
    */
   @Get('url')
+  @Roles('admin')
   async getFileUrl(@Query('filename') filename: string) {
     if (!filename) {
       throw new BadRequestException('filename is required');

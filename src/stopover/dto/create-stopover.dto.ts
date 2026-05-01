@@ -29,6 +29,11 @@ export class CreateStopOverDto {
 
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
+  companyId!: string;
+
+  @ApiProperty()
+  @IsString()
   name!: string;
 
   @ApiProperty()

@@ -10,6 +10,9 @@ export class StopOver {
   routeId!: string;
 
   @Prop({ required: true })
+  companyId!: string;
+
+  @Prop({ required: true })
   name!: string;
 
   @Prop({ required: true })

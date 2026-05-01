@@ -18,6 +18,10 @@ import { TicketsModule } from './tickets/tickets.module';
 import { RouteModule } from './route/route.module';
 import { UnitModule } from './unit/unit.module';
 import { StopOverModule } from './stopover/stopover.module';
+import { GPSDeviceModule } from './gps-device/gps-device.module';
+import { LapCounterSettingsModule } from './lap-counter-settings/lap-counter-settings.module';
+import { LapRecordModule } from './lap-record/lap-record.module';
+import { EmployeeModule } from './employee/employee.module';
 
 @Module({
   imports: [
@@ -55,6 +59,10 @@ import { StopOverModule } from './stopover/stopover.module';
     RouteModule,
     UnitModule,
     StopOverModule,
+    GPSDeviceModule,
+    LapCounterSettingsModule,
+    LapRecordModule,
+    EmployeeModule,
   ],
   controllers: [AppController],
   providers: [

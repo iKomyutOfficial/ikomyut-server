@@ -1,33 +1,25 @@
-import { Controller, Get, Logger } from '@nestjs/common';
+import { Controller, Get, Logger, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Roles } from './auth/decorators/roles.decorator';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from './auth/roles.guard';
 
 @Controller()
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AppController {
   private readonly logger = new Logger(AppController.name);
 
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  // @Roles('admin')
+  @Roles('admin')
   @ApiOperation({ summary: 'Check service health status' })
   checkHealth() {
     this.logger.log('Health check endpoint called');
     const status = this.appService.getHealthStatus();
     this.logger.debug(`Returning health status: ${JSON.stringify(status)}`);
     return status;
-  }
-
-  @Get('driver-status')
-  @Roles('driver') // Only drivers can access
-  getDriverStatus() {
-    return { message: 'Driver-specific endpoint' };
-  }
-
-  @Get('user-status')
-  @Roles('user') // Only users can access
-  getUserStatus() {
-    return { message: 'User-specific endpoint' };
   }
 }

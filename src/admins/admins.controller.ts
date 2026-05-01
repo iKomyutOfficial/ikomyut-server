@@ -7,8 +7,14 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { AdminsService } from './admins.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
@@ -28,8 +34,8 @@ export class AdminsController {
   @Roles('admin')
   @ApiOperation({ summary: 'Create admin' })
   @ApiResponse({ status: 201, type: Admins })
-  create(@Body() dto: CreateAdminDto) {
-    return this.adminsService.create(dto);
+  create(@Body() dto: CreateAdminDto, @Req() req: any) {
+    return this.adminsService.create(dto, req.user);
   }
 
   @Get()

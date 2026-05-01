@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Location } from '../../common/schemas/location.schema';
+import { Photo } from '../../common/schemas/photo.schema';
 
 @Schema({ timestamps: true })
 export class Drivers {
@@ -67,8 +68,11 @@ export class Drivers {
 
   // ─── Profile ──────────────────────────────────────
 
-  @Prop()
-  profileImage?: string;
+  @Prop({ type: Photo })
+  profilePic?: {
+    name: string;
+    url: string;
+  };
 }
 
 export type DriversDocument = HydratedDocument<Drivers>;

@@ -2,10 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Location } from '../../common/schemas/location.schema';
+import { Photo } from '../../common/schemas/photo.schema';
 
 @Schema({ timestamps: true })
 export class Conductor {
-  // ─── Auth ─────────────────────────────────────────
 
   @Prop({ required: true, unique: true })
   username!: string;
@@ -15,8 +15,6 @@ export class Conductor {
 
   @Prop({ default: 'conductor' })
   role!: string;
-
-  // ─── Basic Info ───────────────────────────────────
 
   @Prop({ required: true })
   firstName!: string;
@@ -33,8 +31,6 @@ export class Conductor {
   @Prop({ unique: true, sparse: true })
   contactNumber?: string;
 
-  // ─── Assignment ───────────────────────────────────
-
   @Prop()
   assignedRoute?: string;
 
@@ -44,28 +40,23 @@ export class Conductor {
   @Prop({ default: false })
   isAssign!: boolean;
 
-  // ─── Status ───────────────────────────────────────
-
   @Prop({
     enum: ['Active', 'Inactive', 'Suspended'],
     default: 'Active',
   })
   status!: string;
 
-  // ─── Device (optional but useful) ─────────────────
-
   @Prop()
   deviceAssigned?: string;
-
-  // ─── Location ─────────────────────────────────────
 
   @Prop({ type: Object })
   location?: Location;
 
-  // ─── Profile ──────────────────────────────────────
-
-  @Prop()
-  profileImage?: string;
+  @Prop({ type: Photo })
+  profilePic?: {
+    name: string;
+    url: string;
+  };
 }
 
 export type ConductorDocument = HydratedDocument<Conductor>;
