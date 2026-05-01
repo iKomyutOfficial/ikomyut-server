@@ -3,11 +3,11 @@ import { Document } from 'mongoose';
 
 export type VersionsDocuments = Versions & Document;
 
-@Schema({ collection: 'AppVersion', timestamps: true })
+@Schema({ timestamps: true })
 export class Versions {
   @Prop({ type: String, required: true })
   latestVersion!: string;
-  
+
   @Prop({ type: String, required: true })
   description!: string;
 }

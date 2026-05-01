@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admins, AdminsDocument } from './schemas/admin.schema';
+import { customAlphabet, nanoid } from 'nanoid';
 
 @Injectable()
 export class AdminsService {
@@ -12,15 +13,22 @@ export class AdminsService {
     private adminModel: Model<AdminsDocument>,
   ) {}
 
-  async create(dto: CreateAdminDto, user: any): Promise<Admins> {
+  nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 8);
+  async create(dto: CreateAdminDto): Promise<Admins> {
+    const companyId = this.generateCompanyId();
+
     const admin = new this.adminModel({
       ...dto,
-      companyId: user.companyId,
+      companyId,
       role: 'admin',
       isRegistered: true,
     });
 
     return admin.save();
+  }
+
+  private generateCompanyId(): string {
+    return `IK-${nanoid()}`;
   }
 
   async findAll(): Promise<Admins[]> {
@@ -47,7 +55,6 @@ export class AdminsService {
   async remove(id: string): Promise<{ message: string }> {
     const result = await this.adminModel.findByIdAndDelete(id).exec();
     if (!result) throw new NotFoundException('Admin not found');
-
     return { message: 'Admin deleted successfully' };
   }
 }

@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -25,17 +24,17 @@ import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('Admins')
 @Controller('admins')
-@ApiBearerAuth('access-token')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+// @ApiBearerAuth('access-token')
+// @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AdminsController {
   constructor(private readonly adminsService: AdminsService) {}
 
   @Post()
-  @Roles('admin')
+  // @Roles('admin')
   @ApiOperation({ summary: 'Create admin' })
   @ApiResponse({ status: 201, type: Admins })
-  create(@Body() dto: CreateAdminDto, @Req() req: any) {
-    return this.adminsService.create(dto, req.user);
+  create(@Body() dto: CreateAdminDto) {
+    return this.adminsService.create(dto);
   }
 
   @Get()

@@ -4,10 +4,12 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import basicAuth from 'express-basic-auth';
 import { AuditInterceptor } from './common/interceptors/audit.interceptor';
+import { MongoExceptionFilter } from './common/filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalInterceptors(new AuditInterceptor());
+  app.useGlobalFilters(new MongoExceptionFilter());
   // Enable CORS
   app.enableCors({
     origin: (origin, callback) => {

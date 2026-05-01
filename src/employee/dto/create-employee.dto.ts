@@ -12,11 +12,6 @@ export class CreateEmployeeDto {
   @IsString()
   password!: string;
 
-  @ApiPropertyOptional({ example: 'employee' })
-  @IsOptional()
-  @IsString()
-  role?: string;
-
   @ApiPropertyOptional({ example: 'john@email.com' })
   @IsOptional()
   @IsEmail()
@@ -38,19 +33,6 @@ export class CreateEmployeeDto {
   @ApiProperty({ example: 'Doe' })
   @IsString()
   lastName!: string;
-
-  @ApiProperty({ example: 'Acme Corp' })
-  @IsString()
-  companyName!: string;
-
-  @ApiProperty({ example: 'company-123' })
-  @IsString()
-  companyId!: string;
-
-  @ApiPropertyOptional({ example: true })
-  @IsOptional()
-  @IsBoolean()
-  isRegistered?: boolean;
 
   @ApiPropertyOptional({ example: 'active' })
   @IsOptional()

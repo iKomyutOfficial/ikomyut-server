@@ -4,32 +4,40 @@ import { Model } from 'mongoose';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Employee, EmployeeDocument } from './schemas/employee.schema';
+import { use } from 'passport';
 
 @Injectable()
 export class EmployeeService {
   constructor(
     @InjectModel(Employee.name)
-    private model: Model<EmployeeDocument>,
+    private employeeModel: Model<EmployeeDocument>,
   ) {}
 
-  async create(dto: CreateEmployeeDto) {
-    const employee = await this.model.create(dto);
-    return this.excludeSensitive(employee);
+  async create(dto: CreateEmployeeDto, user: any): Promise<Employee> {
+    const admin = new this.employeeModel({
+      ...dto,
+      companyId: user.companyId,
+      companyName: user.companyName,
+      role: 'employee',
+      isRegistered: true,
+    });
+
+    return admin.save();
   }
 
   async findAll() {
-    const data = await this.model.find().exec();
+    const data = await this.employeeModel.find().exec();
     return data.map((e) => this.excludeSensitive(e));
   }
 
   async findOne(id: string) {
-    const employee = await this.model.findById(id).exec();
+    const employee = await this.employeeModel.findById(id).exec();
     if (!employee) throw new NotFoundException('Employee not found');
     return this.excludeSensitive(employee);
   }
 
   async update(id: string, dto: UpdateEmployeeDto) {
-    const updated = await this.model
+    const updated = await this.employeeModel
       .findByIdAndUpdate(id, dto, { new: true })
       .exec();
 
@@ -38,7 +46,7 @@ export class EmployeeService {
   }
 
   async remove(id: string) {
-    const deleted = await this.model.findByIdAndDelete(id).exec();
+    const deleted = await this.employeeModel.findByIdAndDelete(id).exec();
     if (!deleted) throw new NotFoundException('Employee not found');
 
     return { message: 'Deleted successfully' };
