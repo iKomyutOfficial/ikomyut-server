@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { StopOver } from './schemas/stopover.schema';
 import { CreateStopOverDto } from './dto/create-stopover.dto';
 import { UpdateStopOverDto } from './dto/update-stopover.dto';
+import { RequestWithCompany } from '../types/request';
 
 @Injectable()
 export class StopOverService {
@@ -12,8 +17,15 @@ export class StopOverService {
     private readonly stopOverModel: Model<StopOver>,
   ) {}
 
-  async create(dto: CreateStopOverDto) {
-    return this.stopOverModel.create(dto);
+  async create(
+    dto: CreateStopOverDto,
+    req: RequestWithCompany,
+  ): Promise<StopOver> {
+    const admin = new this.stopOverModel({
+      ...dto,
+      companyId: req.companyId,
+    });
+    return admin.save();
   }
 
   async findAll() {

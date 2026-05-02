@@ -22,16 +22,6 @@ export class CreateRouteDto {
   @IsString()
   terminalPointB!: string;
 
-  @ApiPropertyOptional({ example: 'My Bus Company' })
-  @IsOptional()
-  @IsString()
-  companyName?: string;
-
-  @ApiPropertyOptional({ example: 'COMP-001' })
-  @IsOptional()
-  @IsString()
-  companyId?: string;
-
   @ApiPropertyOptional({ example: 100 })
   @IsOptional()
   @IsNumber()

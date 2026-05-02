@@ -8,6 +8,7 @@ import {
   Query,
   Patch,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { LapRecordService } from './lap-record.service';
 import { CreateLapRecordDto } from './dto/create-lap-record.dto';
@@ -34,8 +35,8 @@ export class LapRecordController {
   @Roles('admin')
   @ApiOperation({ summary: 'Create lap record' })
   @ApiResponse({ status: 201, description: 'Created successfully' })
-  create(@Body() dto: CreateLapRecordDto) {
-    return this.service.create(dto);
+  create(@Body() dto: CreateLapRecordDto, @Req() req: any) {
+    return this.service.create(dto, req.user);
   }
 
   @Get()

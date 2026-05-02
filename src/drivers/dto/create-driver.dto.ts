@@ -1,6 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsString, IsOptional, IsEnum, IsDateString, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsDateString,
+  ValidateNested,
+} from 'class-validator';
 import { PhotoDto } from '../../common/dto/photo.dto';
 
 export class CreateDriverDto {
@@ -29,6 +35,16 @@ export class CreateDriverDto {
   @ApiProperty({ example: 'Doe' })
   @IsString()
   lastName!: string;
+
+  @ApiPropertyOptional({ example: '123 main st.' })
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @ApiPropertyOptional({ example: '11/11/1990' })
+  @IsOptional()
+  @IsString()
+  bday?: string;
 
   @ApiPropertyOptional({ example: 'driver@example.com' })
   @IsOptional()

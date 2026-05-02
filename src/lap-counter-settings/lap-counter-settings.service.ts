@@ -3,7 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateLapCounterSettingsDto } from './dto/create-lap-counter-settings.dto';
 import { UpdateLapCounterSettingsDto } from './dto/update-lap-counter-settings.dto';
-import { LapCounterSettings, LapCounterSettingsDocument } from './schemas/lap-counter-settings.schema';
+import {
+  LapCounterSettings,
+  LapCounterSettingsDocument,
+} from './schemas/lap-counter-settings.schema';
 
 @Injectable()
 export class LapCounterSettingsService {
@@ -12,8 +15,15 @@ export class LapCounterSettingsService {
     private model: Model<LapCounterSettingsDocument>,
   ) {}
 
-  async create(dto: CreateLapCounterSettingsDto) {
-    return this.model.create(dto);
+  async create(
+    dto: CreateLapCounterSettingsDto,
+    user: any,
+  ): Promise<LapCounterSettings> {
+    const admin = new this.model({
+      ...dto,
+      companyId: user.companyId,
+    });
+    return admin.save();
   }
 
   async findAll() {

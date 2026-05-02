@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Unit, UnitDocument } from './schemas/unit.schema';
 import { CreateUnitDto } from './dto/create-unit.dto';
 import { UpdateUnitDto } from './dto/update-unit.dto';
+import { RequestWithCompany } from '../types/request';
 
 @Injectable()
 export class UnitService {
@@ -12,8 +13,12 @@ export class UnitService {
     private unitModel: Model<UnitDocument>,
   ) {}
 
-  async create(dto: CreateUnitDto) {
-    return this.unitModel.create(dto);
+  async create(dto: CreateUnitDto, req: RequestWithCompany): Promise<Unit> {
+    const admin = new this.unitModel({
+      ...dto,
+      companyId: req.companyId,
+    });
+    return admin.save();
   }
 
   async findAll() {

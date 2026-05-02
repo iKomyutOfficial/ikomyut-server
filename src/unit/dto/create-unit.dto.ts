@@ -10,16 +10,7 @@ import {
 import { Transform, Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { toValidDate } from '../../common/validation';
-
-class GeoPointDto {
-  @ApiProperty({ example: 'Point' })
-  @IsString()
-  type!: 'Point';
-
-  @ApiProperty({ example: [121.0437, 14.676] })
-  @IsArray()
-  coordinates!: [number, number];
-}
+import { GeoPointDto } from '../../common/dto/location.dto';
 
 class MaintenancePartDto {
   @ApiProperty({ example: 'Brake Pad' })

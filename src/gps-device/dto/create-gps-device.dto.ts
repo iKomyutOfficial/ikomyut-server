@@ -48,9 +48,4 @@ export class CreateGPSDeviceDto {
   @ValidateNested()
   @Type(() => LastLocationDto)
   lastLocation?: LastLocationDto;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  companyId?: string;
 }

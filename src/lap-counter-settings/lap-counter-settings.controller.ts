@@ -8,6 +8,7 @@ import {
   Put,
   Patch,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { LapCounterSettingsService } from './lap-counter-settings.service';
 import { CreateLapCounterSettingsDto } from './dto/create-lap-counter-settings.dto';
@@ -34,8 +35,8 @@ export class LapCounterSettingsController {
   @Roles('admin')
   @ApiOperation({ summary: 'Create lap counter settings' })
   @ApiResponse({ status: 201, description: 'Created successfully' })
-  create(@Body() dto: CreateLapCounterSettingsDto) {
-    return this.service.create(dto);
+  create(@Body() dto: CreateLapCounterSettingsDto, @Req() req: any) {
+    return this.service.create(dto, req.user);
   }
 
   @Get()

@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CreateFleetDto } from './dto/create-fleet.dto';
 import { UpdateFleetDto } from './dto/update-fleet.dto';
 import { Fleet, FleetDocument } from './schemas/fleet.schema';
+import { RequestWithCompany } from '../types/request';
 
 @Injectable()
 export class FleetService {
@@ -12,8 +13,12 @@ export class FleetService {
     private fleetModel: Model<FleetDocument>,
   ) {}
 
-  async create(dto: CreateFleetDto) {
-    return this.fleetModel.create(dto);
+  async create(dto: CreateFleetDto, req: RequestWithCompany): Promise<Fleet> {
+    const admin = new this.fleetModel({
+      ...dto,
+      companyId: req.companyId,
+    });
+    return admin.save();
   }
 
   async findAll() {

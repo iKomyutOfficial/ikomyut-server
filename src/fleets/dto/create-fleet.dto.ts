@@ -1,15 +1,10 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, isString, IsString } from 'class-validator';
 
 export class CreateFleetDto {
   @ApiProperty({ example: 'BUS-001' })
   @IsString()
   assignUnitCode!: string;
-
-  @ApiPropertyOptional({ example: 'COMP-001' })
-  @IsOptional()
-  @IsString()
-  companyId?: string;
 
   @ApiPropertyOptional({ example: 'ROUTE-001' })
   @IsOptional()
@@ -32,5 +27,6 @@ export class CreateFleetDto {
   assignedConductorId?: string;
 
   @ApiPropertyOptional({ example: 'Active', default: 'Active' })
+  @IsString()
   status?: string;
 }

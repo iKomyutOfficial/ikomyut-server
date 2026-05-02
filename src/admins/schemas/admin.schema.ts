@@ -29,6 +29,9 @@ export class Admins {
   @Prop()
   lastName!: string;
 
+  @Prop()
+  address?: string;
+
   @Prop({ required: true })
   companyName!: string;
 

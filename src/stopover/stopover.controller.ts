@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { StopOverService } from './stopover.service';
@@ -33,8 +34,8 @@ export class StopOverController {
   @Roles('admin')
   @ApiOperation({ summary: 'Create a StopOver' })
   @ApiResponse({ status: 201, description: 'StopOver created' })
-  create(@Body() dto: CreateStopOverDto) {
-    return this.service.create(dto);
+  create(@Body() dto: CreateStopOverDto, @Req() req: any) {
+    return this.service.create(dto, req.user);
   }
 
   @Get()

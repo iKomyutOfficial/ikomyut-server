@@ -7,11 +7,17 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { DriversService } from './drivers.service';
 import { CreateDriverDto } from './dto/create-driver.dto';
 import { UpdateDriverDto } from './dto/update-driver.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { Drivers } from './schemas/drivers.schema';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
@@ -28,8 +34,8 @@ export class DriversController {
   @Roles('admin')
   @ApiOperation({ summary: 'Create driver' })
   @ApiResponse({ status: 201, description: 'Driver created', type: Drivers })
-  create(@Body() createDriverDto: CreateDriverDto) {
-    return this.driversService.create(createDriverDto);
+  create(@Body() dto: CreateDriverDto, @Req() req: any) {
+    return this.driversService.create(dto, req.user);
   }
 
   @Get()

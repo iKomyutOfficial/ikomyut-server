@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CreateDriverDto } from './dto/create-driver.dto';
 import { UpdateDriverDto } from './dto/update-driver.dto';
 import { Drivers, DriversDocument } from './schemas/drivers.schema';
+import { RequestWithCompany } from '../types/request';
 
 @Injectable()
 export class DriversService {
@@ -12,9 +13,17 @@ export class DriversService {
     private driverModel: Model<DriversDocument>,
   ) {}
 
-  async create(createDriverDto: CreateDriverDto): Promise<Drivers> {
-    const driver = new this.driverModel(createDriverDto);
-    return driver.save();
+  async create(
+    dto: CreateDriverDto,
+    user: RequestWithCompany,
+  ): Promise<Drivers> {
+    const admin = new this.driverModel({
+      ...dto,
+      companyId: user.companyId,
+      role: 'driver',
+    });
+
+    return admin.save();
   }
 
   async findAll(): Promise<Drivers[]> {

@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { Ticket, TicketDocument } from './schemas/ticket.schema';
+import { RequestWithCompany } from '../types/request';
 
 @Injectable()
 export class TicketService {
@@ -12,10 +13,13 @@ export class TicketService {
     private ticketModel: Model<TicketDocument>,
   ) {}
 
-  async create(dto: CreateTicketDto) {
-    return this.ticketModel.create(dto);
+  async create(dto: CreateTicketDto, req: RequestWithCompany): Promise<Ticket> {
+    const admin = new this.ticketModel({
+      ...dto,
+      companyId: req.companyId,
+    });
+    return admin.save();
   }
-
   async findAll() {
     return this.ticketModel.find().exec();
   }

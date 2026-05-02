@@ -22,11 +22,4 @@ export class CreateLapCounterSettingsDto {
   @IsOptional()
   @IsString()
   geofenceName?: string;
-
-  @ApiPropertyOptional({
-    example: 'company-123',
-  })
-  @IsOptional()
-  @IsString()
-  companyId?: string;
 }

@@ -17,7 +17,7 @@ export class Route {
   companyName?: string;
 
   @Prop()
-  companyId?: string;
+  companyId!: string;
 
   @Prop()
   fareP2P?: number;

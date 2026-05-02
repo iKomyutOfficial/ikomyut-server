@@ -6,7 +6,6 @@ import { Photo } from '../../common/schemas/photo.schema';
 
 @Schema({ timestamps: true })
 export class Conductor {
-
   @Prop({ required: true, unique: true })
   username!: string;
 
@@ -24,6 +23,12 @@ export class Conductor {
 
   @Prop({ required: true })
   lastName!: string;
+
+  @Prop()
+  address?: string;
+
+  @Prop()
+  bday?: string;
 
   @Prop({ unique: true, sparse: true })
   email?: string;
@@ -57,6 +62,9 @@ export class Conductor {
     name: string;
     url: string;
   };
+
+  @Prop({ required: true })
+  companyId!: string;
 }
 
 export type ConductorDocument = HydratedDocument<Conductor>;

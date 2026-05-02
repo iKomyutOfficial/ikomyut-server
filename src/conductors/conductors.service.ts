@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CreateConductorDto } from './dto/create-conductor.dto';
 import { UpdateConductorDto } from './dto/update-conductor.dto';
 import { Conductor, ConductorDocument } from './schemas/conductor.schema';
+import { RequestWithCompany } from '../types/request';
 
 @Injectable()
 export class ConductorService {
@@ -12,8 +13,14 @@ export class ConductorService {
     private conductorModel: Model<ConductorDocument>,
   ) {}
 
-  async create(dto: CreateConductorDto) {
-    return this.conductorModel.create(dto);
+  async create(dto: CreateConductorDto, user: RequestWithCompany): Promise<Conductor> {
+    const admin = new this.conductorModel({
+      ...dto,
+      companyId: user.companyId,
+      role: 'conductor',
+    });
+
+    return admin.save();
   }
 
   async findAll() {

@@ -12,8 +12,12 @@ export class LapRecordService {
     private model: Model<LapRecordDocument>,
   ) {}
 
-  async create(dto: CreateLapRecordDto) {
-    return this.model.create(dto);
+  async create(dto: CreateLapRecordDto, user: any): Promise<LapRecord> {
+    const admin = new this.model({
+      ...dto,
+      companyId: user.companyId,
+    });
+    return admin.save();
   }
 
   async findAll() {

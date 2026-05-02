@@ -5,13 +5,11 @@ import {
   IsObject,
   IsDateString,
   Min,
+  ValidateNested,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-
-type GeoPoint = {
-  type: 'Point';
-  coordinates: [number, number];
-};
+import { GeoPointDto } from '../../common/dto/location.dto';
+import { Type } from 'class-transformer';
 
 export class CreateTicketDto {
   @ApiProperty({ example: 'TCK-0001' })
@@ -41,14 +39,16 @@ export class CreateTicketDto {
   @ApiProperty({
     example: { type: 'Point', coordinates: [121.0437, 14.676] },
   })
-  @IsObject()
-  pickupLoc!: GeoPoint;
+  @ValidateNested()
+  @Type(() => GeoPointDto)
+  pickupLoc!: GeoPointDto;
 
   @ApiProperty({
-    example: { type: 'Point', coordinates: [121.056, 14.59] },
+    example: { type: 'Point', coordinates: [121.0437, 14.676] },
   })
-  @IsObject()
-  dropoffLoc!: GeoPoint;
+  @ValidateNested()
+  @Type(() => GeoPointDto)
+  dropoffLoc!: GeoPointDto;
 
   @ApiProperty({ example: 'Cubao Terminal' })
   @IsString()
@@ -57,10 +57,6 @@ export class CreateTicketDto {
   @ApiProperty({ example: 'Manila Central' })
   @IsString()
   dropoffAddress!: string;
-
-  @ApiProperty({ example: 'COMP-001' })
-  @IsString()
-  companyId!: string;
 
   @ApiProperty({ example: '2026-04-29T10:00:00Z' })
   @IsDateString()
@@ -79,11 +75,9 @@ export class CreateTicketDto {
   @ApiPropertyOptional({ example: 10 })
   @IsOptional()
   @IsNumber()
-  @Min(0)
   fixedDistance?: number;
 
   @ApiProperty({ example: 5 })
   @IsNumber()
-  @Min(0)
   discount!: number;
 }

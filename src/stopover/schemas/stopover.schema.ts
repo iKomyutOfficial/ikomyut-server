@@ -18,8 +18,8 @@ export class StopOver {
   @Prop({ required: true })
   address!: string;
 
-  @Prop({ type: Object, required: true })
-  location!: Location;
+  @Prop({ type: Object })
+  location?: Location;
 
   @Prop({ default: false })
   P2PPU?: boolean;
@@ -29,3 +29,4 @@ export class StopOver {
 }
 
 export const StopOverSchema = SchemaFactory.createForClass(StopOver);
+StopOverSchema.index({ location: '2dsphere' });

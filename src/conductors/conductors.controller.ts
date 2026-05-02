@@ -7,6 +7,7 @@ import {
   Post,
   Patch,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { CreateConductorDto } from './dto/create-conductor.dto';
 import { UpdateConductorDto } from './dto/update-conductor.dto';
@@ -26,41 +27,41 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class ConductorController {
-  constructor(private readonly service: ConductorService) {}
+  constructor(private readonly conductorService: ConductorService) {}
 
   @Post()
   @Roles('admin')
   @ApiOperation({ summary: 'Create conductor' })
   @ApiResponse({ status: 201, description: 'Conductor created successfully' })
-  create(@Body() dto: CreateConductorDto) {
-    return this.service.create(dto);
+  create(@Body() dto: CreateConductorDto, @Req() req: any) {
+    return this.conductorService.create(dto, req.user);
   }
 
   @Get()
   @Roles('admin')
   @ApiOperation({ summary: 'Get all conductors' })
   findAll() {
-    return this.service.findAll();
+    return this.conductorService.findAll();
   }
 
   @Get(':id')
   @Roles('admin', 'conductor')
   @ApiOperation({ summary: 'Get conductor by ID' })
   findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+    return this.conductorService.findOne(id);
   }
 
   @Patch(':id')
   @Roles('admin', 'conductor')
   @ApiOperation({ summary: 'Partially update conductor' })
   update(@Param('id') id: string, @Body() dto: UpdateConductorDto) {
-    return this.service.update(id, dto);
+    return this.conductorService.update(id, dto);
   }
 
   @Delete(':id')
   @Roles('admin', 'conductor')
   @ApiOperation({ summary: 'Delete conductor' })
   remove(@Param('id') id: string) {
-    return this.service.remove(id);
+    return this.conductorService.remove(id);
   }
 }

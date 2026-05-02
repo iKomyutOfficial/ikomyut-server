@@ -7,11 +7,18 @@ import {
   Delete,
   Patch,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { GPSDeviceService } from './gps-device.service';
 import { CreateGPSDeviceDto } from './dto/create-gps-device.dto';
 import { UpdateGPSDeviceDto } from './dto/update-gps-device.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -27,8 +34,8 @@ export class GPSDeviceController {
   @Roles('admin')
   @ApiOperation({ summary: 'Create GPS device' })
   @ApiResponse({ status: 201, description: 'Device created successfully' })
-  create(@Body() dto: CreateGPSDeviceDto) {
-    return this.service.create(dto);
+  create(@Body() dto: CreateGPSDeviceDto, @Req() req: any) {
+    return this.service.create(dto, req.user);
   }
 
   @Get()

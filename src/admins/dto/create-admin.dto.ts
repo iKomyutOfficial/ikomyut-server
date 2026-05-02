@@ -29,6 +29,11 @@ export class CreateAdminDto {
   @IsString()
   lastName!: string;
 
+  @ApiPropertyOptional({ example: '123 main st.' })
+  @IsOptional()
+  @IsString()
+  address?: string;
+
   @ApiPropertyOptional({ example: 'admin@example.com' })
   @IsOptional()
   @IsEmail()

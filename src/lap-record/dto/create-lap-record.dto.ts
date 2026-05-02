@@ -33,9 +33,4 @@ export class CreateLapRecordDto {
   })
   @IsNumber()
   timestamp!: number;
-
-  @ApiPropertyOptional({ example: 'company-123' })
-  @IsOptional()
-  @IsString()
-  companyId?: string;
 }

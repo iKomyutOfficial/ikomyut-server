@@ -24,13 +24,13 @@ import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('Admins')
 @Controller('admins')
-// @ApiBearerAuth('access-token')
-// @UseGuards(AuthGuard('jwt'), RolesGuard)
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AdminsController {
   constructor(private readonly adminsService: AdminsService) {}
 
   @Post()
-  // @Roles('admin')
+  @Roles('admin')
   @ApiOperation({ summary: 'Create admin' })
   @ApiResponse({ status: 201, type: Admins })
   create(@Body() dto: CreateAdminDto) {

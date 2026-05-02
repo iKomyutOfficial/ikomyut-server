@@ -7,6 +7,7 @@ import {
   Post,
   Patch,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
@@ -32,8 +33,8 @@ export class TicketController {
   @Roles('admin')
   @ApiOperation({ summary: 'Create ticket' })
   @ApiResponse({ status: 201, description: 'Ticket created successfully' })
-  create(@Body() dto: CreateTicketDto) {
-    return this.service.create(dto);
+  create(@Body() dto: CreateTicketDto, @Req() req: any) {
+    return this.service.create(dto, req.user);
   }
 
   @Get()

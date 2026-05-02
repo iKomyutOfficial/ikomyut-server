@@ -12,8 +12,12 @@ export class GPSDeviceService {
     private gpsDeviceModel: Model<GPSDeviceDocument>,
   ) {}
 
-  async create(dto: CreateGPSDeviceDto): Promise<GPSDevice> {
-    return this.gpsDeviceModel.create(dto);
+  async create(dto: CreateGPSDeviceDto, user: any): Promise<GPSDevice> {
+    const admin = new this.gpsDeviceModel({
+      ...dto,
+      companyId: user.companyId,
+    });
+    return admin.save();
   }
 
   async findAll(): Promise<GPSDevice[]> {

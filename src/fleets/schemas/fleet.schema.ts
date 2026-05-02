@@ -22,7 +22,7 @@ export class Fleet {
   assignedConductorId!: string;
 
   @Prop({ type: Date, default: null })
-  archivedAt!: Date;
+  archivedAt?: Date;
 
   @Prop()
   status!: string;

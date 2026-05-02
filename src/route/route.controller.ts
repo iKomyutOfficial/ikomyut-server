@@ -7,6 +7,7 @@ import {
   Post,
   Patch,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { RouteService } from './route.service';
 import { CreateRouteDto } from './dto/create-route.dto';
@@ -32,8 +33,8 @@ export class RouteController {
   @Roles('admin')
   @ApiOperation({ summary: 'Create route' })
   @ApiResponse({ status: 201, description: 'Route created successfully' })
-  create(@Body() dto: CreateRouteDto) {
-    return this.service.create(dto);
+  create(@Body() dto: CreateRouteDto, @Req() req: any) {
+    return this.service.create(dto, req.user);
   }
 
   @Get()

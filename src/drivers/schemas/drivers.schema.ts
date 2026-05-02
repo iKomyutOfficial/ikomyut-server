@@ -28,6 +28,12 @@ export class Drivers {
   @Prop({ required: true })
   lastName!: string;
 
+  @Prop()
+  address?: string;
+
+  @Prop()
+  bday?: string;
+
   @Prop({ unique: true, sparse: true })
   email?: string;
 
@@ -73,6 +79,9 @@ export class Drivers {
     name: string;
     url: string;
   };
+
+  @Prop({ required: true })
+  companyId!: string;
 }
 
 export type DriversDocument = HydratedDocument<Drivers>;

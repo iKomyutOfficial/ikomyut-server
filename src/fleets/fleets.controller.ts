@@ -7,6 +7,7 @@ import {
   Post,
   Patch,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { CreateFleetDto } from './dto/create-fleet.dto';
 import { UpdateFleetDto } from './dto/update-fleet.dto';
@@ -32,8 +33,8 @@ export class FleetController {
   @Roles('admin')
   @ApiOperation({ summary: 'Create fleet record' })
   @ApiResponse({ status: 201, description: 'Fleet created successfully' })
-  create(@Body() dto: CreateFleetDto) {
-    return this.service.create(dto);
+  create(@Body() dto: CreateFleetDto, @Req() req: any) {
+    return this.service.create(dto, req.user);
   }
 
   @Get()

@@ -7,6 +7,7 @@ import {
   Post,
   Patch,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UnitService } from './unit.service';
 import { CreateUnitDto } from './dto/create-unit.dto';
@@ -32,8 +33,8 @@ export class UnitController {
   @Roles('admin')
   @ApiOperation({ summary: 'Create unit' })
   @ApiResponse({ status: 201, description: 'Unit created successfully' })
-  create(@Body() dto: CreateUnitDto) {
-    return this.service.create(dto);
+  create(@Body() dto: CreateUnitDto, @Req() req: any) {
+    return this.service.create(dto, req.user);
   }
 
   @Get()

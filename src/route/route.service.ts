@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CreateRouteDto } from './dto/create-route.dto';
 import { UpdateRouteDto } from './dto/update-route.dto';
 import { Route, RouteDocument } from './schemas/route.schema';
+import { RequestWithCompany } from '../types/request';
 
 @Injectable()
 export class RouteService {
@@ -12,8 +13,12 @@ export class RouteService {
     private routeModel: Model<RouteDocument>,
   ) {}
 
-  async create(dto: CreateRouteDto) {
-    return this.routeModel.create(dto);
+  async create(dto: CreateRouteDto, req: RequestWithCompany): Promise<Route> {
+    const admin = new this.routeModel({
+      ...dto,
+      companyId: req.companyId,
+    });
+    return admin.save();
   }
 
   async findAll() {
