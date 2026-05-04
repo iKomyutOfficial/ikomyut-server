@@ -4,13 +4,19 @@ import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { RequestOtpDto } from './dto/request-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { LoginDto } from './dto/login.dto';
+import { CreateAdminDto } from '../admins/dto/create-admin.dto';
+import { Admins } from '../admins/schemas/admin.schema';
+import { AdminsService } from '../admins/admins.service';
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly adminsService: AdminsService,
+  ) {}
 
   @Post('request-otp')
   @ApiOperation({ summary: 'Request OTP using mobile number' })
@@ -58,40 +64,37 @@ export class AuthController {
         `OTP verification failed for mobile: ${dto.mobnum} - ${error.message}`,
         error.stack,
       );
-      throw error; // rethrow to let Nest handle the HTTP exception
+      throw error;
     }
   }
 
   @Post('admin/login')
   @ApiOperation({ summary: 'Admin login using username & password' })
-  @ApiBody({
-    schema: {
-      example: {
-        username: 'admin1',
-        password: 'password123',
-      },
-    },
-  })
+  @ApiBody({ type: LoginDto })
   @ApiResponse({
     status: 200,
     description: 'Admin logged in successfully (returns JWT)',
   })
-  async loginAdmin(@Body() body: { username: string; password: string }) {
-    this.logger.log(`Admin login attempt: ${body.username}`);
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid credentials',
+  })
+  async loginAdmin(@Body() loginDto: LoginDto) {
+    this.logger.log(`Admin login attempt: ${loginDto.username}`);
 
     try {
-      const result = await this.authService.loginAdmin(
-        body.username,
-        body.password,
+      const result = await this.authService.loginAdmin(loginDto);
+
+      this.logger.log(`Admin login successful: ${loginDto.username}`);
+      return result;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      const stack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(
+        `Admin login failed for ${loginDto.username}: ${message}`,
+        stack,
       );
 
-      this.logger.log(`Admin login successful: ${body.username}`);
-      return result;
-    } catch (error: any) {
-      this.logger.error(
-        `Admin login failed for ${body.username}: ${error.message}`,
-        error.stack,
-      );
       throw error;
     }
   }
@@ -106,10 +109,29 @@ export class AuthController {
     status: 401,
     description: 'Invalid credentials',
   })
-  async login(@Body() body: LoginDto) {
-    this.logger.log(`Login attempt: ${body.username}`);
-    const result = await this.authService.login(body.username, body.password);
-    this.logger.log(`Login successful: ${body.username}`);
-    return result;
+  async login(@Body() loginDto: LoginDto) {
+    this.logger.log(`Login attempt: ${loginDto.username}`);
+    try {
+      const result = await this.authService.loginAdmin(loginDto);
+
+      this.logger.log(`Admin login successful: ${loginDto.username}`);
+      return result;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      const stack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(
+        `Admin login failed for ${loginDto.username}: ${message}`,
+        stack,
+      );
+
+      throw error;
+    }
+  }
+
+  @Post('register')
+  @ApiOperation({ summary: 'Create admin' })
+  @ApiResponse({ status: 201, type: Admins })
+  create(@Body() dto: CreateAdminDto) {
+    return this.adminsService.create(dto);
   }
 }

@@ -38,6 +38,12 @@ export class Admins {
   @Prop({ required: true })
   companyId!: string;
 
+  @Prop({ required: true })
+  department!: string;
+
+  @Prop({ required: true })
+  position!: string;
+
   @Prop({ default: null })
   currentSession?: string;
 

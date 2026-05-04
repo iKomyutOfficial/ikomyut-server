@@ -16,6 +16,14 @@ export class CreateAdminDto {
   @IsString()
   companyName!: string;
 
+  @ApiProperty({ example: 'executive_leadership' })
+  @IsString()
+  department!: string;
+
+  @ApiProperty({ example: 'ceo' })
+  @IsString()
+  position!: string;
+
   @ApiProperty({ example: 'John' })
   @IsString()
   firstName!: string;

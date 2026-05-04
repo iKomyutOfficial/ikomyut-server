@@ -8,14 +8,21 @@ import { Admins, AdminsSchema } from '../admins/schemas/admin.schema';
 import { OtpModule } from '../otp/otp.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthGateway } from './auth.gateway';
-import { Conductor, ConductorSchema } from '../conductors/schemas/conductor.schema';
+import {
+  Conductor,
+  ConductorSchema,
+} from '../conductors/schemas/conductor.schema';
 import { Drivers, DriversSchema } from '../drivers/schemas/drivers.schema';
+import { Employee, EmployeeSchema } from '../employee/schemas/employee.schema';
+import { AdminsModule } from '../admins/admins.module';
+import { AdminsService } from '../admins/admins.service';
 
 @Module({
   imports: [
     ConfigModule,
     MongooseModule.forFeature([
       { name: Admins.name, schema: AdminsSchema },
+      { name: Employee.name, schema: EmployeeSchema },
       { name: Drivers.name, schema: DriversSchema },
       { name: Conductor.name, schema: ConductorSchema },
     ]),
@@ -38,8 +45,9 @@ import { Drivers, DriversSchema } from '../drivers/schemas/drivers.schema';
     }),
 
     OtpModule,
+    AdminsModule,
   ],
-  providers: [AuthService, JwtStrategy, AuthGateway],
+  providers: [AuthService, JwtStrategy, AuthGateway, AdminsService],
   controllers: [AuthController],
 })
 export class AuthModule {}

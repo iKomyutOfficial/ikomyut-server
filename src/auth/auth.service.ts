@@ -8,12 +8,15 @@ import { OtpService } from '../otp/otp.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGateway } from './auth.gateway';
 import { Conductor } from '../conductors/schemas/conductor.schema';
+import { LoginDto } from './dto/login.dto';
+import { Employee } from '../employee/schemas/employee.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(Drivers.name) private driverModel: Model<Drivers>,
     @InjectModel(Admins.name) private adminModel: Model<Admins>,
+    @InjectModel(Employee.name) private employee: Model<Employee>,
+    @InjectModel(Drivers.name) private driverModel: Model<Drivers>,
     @InjectModel(Conductor.name) private conductorModel: Model<Conductor>,
     private jwtService: JwtService,
     private otpService: OtpService,
@@ -56,51 +59,59 @@ export class AuthService {
   }
 
   // ADMIN LOGIN
-  async loginAdmin(username: string, password: string) {
-    const admin: any = await this.adminModel.findOne({ username });
-    if (!admin) throw new UnauthorizedException('Admin not found');
+  async loginAdmin(loginDto: LoginDto) {
+    const { username, password } = loginDto;
+
+    const admin = await this.adminModel.findOne({ username });
+
+    if (!admin) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
 
     const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) throw new UnauthorizedException('Invalid password');
 
-    const payload = {
+    if (!isMatch) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const token = this.jwtService.sign({
       sub: admin._id,
       username: admin.username,
       type: 'admin',
-    };
-
-    const token = this.jwtService.sign(payload);
+    });
 
     admin.authToken = token;
     await admin.save();
+
     this.authGateway.emitNewLogins(admin);
 
-    return {
-      access_token: token,
-      admin,
-    };
+    return { access_token: token, admin };
   }
 
-  async login(username: string, password: string) {
+  async login(loginDto: LoginDto) {
+    const { username, password } = loginDto;
     let account: any =
-      (await this.adminModel.findOne({ username })) ||
+      (await this.employee.findOne({ username })) ||
       (await this.driverModel.findOne({ username })) ||
       (await this.conductorModel.findOne({ username }));
 
     const role =
       account?.role ||
-      ((await this.adminModel.findOne({ username }))
-        ? 'admin'
+      ((await this.employee.findOne({ username }))
+        ? 'employee'
         : (await this.driverModel.findOne({ username }))
           ? 'driver'
           : account
             ? 'conductor'
             : null);
 
-    if (!account) throw new UnauthorizedException('Invalid credentials');
+    if (!account) {
+      return { message: 'Invalid credentials' };
+    }
 
-    if (!(await bcrypt.compare(password, account.password))) {
-      throw new UnauthorizedException('Invalid credentials');
+    const isMatch = await bcrypt.compare(password, account.password);
+    if (!isMatch) {
+      return { message: 'Invalid credentials' };
     }
 
     const token = this.jwtService.sign({
@@ -113,11 +124,14 @@ export class AuthService {
       authToken: token,
     });
 
-    if (role === 'admin') this.authGateway.emitNewLogins(account);
-
+    this.authGateway.emitNewLogins(account);
     const user = account.toObject();
     delete user.password;
 
-    return { access_token: token, user, role };
+    return {
+      access_token: token,
+      user,
+      role,
+    };
   }
 }

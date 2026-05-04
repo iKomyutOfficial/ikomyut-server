@@ -3,6 +3,7 @@ import {
   Catch,
   ArgumentsHost,
   HttpStatus,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 @Catch()
@@ -10,6 +11,18 @@ export class MongoExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
+
+    // Handle UnauthorizedException (401)
+    if (exception instanceof UnauthorizedException) {
+      return response.status(HttpStatus.UNAUTHORIZED).json({
+        statusCode: 401,
+        message:
+          exception.getResponse?.()?.['message'] ||
+          exception.message ||
+          'Unauthorized',
+        error: 'Unauthorized',
+      });
+    }
 
     // Handle Mongo duplicate key error
     if (exception?.code === 11000) {
