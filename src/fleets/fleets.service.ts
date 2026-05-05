@@ -45,4 +45,8 @@ export class FleetService {
     if (!deleted) throw new NotFoundException('Fleet not found');
     return deleted;
   }
+
+  async getTotalRegistered(companyId: string) {
+    return this.fleetModel.countDocuments({ companyId });
+  }
 }

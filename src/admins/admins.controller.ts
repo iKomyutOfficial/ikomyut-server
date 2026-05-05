@@ -21,6 +21,7 @@ import { Admins } from './schemas/admin.schema';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { TotalsResponseDto } from './dto/totals-response.dto';
 
 @ApiTags('Admins')
 @Controller('admins')
@@ -63,5 +64,12 @@ export class AdminsController {
   @ApiOperation({ summary: 'Delete admin' })
   remove(@Param('id') id: string) {
     return this.adminsService.remove(id);
+  }
+
+  @Get('totals')
+  @Roles('admin')
+  @ApiOperation({ summary: 'Get total stats' })
+  getTotal() {
+    return this.adminsService.getTotal();
   }
 }

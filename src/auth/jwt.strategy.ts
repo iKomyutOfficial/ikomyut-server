@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 import { Admins } from '../admins/schemas/admin.schema';
 import { Drivers } from '../drivers/schemas/drivers.schema';
 import { Conductor } from '../conductors/schemas/conductor.schema';
+import { Employee } from '../employee/schemas/employee.schema';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -15,6 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     @InjectModel(Conductor.name) private conductorModel: Model<Conductor>,
     @InjectModel(Drivers.name) private driverModel: Model<Drivers>,
     @InjectModel(Admins.name) private adminModel: Model<Admins>,
+    @InjectModel(Employee.name) private employeeModel: Model<Employee>,
   ) {
     const secret = configService.get<string>('JWT_SECRET');
     if (!secret) {
@@ -35,15 +37,25 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+
     const driver = await this.driverModel.findById(payload.sub);
     const conductor = await this.conductorModel.findById(payload.sub);
     const admin = await this.adminModel.findById(payload.sub);
+    const employee = await this.employeeModel.findById(payload.sub);
 
-    const account: any = conductor || driver || admin;
+    const account: any = admin || conductor || driver || employee;
 
     if (!account || account.authToken !== token) {
       throw new UnauthorizedException('Token is no longer valid');
     }
+
+    let role: string;
+
+    if (admin) role = 'admin';
+    else if (conductor) role = 'conductor';
+    else if (driver) role = 'driver';
+    else if (employee) role = 'employee';
+    else role = 'unknown';
 
     return {
       id: account._id,
@@ -52,7 +64,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       email: account.email || null,
       companyId: account.companyId || null,
       companyName: account.companyName || null,
-      role: payload.role,
+      role,
     };
   }
 }

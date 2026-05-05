@@ -44,4 +44,8 @@ export class TicketService {
     if (!deleted) throw new NotFoundException('Ticket not found');
     return deleted;
   }
+
+  async getTotalRegistered(companyId: string) {
+    return this.ticketModel.countDocuments({ companyId });
+  }
 }

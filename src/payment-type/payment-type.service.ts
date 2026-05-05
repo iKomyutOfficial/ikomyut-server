@@ -2,7 +2,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { PaymentType, PaymentTypeDocument } from './schemas/payment-type.schema';
+import {
+  PaymentType,
+  PaymentTypeDocument,
+} from './schemas/payment-type.schema';
 import { CreatePaymentTypeDto } from './dto/create-payment-type.dto';
 import { UpdatePaymentTypeDto } from './dto/update-payment-type.dto';
 
@@ -48,5 +51,9 @@ export class PaymentTypeService {
     const deleted = await this.paymentTypeModel.findByIdAndDelete(id).lean();
     if (!deleted) throw new NotFoundException('Payment type not found');
     return this.sanitize(deleted);
+  }
+
+  async getTotalRegistered(companyId: string) {
+    return this.paymentTypeModel.countDocuments({ companyId });
   }
 }

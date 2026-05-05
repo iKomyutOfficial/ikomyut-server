@@ -13,7 +13,10 @@ export class ConductorService {
     private conductorModel: Model<ConductorDocument>,
   ) {}
 
-  async create(dto: CreateConductorDto, user: RequestWithCompany): Promise<Conductor> {
+  async create(
+    dto: CreateConductorDto,
+    user: RequestWithCompany,
+  ): Promise<Conductor> {
     const admin = new this.conductorModel({
       ...dto,
       companyId: user.companyId,
@@ -46,5 +49,9 @@ export class ConductorService {
     const deleted = await this.conductorModel.findByIdAndDelete(id);
     if (!deleted) throw new NotFoundException('Conductor not found');
     return deleted;
+  }
+
+  async getTotalRegistered(companyId: string) {
+    return this.conductorModel.countDocuments({ companyId });
   }
 }

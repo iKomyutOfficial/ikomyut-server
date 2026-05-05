@@ -44,4 +44,8 @@ export class UnitService {
     if (!deleted) throw new NotFoundException('Unit not found');
     return deleted;
   }
+
+  async getTotalRegistered(companyId: string): Promise<number> {
+    return this.unitModel.countDocuments({ companyId }).exec();
+  }
 }

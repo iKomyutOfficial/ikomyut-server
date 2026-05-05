@@ -57,4 +57,8 @@ export class LapCounterSettingsService {
 
     return { message: 'Deleted successfully' };
   }
+
+  async getTotalRegistered(companyId: string) {
+    return this.model.countDocuments({ companyId });
+  }
 }

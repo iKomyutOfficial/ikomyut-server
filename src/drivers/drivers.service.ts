@@ -51,4 +51,8 @@ export class DriversService {
 
     return { message: 'Driver deleted successfully' };
   }
+
+  async getTotalRegistered(companyId: string) {
+    return this.driverModel.countDocuments({ companyId });
+  }
 }

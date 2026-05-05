@@ -67,7 +67,6 @@ import { EmployeeModule } from './employee/employee.module';
   controllers: [AppController],
   providers: [
     AppService,
-
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

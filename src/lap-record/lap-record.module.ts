@@ -12,5 +12,6 @@ import { LapRecord, LapRecordSchema } from './schemas/lap-record.schema';
   ],
   controllers: [LapRecordController],
   providers: [LapRecordService],
+  exports: [LapRecordService],
 })
 export class LapRecordModule {}

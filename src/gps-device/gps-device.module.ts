@@ -12,5 +12,6 @@ import { GPSDevice, GPSDeviceSchema } from './schemas/gps-device.schema';
   ],
   controllers: [GPSDeviceController],
   providers: [GPSDeviceService],
+  exports: [GPSDeviceService],
 })
 export class GPSDeviceModule {}

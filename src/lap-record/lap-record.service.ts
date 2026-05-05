@@ -61,4 +61,8 @@ export class LapRecordService {
       .sort({ timestamp: -1 })
       .exec();
   }
+
+  async getTotalRegistered(companyId: string) {
+    return this.model.countDocuments({ companyId });
+  }
 }

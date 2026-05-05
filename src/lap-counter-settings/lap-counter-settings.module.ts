@@ -15,5 +15,6 @@ import {
   ],
   controllers: [LapCounterSettingsController],
   providers: [LapCounterSettingsService],
+  exports: [LapCounterSettingsService],
 })
 export class LapCounterSettingsModule {}

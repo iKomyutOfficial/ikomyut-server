@@ -60,4 +60,8 @@ export class EmployeeService {
     delete obj.currentSession;
     return obj;
   }
+
+  async getTotalRegistered(companyId: string) {
+    return this.employeeModel.countDocuments({ companyId });
+  }
 }

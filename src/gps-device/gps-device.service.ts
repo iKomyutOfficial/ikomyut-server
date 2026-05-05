@@ -55,4 +55,8 @@ export class GPSDeviceService {
 
     return device;
   }
+
+  async getTotalRegistered(companyId: string) {
+    return this.gpsDeviceModel.countDocuments({ companyId });
+  }
 }

@@ -45,4 +45,8 @@ export class RouteService {
     if (!deleted) throw new NotFoundException('Route not found');
     return deleted;
   }
+
+  async getTotalRegistered(companyId: string) {
+    return this.routeModel.countDocuments({ companyId });
+  }
 }

@@ -12,5 +12,6 @@ import { PaymentType, PaymentTypeSchema } from './schemas/payment-type.schema';
   ],
   controllers: [PaymentTypeController],
   providers: [PaymentTypeService],
+  exports: [PaymentTypeService],
 })
 export class PaymentTypeModule {}

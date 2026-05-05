@@ -12,5 +12,6 @@ import { StopOverController } from './stopover.controller';
   ],
   controllers: [StopOverController],
   providers: [StopOverService],
+  exports: [StopOverService],
 })
 export class StopOverModule {}

@@ -24,44 +24,44 @@ import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('Conductors')
 @Controller('conductors')
-@ApiBearerAuth('access-token')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+// @ApiBearerAuth('access-token')
+// @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class ConductorController {
-  constructor(private readonly conductorService: ConductorService) {}
+  constructor(private readonly conductorsService: ConductorService) {}
 
   @Post()
   @Roles('admin')
   @ApiOperation({ summary: 'Create conductor' })
   @ApiResponse({ status: 201, description: 'Conductor created successfully' })
   create(@Body() dto: CreateConductorDto, @Req() req: any) {
-    return this.conductorService.create(dto, req.user);
+    return this.conductorsService.create(dto, req.user);
   }
 
   @Get()
   @Roles('admin')
   @ApiOperation({ summary: 'Get all conductors' })
   findAll() {
-    return this.conductorService.findAll();
+    return this.conductorsService.findAll();
   }
 
   @Get(':id')
   @Roles('admin', 'conductor')
   @ApiOperation({ summary: 'Get conductor by ID' })
   findOne(@Param('id') id: string) {
-    return this.conductorService.findOne(id);
+    return this.conductorsService.findOne(id);
   }
 
   @Patch(':id')
   @Roles('admin', 'conductor')
   @ApiOperation({ summary: 'Partially update conductor' })
   update(@Param('id') id: string, @Body() dto: UpdateConductorDto) {
-    return this.conductorService.update(id, dto);
+    return this.conductorsService.update(id, dto);
   }
 
   @Delete(':id')
   @Roles('admin', 'conductor')
   @ApiOperation({ summary: 'Delete conductor' })
   remove(@Param('id') id: string) {
-    return this.conductorService.remove(id);
+    return this.conductorsService.remove(id);
   }
 }

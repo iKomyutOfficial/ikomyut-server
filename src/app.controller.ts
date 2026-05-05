@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, UseGuards } from '@nestjs/common';
+import { Controller, Get, Logger, Req, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Roles } from './auth/decorators/roles.decorator';
@@ -21,5 +21,10 @@ export class AppController {
     const status = this.appService.getHealthStatus();
     this.logger.debug(`Returning health status: ${JSON.stringify(status)}`);
     return status;
+  }
+
+  @Get('dashboard')
+  getDashboard(@Req() req) {
+    return this.appService.getDashboardStats(req.user.companyId);
   }
 }

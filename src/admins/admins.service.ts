@@ -5,12 +5,27 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admins, AdminsDocument } from './schemas/admin.schema';
 import { customAlphabet, nanoid } from 'nanoid';
+import { Drivers, DriversDocument } from '../drivers/schemas/drivers.schema';
+import {
+  Conductor,
+  ConductorDocument,
+} from '../conductors/schemas/conductor.schema';
+import { Unit, UnitDocument } from '../unit/schemas/unit.schema';
 
 @Injectable()
 export class AdminsService {
   constructor(
     @InjectModel(Admins.name)
     private adminModel: Model<AdminsDocument>,
+
+    @InjectModel(Drivers.name)
+    private driverModel: Model<DriversDocument>,
+
+    @InjectModel(Conductor.name)
+    private conductorModel: Model<ConductorDocument>,
+
+    @InjectModel(Unit.name)
+    private unitModel: Model<UnitDocument>,
   ) {}
 
   nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 8);
@@ -56,5 +71,16 @@ export class AdminsService {
     const result = await this.adminModel.findByIdAndDelete(id).exec();
     if (!result) throw new NotFoundException('Admin not found');
     return { message: 'Admin deleted successfully' };
+  }
+
+  async getTotal() {
+    const [data, conductor] = await Promise.all([
+      this.conductorModel.find().exec(),
+      this.conductorModel.countDocuments(),
+    ]);
+
+    return {
+      conductor,
+    };
   }
 }

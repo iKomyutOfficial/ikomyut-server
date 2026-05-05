@@ -12,5 +12,6 @@ import { Versions, VersionsSchema } from './schemas/versions.schema';
   ],
   controllers: [VersionsController],
   providers: [VersionsService],
+  exports: [VersionsService],
 })
 export class VersionsModule {}

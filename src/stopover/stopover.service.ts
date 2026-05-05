@@ -64,4 +64,8 @@ export class StopOverService {
     if (!deleted) throw new NotFoundException('StopOver not found');
     return deleted;
   }
+
+  async getTotalRegistered(companyId: string) {
+    return this.stopOverModel.countDocuments({ companyId });
+  }
 }

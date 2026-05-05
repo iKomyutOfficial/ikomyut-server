@@ -38,24 +38,28 @@ export class UnitController {
   }
 
   @Get()
+  @Roles('admin')
   @ApiOperation({ summary: 'Get all units' })
   findAll() {
     return this.service.findAll();
   }
 
   @Get(':id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Get unit by ID' })
   findOne(@Param('id') id: string) {
     return this.service.findOne(id);
   }
 
   @Patch(':id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Update unit (partial)' })
   update(@Param('id') id: string, @Body() dto: UpdateUnitDto) {
     return this.service.update(id, dto);
   }
 
   @Delete(':id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Delete unit' })
   remove(@Param('id') id: string) {
     return this.service.remove(id);
