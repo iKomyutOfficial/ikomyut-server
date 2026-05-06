@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import basicAuth from 'express-basic-auth';
 import { AuditInterceptor } from './common/interceptors/audit.interceptor';
-import { MongoExceptionFilter } from './common/filter';
+import { MongoExceptionFilter } from './common/utils/filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

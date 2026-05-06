@@ -41,6 +41,9 @@ export class Employee {
   @Prop({ default: null })
   currentSession?: string;
 
+  @Prop()
+  authToken?: string;
+
   @Prop({ default: false })
   isRegistered!: boolean;
 
@@ -50,14 +53,38 @@ export class Employee {
   @Prop({ default: false })
   isOAuthUser?: boolean;
 
-  @Prop()
-  authToken?: string;
-
   @Prop({ type: Photo })
   profilePic?: {
     name: string;
     url: string;
   };
+
+  @Prop()
+  gender?: string;
+
+  @Prop()
+  dateHired?: Date;
+
+  @Prop()
+  employmentType?: string;
+
+  @Prop()
+  sssNumber?: string;
+
+  @Prop()
+  philhealthNumber?: string;
+
+  @Prop()
+  pagibigNumber?: string;
+
+  @Prop()
+  emergencyContactName?: string;
+
+  @Prop()
+  emergencyContactNumber?: string;
+
+  @Prop()
+  emergencyContactRelationship?: string;
 }
 
 export type EmployeeDocument = HydratedDocument<Employee>;

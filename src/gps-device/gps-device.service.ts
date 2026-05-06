@@ -20,8 +20,8 @@ export class GPSDeviceService {
     return admin.save();
   }
 
-  async findAll(): Promise<GPSDevice[]> {
-    return this.gpsDeviceModel.find().exec();
+  async findAll(user: any) {
+    return this.gpsDeviceModel.find({ companyId: user.companyId }).exec();
   }
 
   async findOne(id: string): Promise<GPSDevice> {

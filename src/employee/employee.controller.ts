@@ -41,8 +41,8 @@ export class EmployeeController {
   @Get()
   @Roles('admin')
   @ApiOperation({ summary: 'Get all employees' })
-  findAll() {
-    return this.employeeService.findAll();
+  findAll(@Req() req) {
+    return this.employeeService.findAll(req.user);
   }
 
   @Get(':id')

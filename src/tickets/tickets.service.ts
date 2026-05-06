@@ -20,8 +20,9 @@ export class TicketService {
     });
     return admin.save();
   }
-  async findAll() {
-    return this.ticketModel.find().exec();
+
+  async findAll(user: any) {
+    return this.ticketModel.find({ companyId: user.companyId }).exec();
   }
 
   async findOne(id: string) {

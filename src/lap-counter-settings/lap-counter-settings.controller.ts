@@ -29,21 +29,21 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class LapCounterSettingsController {
-  constructor(private readonly service: LapCounterSettingsService) {}
+  constructor(private readonly lapService: LapCounterSettingsService) {}
 
   @Post()
   @Roles('admin')
   @ApiOperation({ summary: 'Create lap counter settings' })
   @ApiResponse({ status: 201, description: 'Created successfully' })
   create(@Body() dto: CreateLapCounterSettingsDto, @Req() req: any) {
-    return this.service.create(dto, req.user);
+    return this.lapService.create(dto, req.user);
   }
 
   @Get()
   @Roles('admin')
   @ApiOperation({ summary: 'Get all settings' })
-  findAll() {
-    return this.service.findAll();
+  findAll(@Req() req) {
+    return this.lapService.findAll(req.user);
   }
 
   @Get('account/:account')
@@ -51,27 +51,27 @@ export class LapCounterSettingsController {
   @ApiOperation({ summary: 'Get settings by account' })
   @ApiParam({ name: 'account', example: 'account-001' })
   findByAccount(@Param('account') account: string) {
-    return this.service.findByAccount(account);
+    return this.lapService.findByAccount(account);
   }
 
   @Get(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Get settings by ID' })
   findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+    return this.lapService.findOne(id);
   }
 
   @Patch(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Update settings' })
   update(@Param('id') id: string, @Body() dto: UpdateLapCounterSettingsDto) {
-    return this.service.update(id, dto);
+    return this.lapService.update(id, dto);
   }
 
   @Delete(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Delete settings' })
   remove(@Param('id') id: string) {
-    return this.service.remove(id);
+    return this.lapService.remove(id);
   }
 }

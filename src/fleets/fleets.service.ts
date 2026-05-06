@@ -21,8 +21,8 @@ export class FleetService {
     return admin.save();
   }
 
-  async findAll() {
-    return this.fleetModel.find().exec();
+  async findAll(user: any) {
+    return this.fleetModel.find({ companyId: user.companyId }).exec();
   }
 
   async findOne(id: string) {

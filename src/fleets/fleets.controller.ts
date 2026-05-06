@@ -27,41 +27,41 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class FleetController {
-  constructor(private readonly service: FleetService) {}
+  constructor(private readonly fleetService: FleetService) {}
 
   @Post()
   @Roles('admin')
   @ApiOperation({ summary: 'Create fleet record' })
   @ApiResponse({ status: 201, description: 'Fleet created successfully' })
   create(@Body() dto: CreateFleetDto, @Req() req: any) {
-    return this.service.create(dto, req.user);
+    return this.fleetService.create(dto, req.user);
   }
 
   @Get()
   @Roles('admin')
   @ApiOperation({ summary: 'Get all fleet records' })
-  findAll() {
-    return this.service.findAll();
+  findAll(@Req() req) {
+    return this.fleetService.findAll(req.user);
   }
 
   @Get(':id')
   @Roles('admin', 'conductor')
   @ApiOperation({ summary: 'Get fleet by ID' })
   findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+    return this.fleetService.findOne(id);
   }
 
   @Patch(':id')
   @Roles('admin', 'conductor')
   @ApiOperation({ summary: 'Update fleet (partial)' })
   update(@Param('id') id: string, @Body() dto: UpdateFleetDto) {
-    return this.service.update(id, dto);
+    return this.fleetService.update(id, dto);
   }
 
   @Delete(':id')
   @Roles('admin', 'conductor')
   @ApiOperation({ summary: 'Delete fleet' })
   remove(@Param('id') id: string) {
-    return this.service.remove(id);
+    return this.fleetService.remove(id);
   }
 }

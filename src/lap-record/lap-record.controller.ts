@@ -29,21 +29,21 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class LapRecordController {
-  constructor(private readonly service: LapRecordService) {}
+  constructor(private readonly recordService: LapRecordService) {}
 
   @Post()
   @Roles('admin')
   @ApiOperation({ summary: 'Create lap record' })
   @ApiResponse({ status: 201, description: 'Created successfully' })
   create(@Body() dto: CreateLapRecordDto, @Req() req: any) {
-    return this.service.create(dto, req.user);
+    return this.recordService.create(dto, req.user);
   }
 
   @Get()
   @Roles('admin')
   @ApiOperation({ summary: 'Get all lap records' })
-  findAll() {
-    return this.service.findAll();
+  findAll(@Req() req) {
+    return this.recordService.findAll(req.user);
   }
 
   @Get('device')
@@ -55,7 +55,7 @@ export class LapRecordController {
     @Query('account') account: string,
     @Query('deviceImei') deviceImei: string,
   ) {
-    return this.service.findByDevice(account, deviceImei);
+    return this.recordService.findByDevice(account, deviceImei);
   }
 
   @Get('geofence')
@@ -67,27 +67,27 @@ export class LapRecordController {
     @Query('account') account: string,
     @Query('geofenceId') geofenceId: string,
   ) {
-    return this.service.findByGeofence(account, geofenceId);
+    return this.recordService.findByGeofence(account, geofenceId);
   }
 
   @Get(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Get lap record by ID' })
   findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+    return this.recordService.findOne(id);
   }
 
   @Patch(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Update lap record' })
   update(@Param('id') id: string, @Body() dto: UpdateLapRecordDto) {
-    return this.service.update(id, dto);
+    return this.recordService.update(id, dto);
   }
 
   @Delete(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Delete lap record' })
   remove(@Param('id') id: string) {
-    return this.service.remove(id);
+    return this.recordService.remove(id);
   }
 }

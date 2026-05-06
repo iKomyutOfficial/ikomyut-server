@@ -22,6 +22,7 @@ import { Drivers } from './schemas/drivers.schema';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { RequestWithCompany } from '../types/request';
 
 @ApiTags('Drivers')
 @Controller('drivers')
@@ -40,9 +41,8 @@ export class DriversController {
 
   @Get()
   @Roles('admin')
-  @ApiOperation({ summary: 'Get all drivers' })
-  findAll() {
-    return this.driversService.findAll();
+  findAll(@Req() req) {
+    return this.driversService.findAll(req.user);
   }
 
   @Get(':id')

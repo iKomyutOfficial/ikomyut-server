@@ -12,38 +12,38 @@ import {
 export class LapCounterSettingsService {
   constructor(
     @InjectModel(LapCounterSettings.name)
-    private model: Model<LapCounterSettingsDocument>,
+    private lapModel: Model<LapCounterSettingsDocument>,
   ) {}
 
   async create(
     dto: CreateLapCounterSettingsDto,
     user: any,
   ): Promise<LapCounterSettings> {
-    const admin = new this.model({
+    const admin = new this.lapModel({
       ...dto,
       companyId: user.companyId,
     });
     return admin.save();
   }
 
-  async findAll() {
-    return this.model.find().exec();
+  async findAll(user: any) {
+    return this.lapModel.find({ companyId: user.companyId }).exec();
   }
 
   async findOne(id: string) {
-    const data = await this.model.findById(id).exec();
+    const data = await this.lapModel.findById(id).exec();
     if (!data) throw new NotFoundException('Settings not found');
     return data;
   }
 
   async findByAccount(account: string) {
-    const data = await this.model.findOne({ account }).exec();
+    const data = await this.lapModel.findOne({ account }).exec();
     if (!data) throw new NotFoundException('Settings not found');
     return data;
   }
 
   async update(id: string, dto: UpdateLapCounterSettingsDto) {
-    const updated = await this.model
+    const updated = await this.lapModel
       .findByIdAndUpdate(id, dto, { new: true })
       .exec();
 
@@ -52,13 +52,13 @@ export class LapCounterSettingsService {
   }
 
   async remove(id: string) {
-    const deleted = await this.model.findByIdAndDelete(id).exec();
+    const deleted = await this.lapModel.findByIdAndDelete(id).exec();
     if (!deleted) throw new NotFoundException('Settings not found');
 
     return { message: 'Deleted successfully' };
   }
 
   async getTotalRegistered(companyId: string) {
-    return this.model.countDocuments({ companyId });
+    return this.lapModel.countDocuments({ companyId });
   }
 }

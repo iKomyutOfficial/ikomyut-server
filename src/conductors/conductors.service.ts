@@ -5,6 +5,7 @@ import { CreateConductorDto } from './dto/create-conductor.dto';
 import { UpdateConductorDto } from './dto/update-conductor.dto';
 import { Conductor, ConductorDocument } from './schemas/conductor.schema';
 import { RequestWithCompany } from '../types/request';
+import { excludeFields } from '../common/utils/excludeFields';
 
 @Injectable()
 export class ConductorService {
@@ -12,6 +13,11 @@ export class ConductorService {
     @InjectModel(Conductor.name)
     private conductorModel: Model<ConductorDocument>,
   ) {}
+
+  private excludeSensitive(driver: ConductorDocument) {
+    const obj = driver.toObject();
+    return excludeFields(obj, ['password', 'authToken', 'currentSession']);
+  }
 
   async create(
     dto: CreateConductorDto,
@@ -26,8 +32,12 @@ export class ConductorService {
     return admin.save();
   }
 
-  async findAll() {
-    return this.conductorModel.find().exec();
+  async findAll(user: any) {
+    const data = await this.conductorModel
+      .find({ companyId: user.companyId })
+      .exec();
+
+    return data.map((e) => this.excludeSensitive(e));
   }
 
   async findOne(id: string) {

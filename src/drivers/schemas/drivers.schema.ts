@@ -6,8 +6,6 @@ import { Photo } from '../../common/schemas/photo.schema';
 
 @Schema({ timestamps: true })
 export class Drivers {
-  // ─── Auth ─────────────────────────────────────────
-
   @Prop({ required: true, unique: true })
   username!: string;
 
@@ -16,8 +14,6 @@ export class Drivers {
 
   @Prop({ default: 'driver' })
   role!: string;
-
-  // ─── Basic Info ───────────────────────────────────
 
   @Prop({ required: true })
   firstName!: string;
@@ -32,15 +28,13 @@ export class Drivers {
   address?: string;
 
   @Prop()
-  bday?: string;
+  dateOfBirth?: Date;
 
   @Prop({ unique: true, sparse: true })
   email?: string;
 
   @Prop({ unique: true, sparse: true })
   contactNumber?: string;
-
-  // ─── Drivers Core Details ──────────────────────────
 
   @Prop({ unique: true, sparse: true })
   licenseNumber?: string;
@@ -51,8 +45,6 @@ export class Drivers {
   @Prop()
   licenseExpiry?: Date;
 
-  // ─── Assignment ───────────────────────────────────
-
   @Prop()
   assignedRoute?: string;
 
@@ -62,17 +54,11 @@ export class Drivers {
   @Prop({ default: false })
   isAssign!: boolean;
 
-  // ─── Status ───────────────────────────────────────
-
   @Prop({ enum: ['Active', 'Inactive', 'Suspended'], default: 'Active' })
   status!: string;
 
-  // ─── Location ─────────────────────────────────────
-
   @Prop({ type: Object })
   location?: Location;
-
-  // ─── Profile ──────────────────────────────────────
 
   @Prop({ type: Photo })
   profilePic?: {
@@ -82,6 +68,39 @@ export class Drivers {
 
   @Prop({ required: true })
   companyId!: string;
+
+  @Prop({ default: null })
+  currentSession?: string;
+
+  @Prop()
+  authToken?: string;
+
+  @Prop()
+  gender?: string;
+
+  @Prop()
+  dateHired?: Date;
+
+  @Prop()
+  employmentType?: string;
+
+  @Prop()
+  sssNumber?: string;
+
+  @Prop()
+  philhealthNumber?: string;
+
+  @Prop()
+  pagibigNumber?: string;
+
+  @Prop()
+  emergencyContactName?: string;
+
+  @Prop()
+  emergencyContactNumber?: string;
+
+  @Prop()
+  emergencyContactRelationship?: string;
 }
 
 export type DriversDocument = HydratedDocument<Drivers>;

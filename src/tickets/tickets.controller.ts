@@ -27,37 +27,37 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class TicketController {
-  constructor(private readonly service: TicketService) {}
+  constructor(private readonly ticketService: TicketService) {}
 
   @Post()
   @Roles('admin')
   @ApiOperation({ summary: 'Create ticket' })
   @ApiResponse({ status: 201, description: 'Ticket created successfully' })
   create(@Body() dto: CreateTicketDto, @Req() req: any) {
-    return this.service.create(dto, req.user);
+    return this.ticketService.create(dto, req.user);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all tickets' })
-  findAll() {
-    return this.service.findAll();
+  findAll(@Req() req) {
+    return this.ticketService.findAll(req.user);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get ticket by ID' })
   findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+    return this.ticketService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update ticket (partial)' })
   update(@Param('id') id: string, @Body() dto: UpdateTicketDto) {
-    return this.service.update(id, dto);
+    return this.ticketService.update(id, dto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete ticket' })
   remove(@Param('id') id: string) {
-    return this.service.remove(id);
+    return this.ticketService.remove(id);
   }
 }

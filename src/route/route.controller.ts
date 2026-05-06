@@ -27,41 +27,41 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class RouteController {
-  constructor(private readonly service: RouteService) {}
+  constructor(private readonly routeService: RouteService) {}
 
   @Post()
   @Roles('admin')
   @ApiOperation({ summary: 'Create route' })
   @ApiResponse({ status: 201, description: 'Route created successfully' })
   create(@Body() dto: CreateRouteDto, @Req() req: any) {
-    return this.service.create(dto, req.user);
+    return this.routeService.create(dto, req.user);
   }
 
   @Get()
   @Roles('admin', 'conductor')
   @ApiOperation({ summary: 'Get all routes' })
-  findAll() {
-    return this.service.findAll();
+  findAll(@Req() req) {
+    return this.routeService.findAll(req.user);
   }
 
   @Get(':id')
   @Roles('admin', 'conductor')
   @ApiOperation({ summary: 'Get route by ID' })
   findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+    return this.routeService.findOne(id);
   }
 
   @Patch(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Update route (partial)' })
   update(@Param('id') id: string, @Body() dto: UpdateRouteDto) {
-    return this.service.update(id, dto);
+    return this.routeService.update(id, dto);
   }
 
   @Delete(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Delete route' })
   remove(@Param('id') id: string) {
-    return this.service.remove(id);
+    return this.routeService.remove(id);
   }
 }

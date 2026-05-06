@@ -44,7 +44,7 @@ export class CreateDriverDto {
   @ApiPropertyOptional({ example: '11/11/1990' })
   @IsOptional()
   @IsString()
-  bday?: string;
+  dateOfBirth?: Date;
 
   @ApiPropertyOptional({ example: 'driver@example.com' })
   @IsOptional()

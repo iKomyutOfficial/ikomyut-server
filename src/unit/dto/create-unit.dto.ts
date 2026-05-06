@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { toValidDate } from '../../common/validation';
+import { toValidDate } from '../../common/utils/validation';
 import { GeoPointDto } from '../../common/dto/location.dto';
 
 class MaintenancePartDto {

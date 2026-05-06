@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Employee, EmployeeDocument } from './schemas/employee.schema';
 import { use } from 'passport';
+import { excludeFields } from '../common/utils/excludeFields';
 
 @Injectable()
 export class EmployeeService {
@@ -25,8 +26,11 @@ export class EmployeeService {
     return admin.save();
   }
 
-  async findAll() {
-    const data = await this.employeeModel.find().exec();
+  async findAll(user: any) {
+    const data = await this.employeeModel
+      .find({ companyId: user.companyId })
+      .exec();
+
     return data.map((e) => this.excludeSensitive(e));
   }
 
@@ -52,13 +56,9 @@ export class EmployeeService {
     return { message: 'Deleted successfully' };
   }
 
-  // 🔒 Remove sensitive fields
   private excludeSensitive(employee: EmployeeDocument) {
     const obj = employee.toObject();
-    delete obj.password;
-    delete obj.authToken;
-    delete obj.currentSession;
-    return obj;
+    return excludeFields(obj, ['password', 'authToken', 'currentSession']);
   }
 
   async getTotalRegistered(companyId: string) {

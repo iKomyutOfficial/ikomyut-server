@@ -28,42 +28,42 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class GPSDeviceController {
-  constructor(private readonly service: GPSDeviceService) {}
+  constructor(private readonly gpsDeviceService: GPSDeviceService) {}
 
   @Post()
   @Roles('admin')
   @ApiOperation({ summary: 'Create GPS device' })
   @ApiResponse({ status: 201, description: 'Device created successfully' })
   create(@Body() dto: CreateGPSDeviceDto, @Req() req: any) {
-    return this.service.create(dto, req.user);
+    return this.gpsDeviceService.create(dto, req.user);
   }
 
   @Get()
   @Roles('admin')
   @ApiOperation({ summary: 'Get all GPS devices' })
-  findAll() {
-    return this.service.findAll();
+  findAll(@Req() req) {
+    return this.gpsDeviceService.findAll(req.user);
   }
 
   @Get(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Get GPS device by ID' })
   findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+    return this.gpsDeviceService.findOne(id);
   }
 
   @Patch(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Update GPS device' })
   update(@Param('id') id: string, @Body() dto: UpdateGPSDeviceDto) {
-    return this.service.update(id, dto);
+    return this.gpsDeviceService.update(id, dto);
   }
 
   @Delete(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Delete GPS device' })
   remove(@Param('id') id: string) {
-    return this.service.remove(id);
+    return this.gpsDeviceService.remove(id);
   }
 
   @Get('imei/:imei')
@@ -77,6 +77,6 @@ export class GPSDeviceController {
   @ApiResponse({ status: 200, description: 'Device found' })
   @ApiResponse({ status: 404, description: 'Device not found' })
   findByImei(@Param('imei') imei: string) {
-    return this.service.findByImei(imei);
+    return this.gpsDeviceService.findByImei(imei);
   }
 }

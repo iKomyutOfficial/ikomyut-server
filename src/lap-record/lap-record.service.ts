@@ -9,29 +9,29 @@ import { LapRecord, LapRecordDocument } from './schemas/lap-record.schema';
 export class LapRecordService {
   constructor(
     @InjectModel(LapRecord.name)
-    private model: Model<LapRecordDocument>,
+    private recordModel: Model<LapRecordDocument>,
   ) {}
 
   async create(dto: CreateLapRecordDto, user: any): Promise<LapRecord> {
-    const admin = new this.model({
+    const admin = new this.recordModel({
       ...dto,
       companyId: user.companyId,
     });
     return admin.save();
   }
 
-  async findAll() {
-    return this.model.find().sort({ timestamp: -1 }).exec();
+  async findAll(user: any) {
+    return this.recordModel.find({ companyId: user.companyId }).exec();
   }
 
   async findOne(id: string) {
-    const record = await this.model.findById(id).exec();
+    const record = await this.recordModel.findById(id).exec();
     if (!record) throw new NotFoundException('Lap record not found');
     return record;
   }
 
   async update(id: string, dto: UpdateLapRecordDto) {
-    const updated = await this.model
+    const updated = await this.recordModel
       .findByIdAndUpdate(id, dto, { new: true })
       .exec();
 
@@ -40,7 +40,7 @@ export class LapRecordService {
   }
 
   async remove(id: string) {
-    const deleted = await this.model.findByIdAndDelete(id).exec();
+    const deleted = await this.recordModel.findByIdAndDelete(id).exec();
     if (!deleted) throw new NotFoundException('Lap record not found');
 
     return { message: 'Deleted successfully' };
@@ -49,20 +49,20 @@ export class LapRecordService {
   // 🔥 Useful queries (based on your indexes)
 
   async findByDevice(account: string, deviceImei: string) {
-    return this.model
+    return this.recordModel
       .find({ account, deviceImei })
       .sort({ timestamp: -1 })
       .exec();
   }
 
   async findByGeofence(account: string, geofenceId: string) {
-    return this.model
+    return this.recordModel
       .find({ account, geofenceId })
       .sort({ timestamp: -1 })
       .exec();
   }
 
   async getTotalRegistered(companyId: string) {
-    return this.model.countDocuments({ companyId });
+    return this.recordModel.countDocuments({ companyId });
   }
 }

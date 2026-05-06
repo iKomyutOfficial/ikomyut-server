@@ -21,8 +21,8 @@ export class RouteService {
     return admin.save();
   }
 
-  async findAll() {
-    return this.routeModel.find().exec();
+  async findAll(user: any) {
+    return this.routeModel.find({ companyId: user.companyId }).exec();
   }
 
   async findOne(id: string) {

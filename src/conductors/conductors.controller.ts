@@ -24,8 +24,8 @@ import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('Conductors')
 @Controller('conductors')
-// @ApiBearerAuth('access-token')
-// @UseGuards(AuthGuard('jwt'), RolesGuard)
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class ConductorController {
   constructor(private readonly conductorsService: ConductorService) {}
 
@@ -40,8 +40,8 @@ export class ConductorController {
   @Get()
   @Roles('admin')
   @ApiOperation({ summary: 'Get all conductors' })
-  findAll() {
-    return this.conductorsService.findAll();
+  findAll(@Req() req) {
+    return this.conductorsService.findAll(req.user);
   }
 
   @Get(':id')

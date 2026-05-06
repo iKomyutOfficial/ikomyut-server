@@ -45,7 +45,7 @@ export class CreateConductorDto {
   @ApiPropertyOptional({ example: '11/11/1990' })
   @IsOptional()
   @IsString()
-  bday?: string;
+  dateOfBirth?: Date;
 
   @ApiPropertyOptional({ example: 'juan@email.com' })
   @IsOptional()

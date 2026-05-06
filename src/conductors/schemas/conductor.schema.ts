@@ -28,7 +28,7 @@ export class Conductor {
   address?: string;
 
   @Prop()
-  bday?: string;
+  dateOfBirth?: Date;
 
   @Prop({ unique: true, sparse: true })
   email?: string;
@@ -65,6 +65,39 @@ export class Conductor {
 
   @Prop({ required: true })
   companyId!: string;
+
+  @Prop({ default: null })
+  currentSession?: string;
+
+  @Prop()
+  authToken?: string;
+
+  @Prop()
+  gender?: string;
+  
+  @Prop()
+  dateHired?: Date;
+
+  @Prop()
+  employmentType?: string;
+
+  @Prop()
+  sssNumber?: string;
+
+  @Prop()
+  philhealthNumber?: string;
+
+  @Prop()
+  pagibigNumber?: string;
+
+  @Prop()
+  emergencyContactName?: string;
+
+  @Prop()
+  emergencyContactNumber?: string;
+
+  @Prop()
+  emergencyContactRelationship?: string;
 }
 
 export type ConductorDocument = HydratedDocument<Conductor>;

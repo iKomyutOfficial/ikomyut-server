@@ -5,6 +5,7 @@ import { CreateDriverDto } from './dto/create-driver.dto';
 import { UpdateDriverDto } from './dto/update-driver.dto';
 import { Drivers, DriversDocument } from './schemas/drivers.schema';
 import { RequestWithCompany } from '../types/request';
+import { excludeFields } from '../common/utils/excludeFields';
 
 @Injectable()
 export class DriversService {
@@ -12,6 +13,11 @@ export class DriversService {
     @InjectModel(Drivers.name)
     private driverModel: Model<DriversDocument>,
   ) {}
+
+  private excludeSensitive(driver: DriversDocument) {
+    const obj = driver.toObject();
+    return excludeFields(obj, ['password', 'authToken', 'currentSession']);
+  }
 
   async create(
     dto: CreateDriverDto,
@@ -26,8 +32,12 @@ export class DriversService {
     return admin.save();
   }
 
-  async findAll(): Promise<Drivers[]> {
-    return this.driverModel.find().exec();
+  async findAll(user: any) {
+    const data = await this.driverModel
+      .find({ companyId: user.companyId })
+      .exec();
+
+    return data.map((e) => this.excludeSensitive(e));
   }
 
   async findOne(id: string): Promise<Drivers> {

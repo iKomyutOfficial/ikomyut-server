@@ -28,21 +28,21 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class StopOverController {
-  constructor(private readonly service: StopOverService) {}
+  constructor(private readonly stopService: StopOverService) {}
 
   @Post()
   @Roles('admin')
   @ApiOperation({ summary: 'Create a StopOver' })
   @ApiResponse({ status: 201, description: 'StopOver created' })
   create(@Body() dto: CreateStopOverDto, @Req() req: any) {
-    return this.service.create(dto, req.user);
+    return this.stopService.create(dto, req.user);
   }
 
   @Get()
   @Roles('admin')
   @ApiOperation({ summary: 'Get all StopOvers' })
-  findAll() {
-    return this.service.findAll();
+  findAll(@Req() req) {
+    return this.stopService.findAll(req.user);
   }
 
   @Get(':id')
@@ -50,7 +50,7 @@ export class StopOverController {
   @ApiOperation({ summary: 'Get StopOver by ID' })
   @ApiParam({ name: 'id', description: 'StopOver ID' })
   findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+    return this.stopService.findOne(id);
   }
 
   @Patch(':id')
@@ -58,7 +58,7 @@ export class StopOverController {
   @ApiOperation({ summary: 'Update StopOver' })
   @ApiParam({ name: 'id', description: 'StopOver ID' })
   update(@Param('id') id: string, @Body() dto: UpdateStopOverDto) {
-    return this.service.update(id, dto);
+    return this.stopService.update(id, dto);
   }
 
   @Delete(':id')
@@ -66,12 +66,12 @@ export class StopOverController {
   @ApiOperation({ summary: 'Delete StopOver' })
   @ApiParam({ name: 'id', description: 'StopOver ID' })
   remove(@Param('id') id: string) {
-    return this.service.remove(id);
+    return this.stopService.remove(id);
   }
 
   @Get('route/:routeId')
   @Roles('admin')
   findByRouteId(@Param('routeId') routeId: string) {
-    return this.service.findByRouteId(routeId);
+    return this.stopService.findByRouteId(routeId);
   }
 }

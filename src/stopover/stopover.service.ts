@@ -28,10 +28,9 @@ export class StopOverService {
     return admin.save();
   }
 
-  async findAll() {
-    return this.stopOverModel.find();
+  async findAll(user: any) {
+    return this.stopOverModel.find({ companyId: user.companyId }).exec();
   }
-
   async findOne(id: string) {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException('Invalid ID');
