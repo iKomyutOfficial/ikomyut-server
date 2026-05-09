@@ -21,8 +21,8 @@ export class UnitService {
     return admin.save();
   }
 
-  async findAll() {
-    return this.unitModel.find().exec();
+  async findAll(user: any) {
+    return this.unitModel.find({ companyId: user.companyId }).exec();
   }
 
   async findOne(id: string) {

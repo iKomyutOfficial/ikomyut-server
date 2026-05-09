@@ -27,41 +27,41 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class UnitController {
-  constructor(private readonly service: UnitService) {}
+  constructor(private readonly unitService: UnitService) {}
 
   @Post()
   @Roles('admin')
   @ApiOperation({ summary: 'Create unit' })
   @ApiResponse({ status: 201, description: 'Unit created successfully' })
   create(@Body() dto: CreateUnitDto, @Req() req: any) {
-    return this.service.create(dto, req.user);
+    return this.unitService.create(dto, req.user);
   }
 
   @Get()
   @Roles('admin')
   @ApiOperation({ summary: 'Get all units' })
-  findAll() {
-    return this.service.findAll();
+  findAll(@Req() req) {
+    return this.unitService.findAll(req.user);
   }
 
   @Get(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Get unit by ID' })
   findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+    return this.unitService.findOne(id);
   }
 
   @Patch(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Update unit (partial)' })
   update(@Param('id') id: string, @Body() dto: UpdateUnitDto) {
-    return this.service.update(id, dto);
+    return this.unitService.update(id, dto);
   }
 
   @Delete(':id')
   @Roles('admin')
   @ApiOperation({ summary: 'Delete unit' })
   remove(@Param('id') id: string) {
-    return this.service.remove(id);
+    return this.unitService.remove(id);
   }
 }

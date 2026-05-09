@@ -221,4 +221,15 @@ export class AuthController {
       throw error;
     }
   }
+
+  @Post('verify-registration')
+  @ApiOperation({
+    summary: 'Verify admin registration OTP',
+  })
+  @ApiBody({
+    type: VerifyOtpDto,
+  })
+  async verifyRegistration(@Body() dto: VerifyOtpDto) {
+    return this.adminsService.verifyRegistrationOtp(dto.mobileNumber, dto.otp);
+  }
 }

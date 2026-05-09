@@ -65,11 +65,4 @@ export class AdminsController {
   remove(@Param('id') id: string) {
     return this.adminsService.remove(id);
   }
-
-  @Get('totals')
-  @Roles('admin')
-  @ApiOperation({ summary: 'Get total stats' })
-  getTotal() {
-    return this.adminsService.getTotal();
-  }
 }

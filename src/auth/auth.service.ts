@@ -78,6 +78,17 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Check if account is verified/registered
+    if (!admin.isRegistered) {
+      await this.otpService.sendOtp(admin.mobileNumber);
+
+      throw new UnauthorizedException({
+        message:
+          'Account not verified. OTP has been sent to your mobile number.',
+        mobileNumber: admin.mobileNumber,
+      });
+    }
+
     if (!password || !admin.password) {
       throw new UnauthorizedException('Username or password missing');
     }

@@ -10,6 +10,7 @@ import {
 } from '../conductors/schemas/conductor.schema';
 import { Unit, UnitSchema } from '../unit/schemas/unit.schema';
 import { Employee, EmployeeSchema } from '../employee/schemas/employee.schema';
+import { OtpModule } from '../otp/otp.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { Employee, EmployeeSchema } from '../employee/schemas/employee.schema';
       { name: Unit.name, schema: UnitSchema },
       { name: Employee.name, schema: EmployeeSchema },
     ]),
+    OtpModule,
   ],
   controllers: [AdminsController],
   providers: [AdminsService],

@@ -1,49 +1,77 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admins, AdminsDocument } from './schemas/admin.schema';
 import { customAlphabet, nanoid } from 'nanoid';
-import { Drivers, DriversDocument } from '../drivers/schemas/drivers.schema';
-import {
-  Conductor,
-  ConductorDocument,
-} from '../conductors/schemas/conductor.schema';
-import { Unit, UnitDocument } from '../unit/schemas/unit.schema';
+import { OtpService } from '../otp/otp.service';
 
 @Injectable()
 export class AdminsService {
   constructor(
     @InjectModel(Admins.name)
     private adminModel: Model<AdminsDocument>,
-
-    @InjectModel(Drivers.name)
-    private driverModel: Model<DriversDocument>,
-
-    @InjectModel(Conductor.name)
-    private conductorModel: Model<ConductorDocument>,
-
-    @InjectModel(Unit.name)
-    private unitModel: Model<UnitDocument>,
+    private otpService: OtpService,
   ) {}
 
   nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 8);
-  async create(dto: CreateAdminDto): Promise<Admins> {
-    const companyId = this.generateCompanyId();
+  private generateCompanyId(): string {
+    return `IK-${nanoid()}`;
+  }
 
+  async create(dto: CreateAdminDto): Promise<any> {
+    const existingUsername = await this.adminModel.findOne({
+      username: dto.username,
+    });
+
+    if (existingUsername) {
+      throw new BadRequestException('Username already exists');
+    }
+
+    const existingMobile = await this.adminModel.findOne({
+      mobileNumber: dto.mobileNumber,
+    });
+
+    if (existingMobile) {
+      throw new BadRequestException('Mobile number already exists');
+    }
+    const companyId = this.generateCompanyId();
     const admin = new this.adminModel({
       ...dto,
       companyId,
       role: 'admin',
-      isRegistered: true,
+      isRegistered: false,
     });
 
-    return admin.save();
+    await admin.save();
+    await this.otpService.sendOtp(dto.mobileNumber);
+
+    return {
+      message: 'Registration successful. OTP sent to mobile number.',
+      mobileNumber: dto.mobileNumber,
+    };
   }
 
-  private generateCompanyId(): string {
-    return `IK-${nanoid()}`;
+  async verifyRegistrationOtp(mobileNumber: string, otp: string) {
+    await this.otpService.validateOtp(mobileNumber, otp);
+    const admin = await this.adminModel.findOneAndUpdate(
+      { mobileNumber },
+      { isRegistered: true },
+      { new: true },
+    );
+
+    if (!admin) {
+      throw new NotFoundException('Admin account not found');
+    }
+
+    return {
+      message: 'Account verified successfully',
+    };
   }
 
   async findAll(): Promise<Admins[]> {
@@ -71,16 +99,5 @@ export class AdminsService {
     const result = await this.adminModel.findByIdAndDelete(id).exec();
     if (!result) throw new NotFoundException('Admin not found');
     return { message: 'Admin deleted successfully' };
-  }
-
-  async getTotal() {
-    const [data, conductor] = await Promise.all([
-      this.conductorModel.find().exec(),
-      this.conductorModel.countDocuments(),
-    ]);
-
-    return {
-      conductor,
-    };
   }
 }
