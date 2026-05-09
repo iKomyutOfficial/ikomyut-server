@@ -27,30 +27,30 @@ export class OtpController {
   /**
    * Request OTP
    */
-  @Post('request/:mobnum')
+  @Post('request/:mobileNumber')
   @ApiOperation({ summary: 'Request OTP for mobile number' })
   @ApiParam({
-    name: 'mobnum',
+    name: 'mobileNumber',
     example: '09123456789',
     description: 'Mobile number',
   })
   @ApiResponse({ status: 200, description: 'OTP sent successfully' })
   @ApiResponse({ status: 429, description: 'Too many requests' })
   async requestOtp(
-    @Param('mobnum') mobnumRaw: string,
+    @Param('mobileNumber') mobnumRaw: string,
   ): Promise<{ success: boolean; message: string }> {
-    const mobnum = mobnumRaw.slice(-10);
+    const mobileNumber = mobnumRaw.slice(-10);
 
     this.logger.log(
-      `Request OTP called for mobile number ending with: ${mobnum}`,
+      `Request OTP called for mobile number ending with: ${mobileNumber}`,
     );
 
     try {
-      await this.otpService.sendOtp(mobnum);
+      await this.otpService.sendOtp(mobileNumber);
       return { success: true, message: 'OTP sent successfully' };
     } catch (error: any) {
       this.logger.error(
-        `Failed to send OTP to ${mobnum}: ${error.message}`,
+        `Failed to send OTP to ${mobileNumber}: ${error.message}`,
         error.stack,
       );
       throw new HttpException(
@@ -63,22 +63,22 @@ export class OtpController {
   /**
    * Validate OTP
    */
-  @Post('validate/:mobnum/:code')
+  @Post('validate/:mobileNumber/:code')
   @ApiOperation({ summary: 'Validate OTP code' })
-  @ApiParam({ name: 'mobnum', example: '09123456789' })
+  @ApiParam({ name: 'mobileNumber', example: '09123456789' })
   @ApiParam({ name: 'code', example: '123456' })
   @ApiResponse({ status: 200, description: 'OTP verified successfully' })
   @ApiResponse({ status: 400, description: 'Invalid or expired OTP' })
   async validateOtp(
-    @Param('mobnum') mobnumRaw: string,
+    @Param('mobileNumber') mobnumRaw: string,
     @Param('code') code: string,
   ): Promise<{ success: boolean; message: string; isNewUser?: boolean }> {
-    const mobnum = mobnumRaw.slice(-10);
+    const mobileNumber = mobnumRaw.slice(-10);
 
-    this.logger.log(`Validate OTP called for mobile: ${mobnum}, code: ${code}`);
+    this.logger.log(`Validate OTP called for mobile: ${mobileNumber}, code: ${code}`);
 
     try {
-      const result = await this.otpService.validateOtp(mobnum, code);
+      const result = await this.otpService.validateOtp(mobileNumber, code);
 
       return {
         success: true,
@@ -87,7 +87,7 @@ export class OtpController {
       };
     } catch (error: any) {
       this.logger.error(
-        `OTP validation failed for ${mobnum}: ${error.message}`,
+        `OTP validation failed for ${mobileNumber}: ${error.message}`,
         error.stack,
       );
       throw new HttpException(
@@ -109,12 +109,12 @@ export class OtpController {
   async sendCustomSms(
     @Body() dto: SendCustomSmsDto,
   ): Promise<{ success: boolean; message: string }> {
-    const mobnum = dto.mobnum.slice(-10);
+    const mobileNumber = dto.mobileNumber.slice(-10);
 
-    this.logger.log(`Send custom SMS to mobile ending with: ${mobnum}`);
+    this.logger.log(`Send custom SMS to mobile ending with: ${mobileNumber}`);
 
     try {
-      await this.otpService.sendCustomSms(mobnum, dto.message);
+      await this.otpService.sendCustomSms(mobileNumber, dto.message);
 
       return {
         success: true,
@@ -122,7 +122,7 @@ export class OtpController {
       };
     } catch (error: any) {
       this.logger.error(
-        `Failed to send SMS to ${mobnum}: ${error.message}`,
+        `Failed to send SMS to ${mobileNumber}: ${error.message}`,
         error.stack,
       );
       throw new HttpException(

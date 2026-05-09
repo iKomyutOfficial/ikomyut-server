@@ -1,0 +1,28 @@
+// dto/reset-password.dto.ts
+
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+
+export class ResetPasswordDto {
+  @ApiProperty({
+    example: 'admin1',
+  })
+  @IsString()
+  @IsNotEmpty()
+  username!: string;
+
+  @ApiProperty({
+    example: '123456',
+  })
+  @IsString()
+  @IsNotEmpty()
+  otp!: string;
+
+  @ApiProperty({
+    example: 'NewPassword123',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(6)
+  newPassword!: string;
+}

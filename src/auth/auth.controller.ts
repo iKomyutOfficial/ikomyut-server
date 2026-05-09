@@ -7,6 +7,8 @@ import { LoginDto } from './dto/login.dto';
 import { CreateAdminDto } from '../admins/dto/create-admin.dto';
 import { Admins } from '../admins/schemas/admin.schema';
 import { AdminsService } from '../admins/admins.service';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -26,15 +28,15 @@ export class AuthController {
     description: 'OTP sent successfully',
   })
   async requestOtp(@Body() dto: RequestOtpDto) {
-    this.logger.log(`OTP request initiated for mobile: ${dto.mobnum}`);
+    this.logger.log(`OTP request initiated for mobile: ${dto.mobileNumber}`);
 
     try {
-      const result = await this.authService.requestOtp(dto.mobnum);
-      this.logger.log(`OTP sent successfully to mobile: ${dto.mobnum}`);
+      const result = await this.authService.requestOtp(dto.mobileNumber);
+      this.logger.log(`OTP sent successfully to mobile: ${dto.mobileNumber}`);
       return result;
     } catch (error: any) {
       this.logger.error(
-        `Failed to send OTP to mobile: ${dto.mobnum} - ${error.message}`,
+        `Failed to send OTP to mobile: ${dto.mobileNumber} - ${error.message}`,
         error.stack,
       );
       throw error; // rethrow to let Nest handle the HTTP exception
@@ -49,19 +51,24 @@ export class AuthController {
     description: 'Returns JWT access token or prompts registration if new user',
   })
   async verifyOtp(@Body() dto: VerifyOtpDto) {
-    this.logger.log(`OTP verification attempt for mobile: ${dto.mobnum}`);
+    this.logger.log(`OTP verification attempt for mobile: ${dto.mobileNumber}`);
 
     try {
-      const result = await this.authService.verifyOtp(dto.mobnum, dto.otp);
+      const result = await this.authService.verifyOtp(
+        dto.mobileNumber,
+        dto.otp,
+      );
       if ('access_token' in result) {
-        this.logger.log(`OTP verified successfully for mobile: ${dto.mobnum}`);
+        this.logger.log(
+          `OTP verified successfully for mobile: ${dto.mobileNumber}`,
+        );
       } else if ('requiresRegistration' in result) {
-        this.logger.warn(`Mobile ${dto.mobnum} requires registration`);
+        this.logger.warn(`Mobile ${dto.mobileNumber} requires registration`);
       }
       return result;
     } catch (error: any) {
       this.logger.error(
-        `OTP verification failed for mobile: ${dto.mobnum} - ${error.message}`,
+        `OTP verification failed for mobile: ${dto.mobileNumber} - ${error.message}`,
         error.stack,
       );
       throw error;
@@ -133,5 +140,85 @@ export class AuthController {
   @ApiResponse({ status: 201, type: Admins })
   create(@Body() dto: CreateAdminDto) {
     return this.adminsService.create(dto);
+  }
+
+  @Post('forgot-password')
+  @ApiOperation({
+    summary: 'Send OTP for forgot password',
+  })
+  @ApiBody({
+    type: ForgotPasswordDto,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'OTP sent successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Account not found',
+  })
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    this.logger.log(`Forgot password request for: ${dto.username}`);
+
+    try {
+      const result = await this.authService.forgotPasswordRequest(dto.username);
+
+      this.logger.log(`Forgot password OTP sent for: ${dto.username}`);
+
+      return result;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+
+      const stack = error instanceof Error ? error.stack : undefined;
+
+      this.logger.error(
+        `Forgot password failed for ${dto.username}: ${message}`,
+        stack,
+      );
+
+      throw error;
+    }
+  }
+
+  @Post('reset-password')
+  @ApiOperation({
+    summary: 'Reset password using OTP',
+  })
+  @ApiBody({
+    type: ResetPasswordDto,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset successful',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid OTP or account not found',
+  })
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    this.logger.log(`Reset password attempt for: ${dto.username}`);
+
+    try {
+      const result = await this.authService.resetPassword(
+        dto.username,
+        dto.otp,
+        dto.newPassword,
+      );
+
+      this.logger.log(`Password reset successful for: ${dto.username}`);
+
+      return result;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+
+      const stack = error instanceof Error ? error.stack : undefined;
+
+      this.logger.error(
+        `Password reset failed for ${dto.username}: ${message}`,
+        stack,
+      );
+
+      throw error;
+    }
   }
 }

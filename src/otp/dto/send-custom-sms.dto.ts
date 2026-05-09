@@ -8,7 +8,7 @@ export class SendCustomSmsDto {
   })
   @IsString()
   @IsNotEmpty()
-  mobnum!: string;
+  mobileNumber!: string;
 
   @ApiProperty({
     example: 'Your booking has been confirmed!',

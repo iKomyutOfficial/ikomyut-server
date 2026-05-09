@@ -6,7 +6,7 @@ export class VerifyOtpDto {
     example: '9123456789',
   })
   @IsString()
-  mobnum!: string;
+  mobileNumber!: string;
 
   @ApiProperty({
     example: '123456',

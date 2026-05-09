@@ -20,11 +20,11 @@ export class OtpService {
   /**
    * Generate OTP, store it, and send SMS.
    */
-  async sendOtp(mobnum: string): Promise<void> {
+  async sendOtp(mobileNumber: string): Promise<void> {
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
     const now = new Date();
 
-    let otpRecord = await this.otpModel.findOne({ mobnum }).exec();
+    let otpRecord = await this.otpModel.findOne({ mobileNumber }).exec();
     const dayAgo = subHours(now, 24).getTime();
 
     if (otpRecord) {
@@ -51,7 +51,7 @@ export class OtpService {
       otpRecord.createdAt = now;
     } else {
       otpRecord = new this.otpModel({
-        mobnum,
+        mobileNumber,
         code: otpCode,
         messages: [],
         createdAt: now,
@@ -70,7 +70,7 @@ export class OtpService {
             apiKey: this.configService.get('SMS_API_KEY'),
             apiSecret: this.configService.get('SMS_API_SECRET'),
             from: this.configService.get('SMS_SENDER_MASK'),
-            to: `0${mobnum.slice(-10)}`,
+            to: `0${mobileNumber.slice(-10)}`,
             text: msg,
           },
           { headers: { 'Content-Type': 'application/json' } },
@@ -89,7 +89,7 @@ export class OtpService {
         );
       }
     } else {
-      console.log(`[DEV MODE] OTP for ${mobnum}: ${otpCode}`);
+      console.log(`[DEV MODE] OTP for ${mobileNumber}: ${otpCode}`);
     }
 
     otpRecord.messages.push({ msg, sent: now });
@@ -100,10 +100,10 @@ export class OtpService {
    * Validate OTP and return whether user is new or existing.
    */
   async validateOtp(
-    mobnum: string,
+    mobileNumber: string,
     code: string,
   ): Promise<{ isNewUser: boolean }> {
-    const otpRecord = await this.otpModel.findOne({ mobnum }).exec();
+    const otpRecord = await this.otpModel.findOne({ mobileNumber }).exec();
 
     if (!otpRecord) {
       throw new HttpException(
@@ -142,7 +142,7 @@ export class OtpService {
 
     await this.otpModel.deleteOne({ _id: otpRecord._id });
     const driver = await Promise.all([
-      this.driverModel.findOne({ mobnum }).exec(),
+      this.driverModel.findOne({ mobileNumber }).exec(),
     ]);
 
     const existingUser = driver;
@@ -153,7 +153,7 @@ export class OtpService {
   /**
    * Send custom SMS message
    */
-  async sendCustomSms(mobnum: string, text: string): Promise<void> {
+  async sendCustomSms(mobileNumber: string, text: string): Promise<void> {
     if (!text || text.trim().length === 0) {
       throw new HttpException(
         'Message cannot be empty',
@@ -171,7 +171,7 @@ export class OtpService {
             apiKey: this.configService.get('SMS_API_KEY'),
             apiSecret: this.configService.get('SMS_API_SECRET'),
             from: this.configService.get('SMS_SENDER_MASK'),
-            to: `0${mobnum.slice(-10)}`,
+            to: `0${mobileNumber.slice(-10)}`,
             text,
           },
           { headers: { 'Content-Type': 'application/json' } },
@@ -190,7 +190,7 @@ export class OtpService {
         );
       }
     } else {
-      console.log(`[DEV MODE] SMS to ${mobnum}: ${text}`);
+      console.log(`[DEV MODE] SMS to ${mobileNumber}: ${text}`);
     }
   }
 }

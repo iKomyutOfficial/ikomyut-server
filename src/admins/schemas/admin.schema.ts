@@ -8,8 +8,8 @@ export class Admins {
   @Prop({ required: true, unique: true })
   username!: string;
 
-  @Prop()
-  password?: string;
+  @Prop({ select: false })
+  password!: string;
 
   @Prop({ default: 'admin' })
   role!: string;

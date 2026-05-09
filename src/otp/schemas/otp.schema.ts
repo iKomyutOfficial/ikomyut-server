@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 @Schema()
 export class Otp extends Document {
   @Prop({ required: true })
-  mobnum!: string;
+  mobileNumber!: string;
 
   @Prop({ required: true })
   code!: string;

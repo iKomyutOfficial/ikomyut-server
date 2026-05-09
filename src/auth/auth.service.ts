@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Drivers } from '../drivers/schemas/drivers.schema';
@@ -15,7 +19,7 @@ import { Employee } from '../employee/schemas/employee.schema';
 export class AuthService {
   constructor(
     @InjectModel(Admins.name) private adminModel: Model<Admins>,
-    @InjectModel(Employee.name) private employee: Model<Employee>,
+    @InjectModel(Employee.name) private employeeModel: Model<Employee>,
     @InjectModel(Drivers.name) private driverModel: Model<Drivers>,
     @InjectModel(Conductor.name) private conductorModel: Model<Conductor>,
     private jwtService: JwtService,
@@ -24,31 +28,35 @@ export class AuthService {
   ) {}
 
   // DRIVER / USER OTP
-  async requestOtp(mobnum: string) {
-    await this.otpService.sendOtp(mobnum);
+  async requestOtp(mobileNumber: string) {
+    await this.otpService.sendOtp(mobileNumber);
+
     return { message: 'OTP sent successfully' };
   }
 
-  async verifyOtp(mobnum: string, otp: string) {
-    const { isNewUser } = await this.otpService.validateOtp(mobnum, otp);
+  async verifyOtp(mobileNumber: string, otp: string) {
+    const { isNewUser } = await this.otpService.validateOtp(mobileNumber, otp);
 
     if (isNewUser) {
-      return { requiresRegistration: true, mobnum };
+      return { requiresRegistration: true, mobileNumber };
     }
 
-    const driver = await this.driverModel.findOne({ mobnum });
+    const driver = await this.driverModel.findOne({ mobileNumber });
     const account: any = driver;
 
-    if (!account) throw new UnauthorizedException('Account not found');
+    if (!account) {
+      throw new UnauthorizedException('Account not found');
+    }
 
     const payload = {
       sub: account._id,
-      mobnum: account.mobnum,
+      mobileNumber: account.mobileNumber,
       email: account.email || null,
       type: driver ? 'driver' : 'user',
     };
 
     const token = this.jwtService.sign(payload);
+
     account.authToken = token;
     await account.save();
 
@@ -62,10 +70,16 @@ export class AuthService {
   async loginAdmin(loginDto: LoginDto) {
     const { username, password } = loginDto;
 
-    const admin = await this.adminModel.findOne({ username });
+    const admin = await this.adminModel
+      .findOne({ username })
+      .select('+password');
 
     if (!admin) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (!password || !admin.password) {
+      throw new UnauthorizedException('Username or password missing');
     }
 
     const isMatch = await bcrypt.compare(password, admin.password);
@@ -82,22 +96,27 @@ export class AuthService {
 
     admin.authToken = token;
     await admin.save();
+    const adminData = admin.toObject();
+    this.authGateway.emitNewLogins(adminData);
 
-    this.authGateway.emitNewLogins(admin);
-
-    return { access_token: token, admin };
+    return {
+      access_token: token,
+      admin: adminData,
+    };
   }
 
+  // EMPLOYEE / DRIVER / CONDUCTOR LOGIN
   async login(loginDto: LoginDto) {
     const { username, password } = loginDto;
+
     let account: any =
-      (await this.employee.findOne({ username })) ||
+      (await this.employeeModel.findOne({ username })) ||
       (await this.driverModel.findOne({ username })) ||
       (await this.conductorModel.findOne({ username }));
 
     const role =
       account?.role ||
-      ((await this.employee.findOne({ username }))
+      ((await this.employeeModel.findOne({ username }))
         ? 'employee'
         : (await this.driverModel.findOne({ username }))
           ? 'driver'
@@ -110,6 +129,7 @@ export class AuthService {
     }
 
     const isMatch = await bcrypt.compare(password, account.password);
+
     if (!isMatch) {
       return { message: 'Invalid credentials' };
     }
@@ -125,6 +145,7 @@ export class AuthService {
     });
 
     this.authGateway.emitNewLogins(account);
+
     const user = account.toObject();
     delete user.password;
 
@@ -132,6 +153,56 @@ export class AuthService {
       access_token: token,
       user,
       role,
+    };
+  }
+
+  // =========================
+  // FORGOT PASSWORD
+  // =========================
+
+  // STEP 1: SEND OTP
+  async forgotPasswordRequest(username: string) {
+    const account =
+      (await this.employeeModel.findOne({ username })) ||
+      (await this.driverModel.findOne({ username })) ||
+      (await this.conductorModel.findOne({ username })) ||
+      (await this.adminModel.findOne({ username }));
+
+    if (!account) {
+      throw new BadRequestException('Account not found');
+    }
+
+    if (!account.mobileNumber) {
+      throw new BadRequestException('No mobile number linked to account');
+    }
+
+    await this.otpService.sendOtp(account.mobileNumber);
+
+    return {
+      message: 'OTP sent successfully',
+      mobileNumber: account.mobileNumber,
+    };
+  }
+
+  // STEP 2: VERIFY OTP + RESET PASSWORD
+  async resetPassword(username: string, otp: string, newPassword: string) {
+    const account: any =
+      (await this.employeeModel.findOne({ username }).select('+password')) ||
+      (await this.driverModel.findOne({ username }).select('+password')) ||
+      (await this.conductorModel.findOne({ username }).select('+password')) ||
+      (await this.adminModel.findOne({ username }).select('+password'));
+
+    if (!account) {
+      throw new BadRequestException('Account not found');
+    }
+
+    await this.otpService.validateOtp(account.mobileNumber, otp);
+    account.password = newPassword;
+    account.authToken = null;
+    await account.save();
+
+    return {
+      message: 'Password reset successful',
     };
   }
 }

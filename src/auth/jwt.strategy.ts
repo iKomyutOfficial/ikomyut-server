@@ -59,7 +59,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     return {
       id: account._id,
-      mobnum: account.contactNumber || null,
+      mobileNumber: account.contactNumber || account.mobileNumber || null,
       username: account.username || null,
       email: account.email || null,
       companyId: account.companyId || null,

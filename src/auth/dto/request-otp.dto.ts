@@ -7,5 +7,5 @@ export class RequestOtpDto {
     description: 'User mobile number',
   })
   @IsString()
-  mobnum!: string;
+  mobileNumber!: string;
 }
