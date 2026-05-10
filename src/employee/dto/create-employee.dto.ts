@@ -6,18 +6,17 @@ import {
   IsEmail,
   IsBoolean,
   ValidateNested,
+  IsStrongPassword,
 } from 'class-validator';
 import { PhotoDto } from '../../common/dto/photo.dto';
-import { PasswordDto } from '../../common/dto/password.dto';
 
 export class CreateEmployeeDto {
   @ApiProperty({ example: 'john_doe' })
   @IsString()
   username!: string;
 
-  @ValidateNested()
-  @Type(() => PasswordDto)
-  password!: PasswordDto;
+  @IsStrongPassword()
+  password!: string;
 
   @ApiPropertyOptional({ example: 'john@email.com' })
   @IsOptional()

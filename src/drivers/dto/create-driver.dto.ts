@@ -6,18 +6,17 @@ import {
   IsEnum,
   IsDateString,
   ValidateNested,
+  IsStrongPassword,
 } from 'class-validator';
 import { PhotoDto } from '../../common/dto/photo.dto';
-import { PasswordDto } from '../../common/dto/password.dto';
 
 export class CreateDriverDto {
   @ApiProperty({ example: 'driver_john' })
   @IsString()
   username!: string;
 
-  @ValidateNested()
-  @Type(() => PasswordDto)
-  password!: PasswordDto;
+  @IsStrongPassword()
+  password!: string;
 
   @ApiPropertyOptional({ example: 'driver', default: 'driver' })
   @IsOptional()

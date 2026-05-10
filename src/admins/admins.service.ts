@@ -40,6 +40,12 @@ export class AdminsService {
     if (existingMobile) {
       throw new BadRequestException('Mobile number already exists');
     }
+
+    const existingEmail = await this.adminModel.findOne({ email: dto.email });
+
+    if (existingEmail) {
+      throw new BadRequestException('Email already exists');
+    }
     const companyId = this.generateCompanyId();
     const admin = new this.adminModel({
       ...dto,

@@ -5,20 +5,19 @@ import {
   IsEnum,
   IsEmail,
   ValidateNested,
+  IsStrongPassword,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { PhotoDto } from '../../common/dto/photo.dto';
-import { PasswordDto } from '../../common/dto/password.dto';
 
 export class CreateConductorDto {
   @ApiProperty({ example: 'jdelacruz' })
   @IsString()
   username!: string;
 
-  @ValidateNested()
-  @Type(() => PasswordDto)
-  password!: PasswordDto;
+  @IsStrongPassword()
+  password!: string;
 
   @ApiPropertyOptional({ default: 'conductor', example: 'conductor' })
   @IsOptional()
