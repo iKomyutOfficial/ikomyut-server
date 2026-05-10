@@ -7,13 +7,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Drivers } from '../drivers/schemas/drivers.schema';
 import { Admins } from '../admins/schemas/admin.schema';
-import * as bcrypt from 'bcrypt';
 import { OtpService } from '../otp/otp.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGateway } from './auth.gateway';
 import { Conductor } from '../conductors/schemas/conductor.schema';
 import { LoginDto } from './dto/login.dto';
 import { Employee } from '../employee/schemas/employee.schema';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -68,17 +68,26 @@ export class AuthService {
 
   // ADMIN LOGIN
   async loginAdmin(loginDto: LoginDto) {
-    const { username, password } = loginDto;
+    const { username, mobileNumber, password } = loginDto;
+
+    if (!username && !mobileNumber) {
+      throw new BadRequestException(
+        'Either username or mobile number is required',
+      );
+    }
+
+    const identifier = username || mobileNumber;
 
     const admin = await this.adminModel
-      .findOne({ username })
+      .findOne({
+        $or: [{ username: identifier }, { mobileNumber: identifier }],
+      })
       .select('+password');
 
     if (!admin) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Check if account is verified/registered
     if (!admin.isRegistered) {
       await this.otpService.sendOtp(admin.mobileNumber);
 
@@ -107,6 +116,7 @@ export class AuthService {
 
     admin.authToken = token;
     await admin.save();
+
     const adminData = admin.toObject();
     this.authGateway.emitNewLogins(adminData);
 
@@ -172,12 +182,24 @@ export class AuthService {
   // =========================
 
   // STEP 1: SEND OTP
-  async forgotPasswordRequest(username: string) {
+  async forgotPasswordRequest(identifier: string) {
+    const query = identifier?.trim();
+
+    if (!query) {
+      throw new BadRequestException('Username or mobile number is required');
+    }
+
+    const isMobile = /^\d+$/.test(query);
+
+    const searchFilter = isMobile
+      ? { mobileNumber: query }
+      : { username: query };
+
     const account =
-      (await this.employeeModel.findOne({ username })) ||
-      (await this.driverModel.findOne({ username })) ||
-      (await this.conductorModel.findOne({ username })) ||
-      (await this.adminModel.findOne({ username }));
+      (await this.employeeModel.findOne(searchFilter)) ||
+      (await this.driverModel.findOne(searchFilter)) ||
+      (await this.conductorModel.findOne(searchFilter)) ||
+      (await this.adminModel.findOne(searchFilter));
 
     if (!account) {
       throw new BadRequestException('Account not found');

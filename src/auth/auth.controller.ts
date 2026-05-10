@@ -87,7 +87,9 @@ export class AuthController {
     description: 'Invalid credentials',
   })
   async loginAdmin(@Body() loginDto: LoginDto) {
-    this.logger.log(`Admin login attempt: ${loginDto.username}`);
+    this.logger.log(
+      `Admin login attempt: ${loginDto.username || loginDto.mobileNumber}`,
+    );
 
     try {
       const result = await this.authService.loginAdmin(loginDto);
