@@ -3,6 +3,7 @@ import { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Location } from '../../common/schemas/location.schema';
 import { Photo } from '../../common/schemas/photo.schema';
+import { PasswordHashPlugin } from '../../common/utils/passwordHashPlugin';
 
 @Schema({ timestamps: true })
 export class Conductor {
@@ -102,13 +103,5 @@ export class Conductor {
 
 export type ConductorDocument = HydratedDocument<Conductor>;
 export const ConductorSchema = SchemaFactory.createForClass(Conductor);
-
-// Hash password before saving
-ConductorSchema.pre<ConductorDocument>('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
-
-// Geospatial index
+ConductorSchema.plugin(PasswordHashPlugin);
 ConductorSchema.index({ location: '2dsphere' });

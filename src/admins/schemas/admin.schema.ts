@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Photo } from '../../common/schemas/photo.schema';
+import { PasswordHashPlugin } from '../../common/utils/passwordHashPlugin';
 
 @Schema({ timestamps: true })
 export class Admins {
@@ -68,10 +69,4 @@ export class Admins {
 
 export type AdminsDocument = HydratedDocument<Admins>;
 export const AdminsSchema = SchemaFactory.createForClass(Admins);
-
-// Hash password only if it's provided and modified
-AdminsSchema.pre<AdminsDocument>('save', async function (next) {
-  if (!this.password || !this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
+AdminsSchema.plugin(PasswordHashPlugin);

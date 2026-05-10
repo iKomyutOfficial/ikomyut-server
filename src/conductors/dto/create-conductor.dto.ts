@@ -9,15 +9,16 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { PhotoDto } from '../../common/dto/photo.dto';
+import { PasswordDto } from '../../common/dto/password.dto';
 
 export class CreateConductorDto {
   @ApiProperty({ example: 'jdelacruz' })
   @IsString()
   username!: string;
 
-  @ApiProperty({ example: 'password123' })
-  @IsString()
-  password!: string;
+  @ValidateNested()
+  @Type(() => PasswordDto)
+  password!: PasswordDto;
 
   @ApiPropertyOptional({ default: 'conductor', example: 'conductor' })
   @IsOptional()

@@ -218,20 +218,41 @@ export class AuthService {
   }
 
   // STEP 2: VERIFY OTP + RESET PASSWORD
-  async resetPassword(username: string, otp: string, newPassword: string) {
+  async resetPassword(identifier: string, otp: string, newPassword: string) {
+    const query = identifier?.trim();
+
+    if (!query) {
+      throw new BadRequestException('Username or mobile number is required');
+    }
+
+    const isMobile = /^\d+$/.test(query);
+
+    const searchFilter = isMobile
+      ? { mobileNumber: query }
+      : { username: query };
+
     const account: any =
-      (await this.employeeModel.findOne({ username }).select('+password')) ||
-      (await this.driverModel.findOne({ username }).select('+password')) ||
-      (await this.conductorModel.findOne({ username }).select('+password')) ||
-      (await this.adminModel.findOne({ username }).select('+password'));
+      (await this.employeeModel.findOne(searchFilter).select('+password')) ||
+      (await this.driverModel.findOne(searchFilter).select('+password')) ||
+      (await this.conductorModel.findOne(searchFilter).select('+password')) ||
+      (await this.adminModel.findOne(searchFilter).select('+password'));
 
     if (!account) {
       throw new BadRequestException('Account not found');
     }
 
+    if (!account.mobileNumber) {
+      throw new BadRequestException('No mobile number linked to account');
+    }
+
+    // validate OTP
     await this.otpService.validateOtp(account.mobileNumber, otp);
+
+    // IMPORTANT: ensure hashing (depends on your schema)
     account.password = newPassword;
+
     account.authToken = null;
+
     await account.save();
 
     return {

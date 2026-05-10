@@ -8,15 +8,16 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { PhotoDto } from '../../common/dto/photo.dto';
+import { PasswordDto } from '../../common/dto/password.dto';
 
 export class CreateDriverDto {
   @ApiProperty({ example: 'driver_john' })
   @IsString()
   username!: string;
 
-  @ApiProperty({ example: 'password123' })
-  @IsString()
-  password!: string;
+  @ValidateNested()
+  @Type(() => PasswordDto)
+  password!: PasswordDto;
 
   @ApiPropertyOptional({ example: 'driver', default: 'driver' })
   @IsOptional()

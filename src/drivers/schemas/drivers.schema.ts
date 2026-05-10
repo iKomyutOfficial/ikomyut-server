@@ -3,6 +3,7 @@ import { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Location } from '../../common/schemas/location.schema';
 import { Photo } from '../../common/schemas/photo.schema';
+import { PasswordHashPlugin } from '../../common/utils/passwordHashPlugin';
 
 @Schema({ timestamps: true })
 export class Drivers {
@@ -105,11 +106,5 @@ export class Drivers {
 
 export type DriversDocument = HydratedDocument<Drivers>;
 export const DriversSchema = SchemaFactory.createForClass(Drivers);
-
-DriversSchema.pre<DriversDocument>('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
-
+DriversSchema.plugin(PasswordHashPlugin);
 DriversSchema.index({ location: '2dsphere' });

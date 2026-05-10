@@ -2,15 +2,16 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsString, IsOptional, IsEmail, ValidateNested } from 'class-validator';
 import { PhotoDto } from '../../common/dto/photo.dto';
+import { PasswordDto } from '../../common/dto/password.dto';
 
 export class CreateAdminDto {
   @ApiProperty({ example: 'admin1' })
   @IsString()
   username!: string;
 
-  @ApiProperty({ example: 'password123' })
-  @IsString()
-  password!: string;
+  @ValidateNested()
+  @Type(() => PasswordDto)
+  password!: PasswordDto;
 
   @ApiProperty({ example: 'Metro Comet' })
   @IsString()

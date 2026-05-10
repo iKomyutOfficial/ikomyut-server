@@ -21,7 +21,6 @@ import { Admins } from './schemas/admin.schema';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { TotalsResponseDto } from './dto/totals-response.dto';
 
 @ApiTags('Admins')
 @Controller('admins')
