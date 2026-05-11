@@ -15,8 +15,14 @@ export class CreateDriverDto {
   @IsString()
   username!: string;
 
+  @ApiProperty({
+    example: 'Driver@123',
+    description:
+      'Password must contain uppercase, lowercase, number, and special character',
+    default: 'Driver@123',
+  })
   @IsStrongPassword()
-  password!: string;
+  password: string = 'driveR@2026!';
 
   @ApiPropertyOptional({ example: 'driver', default: 'driver' })
   @IsOptional()
@@ -45,6 +51,11 @@ export class CreateDriverDto {
   @IsOptional()
   @IsString()
   dateOfBirth?: Date;
+
+  @ApiPropertyOptional({ example: 'male' })
+  @IsOptional()
+  @IsString()
+  gender?: string;
 
   @ApiPropertyOptional({ example: 'driver@example.com' })
   @IsOptional()
@@ -93,4 +104,49 @@ export class CreateDriverDto {
   @ValidateNested()
   @Type(() => PhotoDto)
   profilePic?: PhotoDto;
+
+  @ApiPropertyOptional({ example: 'Maria Santos' })
+  @IsOptional()
+  @IsString()
+  emergencyContactName?: string;
+
+  @ApiPropertyOptional({ example: '+639171234567' })
+  @IsOptional()
+  @IsString()
+  emergencyContactNumber?: string;
+
+  @ApiPropertyOptional({ example: 'Spouse' })
+  @IsOptional()
+  @IsString()
+  emergencyContactRelationship?: string;
+
+  @ApiPropertyOptional({ example: 'active' })
+  @IsOptional()
+  @IsString()
+  status?: string;
+
+  @ApiPropertyOptional({ example: 'EMP-2026-001' })
+  @IsOptional()
+  @IsString()
+  employeeId?: string;
+
+  @ApiPropertyOptional({ example: 'Regular' })
+  @IsOptional()
+  @IsString()
+  employmentType?: string;
+
+  @ApiPropertyOptional({ example: '34-5678901-2' })
+  @IsOptional()
+  @IsString()
+  sssNumber?: string;
+
+  @ApiPropertyOptional({ example: '12-345678901-2' })
+  @IsOptional()
+  @IsString()
+  philhealthNumber?: string;
+
+  @ApiPropertyOptional({ example: '1234-5678-9012' })
+  @IsOptional()
+  @IsString()
+  pagibigNumber?: string;
 }

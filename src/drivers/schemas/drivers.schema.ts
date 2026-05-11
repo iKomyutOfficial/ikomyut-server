@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import * as bcrypt from 'bcrypt';
 import { Location } from '../../common/schemas/location.schema';
 import { Photo } from '../../common/schemas/photo.schema';
 import { PasswordHashPlugin } from '../../common/utils/passwordHashPlugin';
