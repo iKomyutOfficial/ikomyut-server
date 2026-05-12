@@ -8,14 +8,16 @@ export async function validateUniqueFields(
   const existing = await model.findOne({
     $or: [
       { username: dto.username },
-
       {
-        contactNumber: dto.contactNumber,
+        contactNumber: dto.contactNumber || dto.mobileNumber,
         companyId,
       },
-
       {
         email: dto.email,
+        companyId,
+      },
+      {
+        licenseNumber: dto.licenseNumber,
         companyId,
       },
     ],
@@ -40,8 +42,15 @@ export async function validateUniqueFields(
     existing.email === dto.email &&
     existing.companyId.toString() === companyId.toString()
   ) {
+    throw new BadRequestException('Email already exists in your company');
+  }
+
+  if (
+    existing.licenseNumber === dto.licenseNumber &&
+    existing.companyId.toString() === companyId.toString()
+  ) {
     throw new BadRequestException(
-      'Email already exists in your company',
+      'License Number already exists in your company',
     );
   }
 }

@@ -111,9 +111,7 @@ DriversSchema.index(
   { companyId: 1, contactNumber: 1 },
   { unique: true, sparse: true },
 );
-
 DriversSchema.index({ companyId: 1, email: 1 }, { unique: true, sparse: true });
-
 DriversSchema.index(
   { companyId: 1, licenseNumber: 1 },
   { unique: true, sparse: true },

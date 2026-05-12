@@ -91,3 +91,11 @@ export class Employee {
 export type EmployeeDocument = HydratedDocument<Employee>;
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);
 EmployeeSchema.plugin(PasswordHashPlugin);
+EmployeeSchema.index(
+  { companyId: 1, mobileNumber: 1 },
+  { unique: true, sparse: true },
+);
+EmployeeSchema.index(
+  { companyId: 1, email: 1 },
+  { unique: true, sparse: true },
+);

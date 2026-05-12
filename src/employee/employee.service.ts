@@ -6,6 +6,7 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Employee, EmployeeDocument } from './schemas/employee.schema';
 import { use } from 'passport';
 import { excludeFields } from '../common/utils/excludeFields';
+import { validateUniqueFields } from '../common/utils/validateUniqueFields';
 
 @Injectable()
 export class EmployeeService {
@@ -15,7 +16,9 @@ export class EmployeeService {
   ) {}
 
   async create(dto: CreateEmployeeDto, user: any): Promise<Employee> {
-    const admin = new this.employeeModel({
+    await validateUniqueFields(this.employeeModel, dto, user.companyId);
+
+    const employee = new this.employeeModel({
       ...dto,
       companyId: user.companyId,
       companyName: user.companyName,
@@ -23,7 +26,7 @@ export class EmployeeService {
       isRegistered: true,
     });
 
-    return admin.save();
+    return employee.save();
   }
 
   async findAll(user: any) {

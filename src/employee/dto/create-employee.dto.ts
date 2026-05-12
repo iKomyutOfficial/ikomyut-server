@@ -45,11 +45,6 @@ export class CreateEmployeeDto {
   @IsString()
   status?: string;
 
-  @ApiPropertyOptional({ example: false })
-  @IsOptional()
-  @IsBoolean()
-  isOAuthUser?: boolean;
-
   @ApiProperty({
     description: 'Photo information',
     required: false,
