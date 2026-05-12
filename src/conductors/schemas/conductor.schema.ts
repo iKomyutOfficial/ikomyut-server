@@ -75,7 +75,7 @@ export class Conductor {
 
   @Prop()
   gender?: string;
-  
+
   @Prop()
   dateHired?: Date;
 
@@ -105,3 +105,12 @@ export type ConductorDocument = HydratedDocument<Conductor>;
 export const ConductorSchema = SchemaFactory.createForClass(Conductor);
 ConductorSchema.plugin(PasswordHashPlugin);
 ConductorSchema.index({ location: '2dsphere' });
+ConductorSchema.index(
+  { companyId: 1, contactNumber: 1 },
+  { unique: true, sparse: true },
+);
+
+ConductorSchema.index(
+  { companyId: 1, email: 1 },
+  { unique: true, sparse: true },
+);

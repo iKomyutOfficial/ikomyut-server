@@ -67,8 +67,7 @@ export class CreateDriverDto {
   @IsString()
   contactNumber?: string;
 
-  @ApiPropertyOptional({ example: 'LIC-123456789' })
-  @IsOptional()
+  @ApiProperty({ example: 'LIC-123456789' })
   @IsString()
   licenseNumber?: string;
 

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateDriverDto } from './dto/create-driver.dto';
@@ -6,6 +10,7 @@ import { UpdateDriverDto } from './dto/update-driver.dto';
 import { Drivers, DriversDocument } from './schemas/drivers.schema';
 import { RequestWithCompany } from '../types/request';
 import { excludeFields } from '../common/utils/excludeFields';
+import { validateUniqueFields } from '../common/utils/validateUniqueFields';
 
 @Injectable()
 export class DriversService {
@@ -23,13 +28,15 @@ export class DriversService {
     dto: CreateDriverDto,
     user: RequestWithCompany,
   ): Promise<Drivers> {
-    const admin = new this.driverModel({
+    await validateUniqueFields(this.driverModel, dto, user.companyId);
+
+    const driver = new this.driverModel({
       ...dto,
       companyId: user.companyId,
       role: 'driver',
     });
 
-    return admin.save();
+    return driver.save();
   }
 
   async findAll(user: any) {

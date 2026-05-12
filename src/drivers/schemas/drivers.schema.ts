@@ -30,13 +30,13 @@ export class Drivers {
   @Prop()
   dateOfBirth?: Date;
 
-  @Prop({ unique: true, sparse: true })
+  @Prop()
   email?: string;
 
-  @Prop({ unique: true, sparse: true })
+  @Prop()
   contactNumber?: string;
 
-  @Prop({ unique: true, sparse: true })
+  @Prop()
   licenseNumber?: string;
 
   @Prop({ enum: ['Professional', 'Non-Professional'] })
@@ -107,3 +107,14 @@ export type DriversDocument = HydratedDocument<Drivers>;
 export const DriversSchema = SchemaFactory.createForClass(Drivers);
 DriversSchema.plugin(PasswordHashPlugin);
 DriversSchema.index({ location: '2dsphere' });
+DriversSchema.index(
+  { companyId: 1, contactNumber: 1 },
+  { unique: true, sparse: true },
+);
+
+DriversSchema.index({ companyId: 1, email: 1 }, { unique: true, sparse: true });
+
+DriversSchema.index(
+  { companyId: 1, licenseNumber: 1 },
+  { unique: true, sparse: true },
+);

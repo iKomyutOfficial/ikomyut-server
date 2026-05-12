@@ -6,6 +6,7 @@ import { UpdateConductorDto } from './dto/update-conductor.dto';
 import { Conductor, ConductorDocument } from './schemas/conductor.schema';
 import { RequestWithCompany } from '../types/request';
 import { excludeFields } from '../common/utils/excludeFields';
+import { validateUniqueFields } from '../common/utils/validateUniqueFields';
 
 @Injectable()
 export class ConductorService {
@@ -23,13 +24,15 @@ export class ConductorService {
     dto: CreateConductorDto,
     user: RequestWithCompany,
   ): Promise<Conductor> {
-    const admin = new this.conductorModel({
+    await validateUniqueFields(this.conductorModel, dto, user.companyId);
+
+    const conductor = new this.conductorModel({
       ...dto,
       companyId: user.companyId,
       role: 'conductor',
     });
 
-    return admin.save();
+    return conductor.save();
   }
 
   async findAll(user: any) {
