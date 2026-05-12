@@ -22,7 +22,6 @@ import { Drivers } from './schemas/drivers.schema';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { RequestWithCompany } from '../types/request';
 
 @ApiTags('Drivers')
 @Controller('drivers')

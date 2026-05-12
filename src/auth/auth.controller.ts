@@ -137,12 +137,12 @@ export class AuthController {
     }
   }
 
-  @Post('register')
-  @ApiOperation({ summary: 'Create admin' })
-  @ApiResponse({ status: 201, type: Admins })
-  create(@Body() dto: CreateAdminDto) {
-    return this.adminsService.create(dto);
-  }
+  // @Post('register')
+  // @ApiOperation({ summary: 'Create admin' })
+  // @ApiResponse({ status: 201, type: Admins })
+  // create(@Body() dto: CreateAdminDto) {
+  //   return this.adminsService.create(dto);
+  // }
 
   @Post('forgot-password')
   @ApiOperation({
