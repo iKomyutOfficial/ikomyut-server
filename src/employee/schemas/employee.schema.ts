@@ -39,9 +39,6 @@ export class Employee {
   @Prop({ required: true })
   companyId!: string;
 
-  @Prop({ default: null })
-  currentSession?: string;
-
   @Prop()
   authToken?: string;
 
@@ -54,11 +51,8 @@ export class Employee {
   @Prop({ default: false })
   isOAuthUser?: boolean;
 
-  @Prop({ type: Photo })
-  profilePic?: {
-    name: string;
-    url: string;
-  };
+  @Prop()
+  profileImage?: string;
 
   @Prop()
   gender?: string;

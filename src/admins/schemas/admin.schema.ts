@@ -45,9 +45,6 @@ export class Admins {
   @Prop({ required: true })
   position!: string;
 
-  @Prop({ default: null })
-  currentSession?: string;
-
   @Prop({ default: false })
   isRegistered!: boolean;
 
@@ -60,11 +57,8 @@ export class Admins {
   @Prop()
   authToken?: string;
 
-  @Prop({ type: Photo })
-  profilePic?: {
-    name: string;
-    url: string;
-  };
+  @Prop()
+  profileImage?: string;
 }
 
 export type AdminsDocument = HydratedDocument<Admins>;

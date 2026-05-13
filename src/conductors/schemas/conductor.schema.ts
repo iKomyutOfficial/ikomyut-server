@@ -58,17 +58,11 @@ export class Conductor {
   @Prop({ type: Object })
   location?: Location;
 
-  @Prop({ type: Photo })
-  profilePic?: {
-    name: string;
-    url: string;
-  };
+  @Prop()
+  profileImage?: string;
 
   @Prop({ required: true })
   companyId!: string;
-
-  @Prop({ default: null })
-  currentSession?: string;
 
   @Prop()
   authToken?: string;

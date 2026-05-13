@@ -56,13 +56,10 @@ export class CreateAdminDto {
   @IsString()
   mobileNumber!: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Photo information',
-    required: false,
-    type: PhotoDto,
   })
   @IsOptional()
-  @ValidateNested()
-  @Type(() => PhotoDto)
-  profilePic?: PhotoDto;
+  @IsString()
+  profileImage?: string;
 }

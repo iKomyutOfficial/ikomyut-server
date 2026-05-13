@@ -1,39 +1,36 @@
-import {
-  IsString,
-  IsOptional,
-  IsBoolean,
-  IsEnum,
-  IsEmail,
-  ValidateNested,
-  IsStrongPassword,
-} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { IsString, IsOptional, IsStrongPassword } from 'class-validator';
 import { PhotoDto } from '../../common/dto/photo.dto';
 
 export class CreateConductorDto {
-  @ApiProperty({ example: 'jdelacruz' })
+  @ApiProperty({ example: 'driver_john' })
   @IsString()
   username!: string;
 
+  @ApiProperty({
+    example: 'Driver@123',
+    description:
+      'Password must contain uppercase, lowercase, number, and special character',
+    default: 'Driver@123',
+  })
   @IsStrongPassword()
-  password!: string;
+  password: string = 'driveR@2026!';
 
-  @ApiPropertyOptional({ default: 'conductor', example: 'conductor' })
+  @ApiPropertyOptional({ example: 'driver', default: 'driver' })
   @IsOptional()
   @IsString()
   role?: string;
 
-  @ApiProperty({ example: 'Juan' })
+  @ApiProperty({ example: 'John' })
   @IsString()
   firstName!: string;
 
-  @ApiPropertyOptional({ example: 'Santos' })
+  @ApiPropertyOptional({ example: 'Michael' })
   @IsOptional()
   @IsString()
   middleName?: string;
 
-  @ApiProperty({ example: 'Dela Cruz' })
+  @ApiProperty({ example: 'Doe' })
   @IsString()
   lastName!: string;
 
@@ -47,61 +44,85 @@ export class CreateConductorDto {
   @IsString()
   dateOfBirth?: Date;
 
-  @ApiPropertyOptional({ example: 'juan@email.com' })
+  @ApiPropertyOptional({ example: 'male' })
   @IsOptional()
-  @IsEmail()
+  @IsString()
+  gender?: string;
+
+  @ApiPropertyOptional({ example: 'driver@example.com' })
+  @IsOptional()
+  @IsString()
   email?: string;
 
-  @ApiPropertyOptional({ example: '09171234567' })
+  @ApiPropertyOptional({ example: '+639123456789' })
   @IsOptional()
   @IsString()
   contactNumber?: string;
 
-  @ApiPropertyOptional({ example: 'ROUTE-001' })
+  @ApiPropertyOptional({ example: 'EDSA Route' })
   @IsOptional()
   @IsString()
   assignedRoute?: string;
 
-  @ApiPropertyOptional({ example: 'BUS-001' })
+  @ApiPropertyOptional({ example: 'Bus #12' })
   @IsOptional()
   @IsString()
   assignedBus?: string;
 
-  @ApiPropertyOptional({ default: false, example: false })
-  @IsOptional()
-  @IsBoolean()
-  isAssign?: boolean;
-
-  @ApiPropertyOptional({
-    default: 'Active',
-    enum: ['Active', 'Inactive', 'Suspended'],
-    example: 'Active',
-  })
-  @IsOptional()
-  @IsEnum(['Active', 'Inactive', 'Suspended'])
-  status?: string;
-
-  @ApiPropertyOptional({ example: 'DEVICE-IMEI-123456' })
-  @IsOptional()
-  @IsString()
-  deviceAssigned?: string;
-
-  @ApiPropertyOptional({
-    example: {
-      type: 'Point',
-      coordinates: [121.0437, 14.676],
-    },
-  })
-  @IsOptional()
-  location?: any;
-
   @ApiProperty({
     description: 'Photo information',
     required: false,
-    type: PhotoDto,
   })
   @IsOptional()
-  @ValidateNested()
-  @Type(() => PhotoDto)
-  profilePic?: PhotoDto;
+  @IsString()
+  profileImage?: string;
+
+  @ApiPropertyOptional({ example: 'Maria Santos' })
+  @IsOptional()
+  @IsString()
+  emergencyContactName?: string;
+
+  @ApiPropertyOptional({ example: '+639171234567' })
+  @IsOptional()
+  @IsString()
+  emergencyContactNumber?: string;
+
+  @ApiPropertyOptional({ example: 'Spouse' })
+  @IsOptional()
+  @IsString()
+  emergencyContactRelationship?: string;
+
+  @ApiPropertyOptional({ example: 'active' })
+  @IsOptional()
+  @IsString()
+  status?: string;
+
+  @ApiPropertyOptional({ example: 'EMP-2026-001' })
+  @IsOptional()
+  @IsString()
+  employeeId?: string;
+
+  @IsOptional()
+  @IsString()
+  dateHired?: string;
+
+  @ApiPropertyOptional({ example: 'Regular' })
+  @IsOptional()
+  @IsString()
+  employmentType?: string;
+
+  @ApiPropertyOptional({ example: '34-5678901-2' })
+  @IsOptional()
+  @IsString()
+  sssNumber?: string;
+
+  @ApiPropertyOptional({ example: '12-345678901-2' })
+  @IsOptional()
+  @IsString()
+  philhealthNumber?: string;
+
+  @ApiPropertyOptional({ example: '1234-5678-9012' })
+  @IsOptional()
+  @IsString()
+  pagibigNumber?: string;
 }

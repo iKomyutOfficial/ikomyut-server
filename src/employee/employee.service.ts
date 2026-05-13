@@ -61,7 +61,7 @@ export class EmployeeService {
 
   private excludeSensitive(employee: EmployeeDocument) {
     const obj = employee.toObject();
-    return excludeFields(obj, ['password', 'authToken', 'currentSession']);
+    return excludeFields(obj, ['password', 'authToken']);
   }
 
   async getTotalRegistered(companyId: string) {

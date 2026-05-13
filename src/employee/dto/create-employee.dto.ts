@@ -45,13 +45,10 @@ export class CreateEmployeeDto {
   @IsString()
   status?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Photo information',
-    required: false,
-    type: PhotoDto,
   })
   @IsOptional()
-  @ValidateNested()
-  @Type(() => PhotoDto)
-  profilePic?: PhotoDto;
+  @IsString()
+  profileImage?: string;
 }

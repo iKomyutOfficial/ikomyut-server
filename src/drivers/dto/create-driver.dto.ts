@@ -100,9 +100,8 @@ export class CreateDriverDto {
     type: PhotoDto,
   })
   @IsOptional()
-  @ValidateNested()
-  @Type(() => PhotoDto)
-  profilePic?: PhotoDto;
+  @IsString()
+  profileImage?: string;
 
   @ApiPropertyOptional({ example: 'Maria Santos' })
   @IsOptional()
@@ -128,6 +127,10 @@ export class CreateDriverDto {
   @IsOptional()
   @IsString()
   employeeId?: string;
+
+  @IsOptional()
+  @IsString()
+  dateHired?: string;
 
   @ApiPropertyOptional({ example: 'Regular' })
   @IsOptional()

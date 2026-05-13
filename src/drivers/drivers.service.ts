@@ -21,7 +21,7 @@ export class DriversService {
 
   private excludeSensitive(driver: DriversDocument) {
     const obj = driver.toObject();
-    return excludeFields(obj, ['password', 'authToken', 'currentSession']);
+    return excludeFields(obj, ['password', 'authToken']);
   }
 
   async create(
