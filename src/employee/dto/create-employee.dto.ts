@@ -51,4 +51,33 @@ export class CreateEmployeeDto {
   @IsOptional()
   @IsString()
   profileImage?: string;
+
+  @ApiPropertyOptional({ example: 'EMP-2026-001' })
+  @IsOptional()
+  @IsString()
+  employeeId?: string;
+
+  @IsOptional()
+  @IsString()
+  dateHired?: string;
+
+  @ApiPropertyOptional({ example: 'Regular' })
+  @IsOptional()
+  @IsString()
+  employmentType?: string;
+
+  @ApiPropertyOptional({ example: '34-5678901-2' })
+  @IsOptional()
+  @IsString()
+  sssNumber?: string;
+
+  @ApiPropertyOptional({ example: '12-345678901-2' })
+  @IsOptional()
+  @IsString()
+  philhealthNumber?: string;
+
+  @ApiPropertyOptional({ example: '1234-5678-9012' })
+  @IsOptional()
+  @IsString()
+  pagibigNumber?: string;
 }

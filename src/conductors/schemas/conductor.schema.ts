@@ -74,6 +74,9 @@ export class Conductor {
   dateHired?: Date;
 
   @Prop()
+  employeeId?: string;
+
+  @Prop()
   employmentType?: string;
 
   @Prop()

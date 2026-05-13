@@ -61,6 +61,9 @@ export class Employee {
   dateHired?: Date;
 
   @Prop()
+  employeeId?: string;
+
+  @Prop()
   employmentType?: string;
 
   @Prop()
