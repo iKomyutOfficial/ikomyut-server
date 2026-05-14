@@ -45,12 +45,12 @@ export async function validateUniqueFields(
     throw new BadRequestException('Email already exists in your company');
   }
 
-  if (
-    existing.licenseNumber === dto.licenseNumber &&
-    existing.companyId.toString() === companyId.toString()
-  ) {
-    throw new BadRequestException(
-      'License Number already exists in your company',
-    );
-  }
+  // if (
+  //   existing.licenseNumber === dto.licenseNumber &&
+  //   existing.companyId.toString() === companyId.toString()
+  // ) {
+  //   throw new BadRequestException(
+  //     'License Number already exists in your company',
+  //   );
+  // }
 }
