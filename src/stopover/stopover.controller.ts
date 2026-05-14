@@ -31,7 +31,7 @@ export class StopOverController {
   constructor(private readonly stopService: StopOverService) {}
 
   @Post()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Create a StopOver' })
   @ApiResponse({ status: 201, description: 'StopOver created' })
   create(@Body() dto: CreateStopOverDto, @Req() req: any) {
@@ -39,14 +39,14 @@ export class StopOverController {
   }
 
   @Get()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Get all StopOvers' })
   findAll(@Req() req) {
     return this.stopService.findAll(req.user);
   }
 
   @Get(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Get StopOver by ID' })
   @ApiParam({ name: 'id', description: 'StopOver ID' })
   findOne(@Param('id') id: string) {
@@ -54,7 +54,7 @@ export class StopOverController {
   }
 
   @Patch(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Update StopOver' })
   @ApiParam({ name: 'id', description: 'StopOver ID' })
   update(@Param('id') id: string, @Body() dto: UpdateStopOverDto) {
@@ -62,7 +62,7 @@ export class StopOverController {
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Delete StopOver' })
   @ApiParam({ name: 'id', description: 'StopOver ID' })
   remove(@Param('id') id: string) {
@@ -70,7 +70,7 @@ export class StopOverController {
   }
 
   @Get('route/:routeId')
-  @Roles('admin')
+  @Roles('admin', 'employee', 'conductor')
   findByRouteId(@Param('routeId') routeId: string) {
     return this.stopService.findByRouteId(routeId);
   }

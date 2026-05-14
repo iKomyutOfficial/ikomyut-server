@@ -31,7 +31,7 @@ export class DriversController {
   constructor(private readonly driversService: DriversService) {}
 
   @Post()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Create driver' })
   @ApiResponse({ status: 201, description: 'Driver created', type: Drivers })
   create(@Body() dto: CreateDriverDto, @Req() req: any) {
@@ -39,27 +39,27 @@ export class DriversController {
   }
 
   @Get()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   findAll(@Req() req) {
     return this.driversService.findAll(req.user);
   }
 
   @Get(':id')
-  @Roles('admin', 'driver')
+  @Roles('admin', 'driver', 'employee')
   @ApiOperation({ summary: 'Get driver by ID' })
   findOne(@Param('id') id: string) {
     return this.driversService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles('admin', 'driver')
+  @Roles('admin', 'driver', 'employee')
   @ApiOperation({ summary: 'Update driver' })
   update(@Param('id') id: string, @Body() updateDriverDto: UpdateDriverDto) {
     return this.driversService.update(id, updateDriverDto);
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Delete driver' })
   remove(@Param('id') id: string) {
     return this.driversService.remove(id);

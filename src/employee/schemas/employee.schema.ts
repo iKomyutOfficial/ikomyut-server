@@ -48,6 +48,9 @@ export class Employee {
   @Prop()
   status?: string;
 
+  @Prop()
+  address?: string;
+
   @Prop({ default: false })
   isOAuthUser?: boolean;
 

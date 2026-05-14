@@ -78,51 +78,65 @@ export class AuthService {
 
     const identifier = username || mobileNumber;
 
-    const admin = await this.adminModel
-      .findOne({
-        $or: [{ username: identifier }, { mobileNumber: identifier }],
-      })
-      .select('+password');
+    let userType = 'admin';
 
-    if (!admin) {
+    let user =
+      (await this.adminModel
+        .findOne({
+          $or: [{ username: identifier }, { mobileNumber: identifier }],
+        })
+        .select('+password')) ||
+      (await this.employeeModel
+        .findOne({
+          $or: [{ username: identifier }, { mobileNumber: identifier }],
+        })
+        .select('+password')
+        .then((res) => {
+          if (res) userType = 'employee';
+          return res;
+        }));
+
+    if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    if (!admin.isRegistered) {
-      await this.otpService.sendOtp(admin.mobileNumber);
+    if (!user.isRegistered) {
+      await this.otpService.sendOtp(user.mobileNumber);
 
       throw new UnauthorizedException({
         message:
           'Account not verified. OTP has been sent to your mobile number.',
-        mobileNumber: admin.mobileNumber,
+        mobileNumber: user.mobileNumber,
       });
     }
 
-    if (!password || !admin.password) {
-      throw new UnauthorizedException('Username or password missing');
-    }
-
-    const isMatch = await bcrypt.compare(password, admin.password);
+    const isMatch =
+      password &&
+      user.password &&
+      (await bcrypt.compare(password, user.password));
 
     if (!isMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const token = this.jwtService.sign({
-      sub: admin._id,
-      username: admin.username,
-      type: 'admin',
+      sub: user._id,
+      username: user.username,
+      type: userType,
     });
 
-    admin.authToken = token;
-    await admin.save();
+    user.authToken = token;
+    await user.save();
 
-    const adminData = admin.toObject();
-    this.authGateway.emitNewLogins(adminData);
+    const userData = user.toObject();
+    delete userData.password;
+
+    // this.authGateway.emitNewLogins(userData);
 
     return {
       access_token: token,
-      admin: adminData,
+      type: userType,
+      admin: userData,
     };
   }
 

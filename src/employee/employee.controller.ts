@@ -31,7 +31,7 @@ export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}
 
   @Post()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Create employee' })
   @ApiResponse({ status: 201, description: 'Employee created' })
   create(@Body() dto: CreateEmployeeDto, @Req() req: any) {
@@ -39,27 +39,27 @@ export class EmployeeController {
   }
 
   @Get()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Get all employees' })
   findAll(@Req() req) {
     return this.employeeService.findAll(req.user);
   }
 
   @Get(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Get employee by ID' })
   findOne(@Param('id') id: string) {
     return this.employeeService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Update employee' })
   update(@Param('id') id: string, @Body() dto: UpdateEmployeeDto) {
     return this.employeeService.update(id, dto);
   }
 
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @Delete(':id')
   @ApiOperation({ summary: 'Delete employee' })
   remove(@Param('id') id: string) {

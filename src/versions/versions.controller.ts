@@ -32,7 +32,7 @@ export class VersionsController {
   constructor(private readonly versionsService: VersionsService) {}
 
   @Post()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Create a new app version' })
   @ApiResponse({
     status: 201,
@@ -45,6 +45,7 @@ export class VersionsController {
   }
 
   @Get()
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Get all app versions' })
   @ApiResponse({
     status: 200,
@@ -56,7 +57,7 @@ export class VersionsController {
   }
 
   @Get(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Get a version by ID' })
   @ApiParam({ name: 'id', description: 'Version ID' })
   @ApiResponse({ status: 200, description: 'Version found.', type: Versions })
@@ -66,7 +67,7 @@ export class VersionsController {
   }
 
   @Patch(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Update a version by ID' })
   @ApiParam({ name: 'id', description: 'Version ID' })
   @ApiBody({ type: UpdateVersionDto })
@@ -80,7 +81,7 @@ export class VersionsController {
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Delete a version by ID' })
   @ApiParam({ name: 'id', description: 'Version ID' })
   @ApiResponse({ status: 200, description: 'Version deleted.', type: Versions })

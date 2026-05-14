@@ -30,7 +30,7 @@ export class FleetController {
   constructor(private readonly fleetService: FleetService) {}
 
   @Post()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Create fleet record' })
   @ApiResponse({ status: 201, description: 'Fleet created successfully' })
   create(@Body() dto: CreateFleetDto, @Req() req: any) {
@@ -38,28 +38,28 @@ export class FleetController {
   }
 
   @Get()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Get all fleet records' })
   findAll(@Req() req) {
     return this.fleetService.findAll(req.user);
   }
 
   @Get(':id')
-  @Roles('admin', 'conductor')
+  @Roles('admin', 'conductor', 'employee')
   @ApiOperation({ summary: 'Get fleet by ID' })
   findOne(@Param('id') id: string) {
     return this.fleetService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles('admin', 'conductor')
+  @Roles('admin', 'conductor', 'employee')
   @ApiOperation({ summary: 'Update fleet (partial)' })
   update(@Param('id') id: string, @Body() dto: UpdateFleetDto) {
     return this.fleetService.update(id, dto);
   }
 
   @Delete(':id')
-  @Roles('admin', 'conductor')
+  @Roles('admin', 'conductor', 'employee')
   @ApiOperation({ summary: 'Delete fleet' })
   remove(@Param('id') id: string) {
     return this.fleetService.remove(id);

@@ -30,7 +30,7 @@ export class RouteController {
   constructor(private readonly routeService: RouteService) {}
 
   @Post()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Create route' })
   @ApiResponse({ status: 201, description: 'Route created successfully' })
   create(@Body() dto: CreateRouteDto, @Req() req: any) {
@@ -38,28 +38,28 @@ export class RouteController {
   }
 
   @Get()
-  @Roles('admin', 'conductor')
+  @Roles('admin', 'conductor', 'employee')
   @ApiOperation({ summary: 'Get all routes' })
   findAll(@Req() req) {
     return this.routeService.findAll(req.user);
   }
 
   @Get(':id')
-  @Roles('admin', 'conductor')
+  @Roles('admin', 'conductor', 'employee')
   @ApiOperation({ summary: 'Get route by ID' })
   findOne(@Param('id') id: string) {
     return this.routeService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Update route (partial)' })
   update(@Param('id') id: string, @Body() dto: UpdateRouteDto) {
     return this.routeService.update(id, dto);
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Delete route' })
   remove(@Param('id') id: string) {
     return this.routeService.remove(id);

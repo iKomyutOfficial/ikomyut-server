@@ -30,7 +30,7 @@ export class UnitController {
   constructor(private readonly unitService: UnitService) {}
 
   @Post()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Create unit' })
   @ApiResponse({ status: 201, description: 'Unit created successfully' })
   create(@Body() dto: CreateUnitDto, @Req() req: any) {
@@ -38,28 +38,28 @@ export class UnitController {
   }
 
   @Get()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Get all units' })
   findAll(@Req() req) {
     return this.unitService.findAll(req.user);
   }
 
   @Get(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Get unit by ID' })
   findOne(@Param('id') id: string) {
     return this.unitService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Update unit (partial)' })
   update(@Param('id') id: string, @Body() dto: UpdateUnitDto) {
     return this.unitService.update(id, dto);
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Delete unit' })
   remove(@Param('id') id: string) {
     return this.unitService.remove(id);

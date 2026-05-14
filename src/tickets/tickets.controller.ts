@@ -30,7 +30,7 @@ export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
 
   @Post()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Create ticket' })
   @ApiResponse({ status: 201, description: 'Ticket created successfully' })
   create(@Body() dto: CreateTicketDto, @Req() req: any) {
@@ -38,24 +38,28 @@ export class TicketController {
   }
 
   @Get()
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Get all tickets' })
   findAll(@Req() req) {
     return this.ticketService.findAll(req.user);
   }
 
   @Get(':id')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Get ticket by ID' })
   findOne(@Param('id') id: string) {
     return this.ticketService.findOne(id);
   }
 
   @Patch(':id')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Update ticket (partial)' })
   update(@Param('id') id: string, @Body() dto: UpdateTicketDto) {
     return this.ticketService.update(id, dto);
   }
 
   @Delete(':id')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Delete ticket' })
   remove(@Param('id') id: string) {
     return this.ticketService.remove(id);

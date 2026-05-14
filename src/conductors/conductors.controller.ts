@@ -30,7 +30,7 @@ export class ConductorController {
   constructor(private readonly conductorsService: ConductorService) {}
 
   @Post()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Create conductor' })
   @ApiResponse({ status: 201, description: 'Conductor created successfully' })
   create(@Body() dto: CreateConductorDto, @Req() req: any) {
@@ -38,28 +38,28 @@ export class ConductorController {
   }
 
   @Get()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Get all conductors' })
   findAll(@Req() req) {
     return this.conductorsService.findAll(req.user);
   }
 
   @Get(':id')
-  @Roles('admin', 'conductor')
+  @Roles('admin', 'conductor', 'employee')
   @ApiOperation({ summary: 'Get conductor by ID' })
   findOne(@Param('id') id: string) {
     return this.conductorsService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles('admin', 'conductor')
+  @Roles('admin', 'conductor', 'employee')
   @ApiOperation({ summary: 'Partially update conductor' })
   update(@Param('id') id: string, @Body() dto: UpdateConductorDto) {
     return this.conductorsService.update(id, dto);
   }
 
   @Delete(':id')
-  @Roles('admin', 'conductor')
+  @Roles('admin', 'conductor', 'employee')
   @ApiOperation({ summary: 'Delete conductor' })
   remove(@Param('id') id: string) {
     return this.conductorsService.remove(id);

@@ -14,7 +14,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  @Roles('admin')
+  @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Check service health status' })
   checkHealth() {
     this.logger.log('Health check endpoint called');
@@ -24,6 +24,7 @@ export class AppController {
   }
 
   @Get('dashboard')
+  @Roles('admin', 'employee')
   getDashboard(@Req() req) {
     return this.appService.getDashboardStats(req.user.companyId);
   }

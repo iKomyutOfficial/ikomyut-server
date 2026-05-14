@@ -40,10 +40,28 @@ export class CreateEmployeeDto {
   @IsString()
   lastName!: string;
 
+  @ApiProperty({ example: 'executive_leadership' })
+  @IsString()
+  department!: string;
+
+  @ApiProperty({ example: 'Doe' })
+  @IsString()
+  position!: string;
+
   @ApiPropertyOptional({ example: 'active' })
   @IsOptional()
   @IsString()
   status?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @ApiPropertyOptional({ example: 'male' })
+  @IsOptional()
+  @IsString()
+  gender?: string;
 
   @ApiPropertyOptional({
     description: 'Photo information',
@@ -80,4 +98,19 @@ export class CreateEmployeeDto {
   @IsOptional()
   @IsString()
   pagibigNumber?: string;
+
+  @ApiPropertyOptional({ example: 'Maria Santos' })
+  @IsOptional()
+  @IsString()
+  emergencyContactName?: string;
+
+  @ApiPropertyOptional({ example: '+639171234567' })
+  @IsOptional()
+  @IsString()
+  emergencyContactNumber?: string;
+
+  @ApiPropertyOptional({ example: 'Spouse' })
+  @IsOptional()
+  @IsString()
+  emergencyContactRelationship?: string;
 }
