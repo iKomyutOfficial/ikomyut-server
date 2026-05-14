@@ -7,15 +7,6 @@ export class CreateConductorDto {
   @IsString()
   username!: string;
 
-  @ApiProperty({
-    example: 'Driver@123',
-    description:
-      'Password must contain uppercase, lowercase, number, and special character',
-    default: 'Driver@123',
-  })
-  @IsStrongPassword()
-  password: string = 'driveR@2026!';
-
   @ApiPropertyOptional({ example: 'driver', default: 'driver' })
   @IsOptional()
   @IsString()

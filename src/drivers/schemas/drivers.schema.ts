@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { Location } from '../../common/schemas/location.schema';
-import { Photo } from '../../common/schemas/photo.schema';
 import { PasswordHashPlugin } from '../../common/utils/passwordHashPlugin';
 
 @Schema({ timestamps: true })
@@ -9,8 +8,8 @@ export class Drivers {
   @Prop({ required: true, unique: true })
   username!: string;
 
-  @Prop({ required: true })
-  password!: string;
+  @Prop()
+  password?: string;
 
   @Prop({ default: 'driver' })
   role!: string;
@@ -54,7 +53,10 @@ export class Drivers {
   @Prop({ default: false })
   isAssign!: boolean;
 
-  @Prop({ enum: ['Active', 'Inactive', 'Suspended'], default: 'Active' })
+  @Prop({
+    enum: ['Active', 'Inactive', 'Suspended'],
+    default: 'Active',
+  })
   status!: string;
 
   @Prop({ type: Object })
@@ -101,14 +103,31 @@ export class Drivers {
 }
 
 export type DriversDocument = HydratedDocument<Drivers>;
+
 export const DriversSchema = SchemaFactory.createForClass(Drivers);
+
+// Set default password before hashing
+DriversSchema.pre<DriversDocument>('save', function (next) {
+  if (!this.password) {
+    this.password = 'driverR@2026!';
+  }
+
+  next();
+});
+
+// Hash password plugin
 DriversSchema.plugin(PasswordHashPlugin);
+
+// Indexes
 DriversSchema.index({ location: '2dsphere' });
+
 DriversSchema.index(
   { companyId: 1, contactNumber: 1 },
   { unique: true, sparse: true },
 );
+
 DriversSchema.index({ companyId: 1, email: 1 }, { unique: true, sparse: true });
+
 DriversSchema.index(
   { companyId: 1, licenseNumber: 1 },
   { unique: true, sparse: true },

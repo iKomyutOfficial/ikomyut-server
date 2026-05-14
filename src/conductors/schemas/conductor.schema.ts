@@ -1,8 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import * as bcrypt from 'bcrypt';
 import { Location } from '../../common/schemas/location.schema';
-import { Photo } from '../../common/schemas/photo.schema';
 import { PasswordHashPlugin } from '../../common/utils/passwordHashPlugin';
 
 @Schema({ timestamps: true })
@@ -10,8 +8,8 @@ export class Conductor {
   @Prop({ required: true, unique: true })
   username!: string;
 
-  @Prop({ required: true })
-  password!: string;
+  @Prop()
+  password?: string;
 
   @Prop({ default: 'conductor' })
   role!: string;
@@ -31,10 +29,10 @@ export class Conductor {
   @Prop()
   dateOfBirth?: Date;
 
-  @Prop({ unique: true, sparse: true })
+  @Prop()
   email?: string;
 
-  @Prop({ unique: true, sparse: true })
+  @Prop()
   contactNumber?: string;
 
   @Prop()
@@ -99,9 +97,24 @@ export class Conductor {
 }
 
 export type ConductorDocument = HydratedDocument<Conductor>;
+
 export const ConductorSchema = SchemaFactory.createForClass(Conductor);
+
+// Set default password before hashing
+ConductorSchema.pre<ConductorDocument>('save', function (next) {
+  if (!this.password) {
+    this.password = 'conductoR@2026!';
+  }
+
+  next();
+});
+
+// Password hashing plugin
 ConductorSchema.plugin(PasswordHashPlugin);
+
+// Indexes
 ConductorSchema.index({ location: '2dsphere' });
+
 ConductorSchema.index(
   { companyId: 1, contactNumber: 1 },
   { unique: true, sparse: true },
