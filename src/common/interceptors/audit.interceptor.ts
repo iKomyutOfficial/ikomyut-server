@@ -13,10 +13,9 @@ export class AuditInterceptor implements NestInterceptor {
   private readonly logger = new Logger('AUDIT');
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const req = context.switchToHttp().getRequest<RequestWithCompany>();
-    const user = req.user;
-    const method = req.method;
-    const url = req.url;
+    const user = context.switchToHttp().getRequest<RequestWithCompany>();
+    const method = user.method;
+    const url = user.url;
     const start = Date.now();
 
     return next.handle().pipe(

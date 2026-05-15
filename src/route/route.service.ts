@@ -13,10 +13,11 @@ export class RouteService {
     private routeModel: Model<RouteDocument>,
   ) {}
 
-  async create(dto: CreateRouteDto, req: RequestWithCompany): Promise<Route> {
+  async create(dto: CreateRouteDto, user: RequestWithCompany): Promise<Route> {
     const admin = new this.routeModel({
       ...dto,
-      companyId: req.companyId,
+      companyId: user.companyId,
+      createdBy: user.username,
     });
     return admin.save();
   }

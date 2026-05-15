@@ -94,6 +94,12 @@ export class Conductor {
 
   @Prop()
   emergencyContactRelationship?: string;
+
+  @Prop()
+  createdBy?: string;
+
+  @Prop()
+  updatedBy?: string;
 }
 
 export type ConductorDocument = HydratedDocument<Conductor>;

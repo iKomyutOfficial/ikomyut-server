@@ -87,6 +87,12 @@ export class Employee {
 
   @Prop()
   emergencyContactRelationship?: string;
+
+  @Prop()
+  createdBy?: string;
+
+  @Prop()
+  updatedBy?: string;
 }
 
 export type EmployeeDocument = HydratedDocument<Employee>;

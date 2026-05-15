@@ -19,11 +19,12 @@ export class StopOverService {
 
   async create(
     dto: CreateStopOverDto,
-    req: RequestWithCompany,
+    user: RequestWithCompany,
   ): Promise<StopOver> {
     const admin = new this.stopOverModel({
       ...dto,
-      companyId: req.companyId,
+      companyId: user.companyId,
+      createdBy: user.username,
     });
     return admin.save();
   }

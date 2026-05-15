@@ -71,6 +71,12 @@ export class Unit {
     default: [],
   })
   maintenanceRecords?: MaintenanceRecord[];
+
+  @Prop()
+  createdBy?: string;
+
+  @Prop()
+  updatedBy?: string;
 }
 
 // Schema

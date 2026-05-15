@@ -26,6 +26,12 @@ export class StopOver {
 
   @Prop({ default: false })
   P2PDO?: boolean;
+
+  @Prop()
+  createdBy?: string;
+
+  @Prop()
+  updatedBy?: string;
 }
 
 export const StopOverSchema = SchemaFactory.createForClass(StopOver);

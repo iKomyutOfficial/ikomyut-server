@@ -33,6 +33,7 @@ export class DriversService {
     const driver = new this.driverModel({
       ...dto,
       companyId: user.companyId,
+      createdBy: user.username,
       role: 'driver',
     });
 

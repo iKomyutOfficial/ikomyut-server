@@ -13,10 +13,11 @@ export class FleetService {
     private fleetModel: Model<FleetDocument>,
   ) {}
 
-  async create(dto: CreateFleetDto, req: RequestWithCompany): Promise<Fleet> {
+  async create(dto: CreateFleetDto, user: RequestWithCompany): Promise<Fleet> {
     const admin = new this.fleetModel({
       ...dto,
-      companyId: req.companyId,
+      companyId: user.companyId,
+      createdBy: user.username,
     });
     return admin.save();
   }

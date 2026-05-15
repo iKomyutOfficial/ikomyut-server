@@ -26,6 +26,12 @@ export class Fleet {
 
   @Prop()
   status!: string;
+
+  @Prop()
+  createdBy?: string;
+
+  @Prop()
+  updatedBy?: string;
 }
 
 // Create schema

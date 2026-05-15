@@ -30,6 +30,12 @@ export class Route {
 
   @Prop({ default: false })
   isAssign?: boolean;
+
+  @Prop()
+  createdBy?: string;
+
+  @Prop()
+  updatedBy?: string;
 }
 
 export type RouteDocument = HydratedDocument<Route>;

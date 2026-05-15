@@ -29,6 +29,7 @@ export class ConductorService {
     const conductor = new this.conductorModel({
       ...dto,
       companyId: user.companyId,
+      createdBy: user.username,
       role: 'conductor',
     });
 

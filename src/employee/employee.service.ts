@@ -22,6 +22,7 @@ export class EmployeeService {
       ...dto,
       companyId: user.companyId,
       companyName: user.companyName,
+      createdBy: user.username,
       role: 'employee',
       isRegistered: true,
     });

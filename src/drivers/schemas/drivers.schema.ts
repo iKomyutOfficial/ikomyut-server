@@ -100,6 +100,12 @@ export class Drivers {
 
   @Prop()
   emergencyContactRelationship?: string;
+
+  @Prop()
+  createdBy?: string;
+
+  @Prop()
+  updatedBy?: string;
 }
 
 export type DriversDocument = HydratedDocument<Drivers>;
