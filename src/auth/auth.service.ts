@@ -130,12 +130,10 @@ export class AuthService {
 
     const userData = user.toObject();
     delete userData.password;
-
-    // this.authGateway.emitNewLogins(userData);
+    delete userData.profileImage; // 👈 ADD THIS
 
     return {
       access_token: token,
-      type: userType,
       admin: userData,
     };
   }

@@ -9,7 +9,7 @@ export async function validateUniqueFields(
     $or: [
       { username: dto.username },
       {
-        contactNumber: dto.contactNumber || dto.mobileNumber,
+        contactNumber: dto.contactNumber,
         companyId,
       },
       {
@@ -29,14 +29,14 @@ export async function validateUniqueFields(
     throw new BadRequestException('Username already exists');
   }
 
-  if (
-    existing.contactNumber === dto.contactNumber &&
-    existing.companyId.toString() === companyId.toString()
-  ) {
-    throw new BadRequestException(
-      'Mobile number already exists in your company',
-    );
-  }
+  // if (
+  //   existing.contactNumber === dto.contactNumber &&
+  //   existing.companyId.toString() === companyId.toString()
+  // ) {
+  //   throw new BadRequestException(
+  //     'Mobile number already exists in your company',
+  //   );
+  // }
 
   if (
     existing.email === dto.email &&

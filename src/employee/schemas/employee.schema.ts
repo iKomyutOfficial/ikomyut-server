@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import * as bcrypt from 'bcrypt';
-import { Photo } from '../../common/schemas/photo.schema';
 import { PasswordHashPlugin } from '../../common/utils/passwordHashPlugin';
 
 @Schema({ timestamps: true })
@@ -15,11 +13,14 @@ export class Employee {
   @Prop({ default: 'employee' })
   role!: string;
 
-  @Prop({ unique: true, sparse: true })
+  @Prop()
   email?: string;
 
-  @Prop({ unique: true, sparse: true })
+  @Prop()
   mobileNumber!: string;
+
+  @Prop()
+  department!: string;
 
   @Prop()
   position!: string;
@@ -89,19 +90,21 @@ export class Employee {
 }
 
 export type EmployeeDocument = HydratedDocument<Employee>;
+
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);
+
+// Set default password before hashing
+EmployeeSchema.pre<EmployeeDocument>('save', function (next) {
+  if (!this.password) {
+    this.password = 'sTaff@2026!';
+  }
+
+  next();
+});
+
+// Password hashing plugin
 EmployeeSchema.plugin(PasswordHashPlugin);
-EmployeeSchema.index(
-  { companyId: 1, mobileNumber: 1 },
-  { unique: true, sparse: true },
-);
 EmployeeSchema.index(
   { companyId: 1, email: 1 },
   { unique: true, sparse: true },
 );
-EmployeeSchema.pre('save', function (next) {
-  if (!this.password) {
-    this.password = 'sTaff@2026!';
-  }
-  next();
-});
