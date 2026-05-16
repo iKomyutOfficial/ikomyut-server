@@ -21,6 +21,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import type { RequestWithCompany } from '../types/request';
 
 @ApiTags('Units')
 @Controller('units')
@@ -54,8 +55,12 @@ export class UnitController {
   @Patch(':id')
   @Roles('admin', 'employee')
   @ApiOperation({ summary: 'Update unit (partial)' })
-  update(@Param('id') id: string, @Body() dto: UpdateUnitDto) {
-    return this.unitService.update(id, dto);
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateUnitDto,
+    @Req() req: RequestWithCompany,
+  ) {
+    return this.unitService.update(id, dto, req);
   }
 
   @Delete(':id')

@@ -17,6 +17,7 @@ export class UnitService {
     const admin = new this.unitModel({
       ...dto,
       companyId: req.companyId,
+      createdBy: req.username,
     });
     return admin.save();
   }
@@ -31,12 +32,15 @@ export class UnitService {
     return unit;
   }
 
-  async update(id: string, dto: UpdateUnitDto) {
-    const updated = await this.unitModel.findByIdAndUpdate(id, dto, {
-      new: true,
-    });
-    if (!updated) throw new NotFoundException('Unit not found');
-    return updated;
+  async update(id: string, dto: UpdateUnitDto, req: RequestWithCompany) {
+    const unit = await this.unitModel.findById(id);
+
+    if (!unit) throw new NotFoundException('Unit not found');
+
+    Object.assign(unit, dto);
+    unit.updatedBy = req.username;
+
+    return unit.save();
   }
 
   async remove(id: string) {

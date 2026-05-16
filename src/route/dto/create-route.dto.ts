@@ -3,8 +3,7 @@ import {
   IsOptional,
   IsNumber,
   IsBoolean,
-  IsArray,
-  ValidateNested,
+  IsEnum,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -24,21 +23,30 @@ export class CreateRouteDto {
 
   @ApiPropertyOptional({ example: 100 })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   fareP2P?: number;
 
   @ApiPropertyOptional({ example: 15 })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   minFare?: number;
 
   @ApiPropertyOptional({ example: 20 })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   fixedDistance?: number;
 
-  @ApiPropertyOptional({ example: false })
+  @ApiPropertyOptional({ example: true })
   @IsOptional()
+  @Type(() => Boolean)
   @IsBoolean()
   isAssign?: boolean;
+
+  @ApiPropertyOptional({ example: 'Active' })
+  @IsOptional()
+  @IsString()
+  status?: string;
 }

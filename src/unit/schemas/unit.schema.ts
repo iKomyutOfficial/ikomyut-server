@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { Location } from '../../common/schemas/location.schema';
-import { MaintenanceRecord } from './maintenance-record.schema';
 
 @Schema({ timestamps: true })
 export class Unit {
@@ -30,7 +29,7 @@ export class Unit {
   companyName?: string;
 
   @Prop()
-  companyId?: string;
+  companyId!: string;
 
   @Prop({
     required: true,
@@ -57,20 +56,11 @@ export class Unit {
   @Prop({ default: false })
   isAssign!: boolean;
 
-  @Prop({ type: [String], default: [] })
-  images!: string[];
-
   @Prop({ type: Object })
   location?: Location;
 
   @Prop()
   imei?: string;
-
-  @Prop({
-    type: [MaintenanceRecord],
-    default: [],
-  })
-  maintenanceRecords?: MaintenanceRecord[];
 
   @Prop()
   createdBy?: string;

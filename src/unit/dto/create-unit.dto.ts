@@ -7,96 +7,67 @@ import {
   IsArray,
   ValidateNested,
 } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { toValidDate } from '../../common/utils/validation';
 import { GeoPointDto } from '../../common/dto/location.dto';
 
-class MaintenancePartDto {
-  @ApiProperty({ example: 'Brake Pad' })
-  @IsString()
-  name!: string;
-
-  @ApiProperty({ example: 2 })
-  @IsNumber()
-  quantity!: number;
-
-  @ApiProperty({ example: 500 })
-  @IsNumber()
-  cost!: number;
-}
-
-class MaintenanceRecordDto {
-  @ApiProperty({ example: '2026-04-29' })
-  @Type(() => Date)
-  date!: string;
-
-  @ApiProperty({ example: 'Brake replacement' })
-  @IsString()
-  description!: string;
-
-  @ApiPropertyOptional({ example: 'Juan Mechanic' })
-  @IsOptional()
-  @IsString()
-  mechanic?: string;
-
-  @ApiPropertyOptional({ type: [MaintenancePartDto] })
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => MaintenancePartDto)
-  parts?: MaintenancePartDto[];
-
-  @ApiPropertyOptional({ example: 1000 })
-  @IsOptional()
-  @IsNumber()
-  laborCost?: number;
-
-  @ApiPropertyOptional({ example: 2000 })
-  @IsOptional()
-  @IsNumber()
-  totalCost?: number;
-}
-
 export class CreateUnitDto {
-  @ApiProperty({ example: 'BUS-001' })
+  @ApiProperty({
+    example: 'BUS-001',
+  })
   @IsOptional()
   @IsString()
   unitCode?: string;
 
-  @ApiProperty({ example: 'ABC-1234' })
+  @ApiProperty({
+    example: 'ABC-1234',
+  })
   @IsString()
   plateNumber!: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    example: 'BDY-1001',
+  })
   @IsOptional()
   @IsString()
   bodyNumber?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    example: 'CASE-2001',
+  })
   @IsOptional()
   @IsString()
   caseNumber?: string;
 
-  @ApiProperty({ example: 'Toyota' })
+  @ApiProperty({
+    example: 'Toyota',
+  })
   @IsString()
   brand!: string;
 
-  @ApiProperty({ example: 'Coaster 2020' })
+  @ApiProperty({
+    example: 'Coaster 2020',
+  })
   @IsString()
   model!: string;
 
-  @ApiPropertyOptional({ example: 30 })
+  @ApiPropertyOptional({
+    example: 30,
+  })
   @IsOptional()
   @IsNumber()
   seatingCapacity?: number;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    example: 'ABC Transport',
+  })
   @IsOptional()
   @IsString()
   companyName?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    example: 'COMP-001',
+  })
   @IsOptional()
   @IsString()
   companyId?: string;
@@ -109,45 +80,67 @@ export class CreateUnitDto {
   @IsEnum(['Active', 'Inactive', 'Maintenance'])
   status?: 'Active' | 'Inactive' | 'Maintenance';
 
+  @ApiPropertyOptional({
+    example: '2026-04-29',
+  })
   @IsOptional()
-  @Transform(({ value }) => toValidDate(value))
-  lastInspectionDate?: Date;
+  @IsString()
+  lastInspectionDate?: string;
 
+  @ApiPropertyOptional({
+    example: '2026-12-31',
+  })
   @IsOptional()
-  @Transform(({ value }) => toValidDate(value))
-  insuranceExpiryDate?: Date;
+  @IsString()
+  insuranceExpiryDate?: string;
 
+  @ApiPropertyOptional({
+    example: '2026-10-15',
+  })
   @IsOptional()
-  @Transform(({ value }) => toValidDate(value))
-  registrationExpiryDate?: Date;
+  @IsString()
+  registrationExpiryDate?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    example: 'Unit requires monthly inspection',
+  })
   @IsOptional()
   @IsString()
   notes?: string;
 
-  @ApiPropertyOptional({ default: true })
+  @ApiPropertyOptional({
+    default: true,
+  })
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 
-  @ApiPropertyOptional({ default: false })
+  @ApiPropertyOptional({
+    default: false,
+  })
   @IsOptional()
   @IsBoolean()
   isAssign?: boolean;
 
-  @ApiPropertyOptional({ type: [String] })
+  @ApiPropertyOptional({
+    type: [String],
+    example: ['https://sample.com/image1.jpg'],
+  })
   @IsOptional()
   @IsArray()
+  @IsString({ each: true })
   images?: string[];
 
-  @ApiPropertyOptional({ type: GeoPointDto })
+  @ApiPropertyOptional({
+    type: GeoPointDto,
+  })
   @IsOptional()
   @ValidateNested()
-  @Type(() => GeoPointDto)
   location?: GeoPointDto;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    example: '123456789012345',
+  })
   @IsOptional()
   @IsString()
   imei?: string;

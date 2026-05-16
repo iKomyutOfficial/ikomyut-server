@@ -32,6 +32,9 @@ export class Route {
   isAssign?: boolean;
 
   @Prop()
+  status?: string;
+
+  @Prop()
   createdBy?: string;
 
   @Prop()
