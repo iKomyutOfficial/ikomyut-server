@@ -53,10 +53,7 @@ export class Drivers {
   @Prop({ default: false })
   isAssign!: boolean;
 
-  @Prop({
-    enum: ['Active', 'Inactive', 'Suspended'],
-    default: 'Active',
-  })
+  @Prop()
   status!: string;
 
   @Prop({ type: Object })

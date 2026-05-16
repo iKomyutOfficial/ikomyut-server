@@ -33,7 +33,6 @@ export class Unit {
 
   @Prop({
     required: true,
-    enum: ['Active', 'Inactive', 'Maintenance'],
     default: 'Active',
   })
   status!: 'Active' | 'Inactive' | 'Maintenance';

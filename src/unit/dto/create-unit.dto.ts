@@ -73,7 +73,6 @@ export class CreateUnitDto {
   companyId?: string;
 
   @ApiPropertyOptional({
-    enum: ['Active', 'Inactive', 'Maintenance'],
     default: 'Active',
   })
   @IsOptional()
@@ -144,4 +143,11 @@ export class CreateUnitDto {
   @IsOptional()
   @IsString()
   imei?: string;
+
+  @ApiPropertyOptional({
+    example: 'ipickdev',
+  })
+  @IsOptional()
+  @IsString()
+  updatedBy?: string;
 }
